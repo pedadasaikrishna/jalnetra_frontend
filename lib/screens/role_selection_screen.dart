@@ -20,16 +20,30 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
           child: Column(
             children: [
-              // Header
-              const SizedBox(height: 40),
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  Icons.water_drop_rounded,
+                  size: 30,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 24),
               Text(
                 'Choose Your Role',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -52,10 +66,13 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
               // Role Selection Tabs
               Container(
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF2D2D2D) : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(16),
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
                 ),
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 child: Row(
                   children: [
                     Expanded(
@@ -110,7 +127,8 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    elevation: 4,
+                    elevation: 0,
+                    minimumSize: const Size.fromHeight(56),
                   ),
                   child: Text(
                     'Continue as ${_getRoleDisplayName(_selectedRole)}',
@@ -159,11 +177,14 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
-          color: isSelected ? color : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? color
+              : Theme.of(context).colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? color : Colors.transparent,
-            width: 2,
+            color: isSelected
+                ? color
+                : Theme.of(context).colorScheme.outlineVariant,
           ),
         ),
         child: Column(
@@ -195,15 +216,12 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
 
     return Container(
       width: double.infinity,
-      height: 320, // Fixed height to ensure consistency
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark 
-          ? color.withOpacity(0.1) 
-          : color.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
+        color: isDark ? color.withOpacity(0.1) : color.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.3 : 0.2), 
+          color: color.withOpacity(isDark ? 0.3 : 0.2),
           width: 2,
         ),
       ),
@@ -256,35 +274,33 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: features
-                    .map(
-                      (feature) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.check_circle, size: 18, color: color),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                feature,
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: isDark ? Colors.white70 : Colors.grey[700],
-                                      height: 1.4,
-                                    ),
-                              ),
-                            ),
-                          ],
+          Column(
+            children: features
+                .map(
+                  (feature) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check_circle, size: 18, color: color),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            feature,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: isDark
+                                      ? Colors.white70
+                                      : Colors.grey[700],
+                                  height: 1.4,
+                                ),
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),

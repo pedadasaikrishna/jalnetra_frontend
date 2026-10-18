@@ -18,28 +18,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingPage(
       title: 'Welcome to JALNETRA',
       subtitle: 'India\'s Groundwater Monitoring Platform',
-      description: 'Monitor groundwater levels, track water quality, and make informed decisions about water resources across India.',
+      description:
+          'Monitor groundwater levels, track water quality, and make informed decisions about water resources across India.',
       icon: Icons.water_drop,
       color: DashboardThemes.CitizenTheme.primaryColor,
     ),
     OnboardingPage(
       title: 'For Everyone',
       subtitle: 'Know Your Water Status',
-      description: 'Check if your area is safe (green), moderate (orange), or critical (red). Plan your daily water needs and get alerts when water levels change.',
+      description:
+          'Check if your area is safe (green), moderate (orange), or critical (red). Plan your daily water needs and get alerts when water levels change.',
       icon: Icons.home,
       color: DashboardThemes.CitizenTheme.secondaryColor,
     ),
     OnboardingPage(
       title: 'For Researchers',
       subtitle: 'Access Raw Data & Analytics',
-      description: 'Download DWLR datasets, analyze trends, compare stations, and export data for research. Advanced visualization tools for groundwater studies.',
+      description:
+          'Download DWLR datasets, analyze trends, compare stations, and export data for research. Advanced visualization tools for groundwater studies.',
       icon: Icons.search,
       color: DashboardThemes.ResearcherTheme.primaryColor,
     ),
     OnboardingPage(
       title: 'For Policy Makers',
       subtitle: 'Make Informed Decisions',
-      description: 'Access comprehensive groundwater data, zone analysis, and policy recommendations. Monitor critical areas and implement effective water management strategies.',
+      description:
+          'Access comprehensive groundwater data, zone analysis, and policy recommendations. Monitor critical areas and implement effective water management strategies.',
       icon: Icons.timeline,
       color: DashboardThemes.PolicyMakerTheme.primaryColor,
     ),
@@ -55,29 +59,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            // Skip button
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(24, 12, 16, 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.water_drop_rounded,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'JALNETRA',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  const Spacer(),
                   TextButton(
                     onPressed: () => _goToRoleSelection(),
                     style: TextButton.styleFrom(
-                      foregroundColor: isDark ? Colors.white70 : Colors.grey[600],
+                      foregroundColor: isDark
+                          ? Colors.white70
+                          : Colors.grey[600],
                     ),
                     child: const Text('Skip'),
                   ),
                 ],
               ),
             ),
-            
+
             // Page content
             Expanded(
               child: PageView.builder(
@@ -95,7 +123,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
               ),
             ),
-            
+
             // Page indicators
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -110,14 +138,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     decoration: BoxDecoration(
                       color: _currentPage == index
                           ? _pages[index].color
-                          : isDark ? Colors.grey[600] : Colors.grey[300],
+                          : isDark
+                          ? Colors.grey[600]
+                          : Colors.grey[300],
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 ),
               ),
             ),
-            
+
             // Navigation buttons
             Padding(
               padding: const EdgeInsets.all(16),
@@ -154,7 +184,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        _currentPage < _pages.length - 1 ? 'Next' : 'Get Started',
+                        _currentPage < _pages.length - 1
+                            ? 'Next'
+                            : 'Get Started',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -174,29 +206,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildPage(OnboardingPage page) {
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon
           Container(
-            width: 120,
-            height: 120,
+            width: 172,
+            height: 172,
             decoration: BoxDecoration(
-              color: page.color.withValues(alpha: isDark ? 0.2 : 0.1),
               shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  page.color.withValues(alpha: isDark ? 0.32 : 0.16),
+                  page.color.withValues(alpha: isDark ? 0.12 : 0.05),
+                ],
+              ),
             ),
-            child: Icon(
-              page.icon,
-              size: 60,
-              color: page.color,
+            child: Center(
+              child: Container(
+                width: 118,
+                height: 118,
+                decoration: BoxDecoration(
+                  color: page.color,
+                  borderRadius: BorderRadius.circular(38),
+                  boxShadow: [
+                    BoxShadow(
+                      color: page.color.withValues(alpha: 0.24),
+                      blurRadius: 24,
+                      offset: const Offset(0, 12),
+                    ),
+                  ],
+                ),
+                child: Icon(page.icon, size: 56, color: Colors.white),
+              ),
             ),
           ),
-          
-          const SizedBox(height: 48),
-          
+
+          const SizedBox(height: 36),
+
           // Title
           Text(
             page.title,
@@ -206,9 +257,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Subtitle
           Text(
             page.subtitle,
@@ -218,9 +269,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Description
           Text(
             page.description,

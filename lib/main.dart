@@ -3,29 +3,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes/app_router.dart';
 import 'providers/dwlr_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/user_provider.dart';
 import 'themes/dashboard_themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  runApp(
-    ProviderScope(
-      child: JALNETRAApp(),
-    ),
-  );
+
+  runApp(ProviderScope(child: JALNETRAApp()));
 }
 
 /// Main application widget
 class JALNETRAApp extends ConsumerWidget {
+  const JALNETRAApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final role = ref.watch(userRoleProvider).role;
+    final dashboardTheme = switch (role) {
+      UserRole.user => DashboardThemes.CitizenTheme,
+      UserRole.researcher => DashboardThemes.ResearcherTheme,
+      UserRole.policyMaker => DashboardThemes.PolicyMakerTheme,
+    };
 
     return MaterialApp.router(
       title: 'JALNETRA',
       debugShowCheckedModeBanner: false,
-      theme: DashboardThemes.CitizenTheme.toThemeData(brightness: Brightness.light),
-      darkTheme: DashboardThemes.CitizenTheme.toThemeData(brightness: Brightness.dark),
+      theme: dashboardTheme.toThemeData(brightness: Brightness.light),
+      darkTheme: dashboardTheme.toThemeData(brightness: Brightness.dark),
       themeMode: themeMode,
       routerConfig: appRouter,
     );
@@ -35,12 +40,9 @@ class JALNETRAApp extends ConsumerWidget {
 /// App initialization widget
 class AppInitializer extends ConsumerStatefulWidget {
   final Widget child;
-  
-  const AppInitializer({
-    super.key,
-    required this.child,
-  });
-  
+
+  const AppInitializer({super.key, required this.child});
+
   @override
   ConsumerState<AppInitializer> createState() => _AppInitializerState();
 }
@@ -48,18 +50,18 @@ class AppInitializer extends ConsumerStatefulWidget {
 class _AppInitializerState extends ConsumerState<AppInitializer> {
   bool _isInitialized = false;
   String? _error;
-  
+
   @override
   void initState() {
     super.initState();
     _initializeApp();
   }
-  
+
   Future<void> _initializeApp() async {
     try {
       // Load initial data
       await ref.read(dwlrStationsProvider.notifier).loadStations();
-      
+
       setState(() {
         _isInitialized = true;
       });
@@ -69,7 +71,7 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     if (_error != null) {
@@ -78,11 +80,7 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
                 'Failed to initialize app',
@@ -110,7 +108,7 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
         ),
       );
     }
-    
+
     if (!_isInitialized) {
       return const Scaffold(
         body: Center(
@@ -125,7 +123,7 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
         ),
       );
     }
-    
+
     return widget.child;
   }
 }

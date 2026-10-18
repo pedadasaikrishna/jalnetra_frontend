@@ -23,20 +23,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -50,7 +49,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   builder: (context, ref, child) {
                     final themeMode = ref.watch(themeModeProvider);
                     final themeNotifier = ref.read(themeModeProvider.notifier);
-                    
+
                     return SwitchListTile(
                       title: const Text('Dark Mode'),
                       subtitle: Text('Current: ${themeNotifier.themeModeName}'),
@@ -123,7 +122,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 ListTile(
                   title: const Text('API Key'),
-                  subtitle: Text(_apiKey.length > 10 ? '${_apiKey.substring(0, 10)}...' : _apiKey),
+                  subtitle: Text(
+                    _apiKey.length > 10
+                        ? '${_apiKey.substring(0, 10)}...'
+                        : _apiKey,
+                  ),
                   trailing: const Icon(Icons.edit),
                   onTap: _showApiKeyDialog,
                 ),
@@ -271,7 +274,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   /// Show API URL dialog
   void _showApiUrlDialog() {
     final controller = TextEditingController(text: _apiBaseUrl);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -305,7 +308,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   /// Show API key dialog
   void _showApiKeyDialog() {
     final controller = TextEditingController(text: _apiKey);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -422,7 +425,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Reset Settings'),
-        content: const Text('Are you sure you want to reset all settings to defaults?'),
+        content: const Text(
+          'Are you sure you want to reset all settings to defaults?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

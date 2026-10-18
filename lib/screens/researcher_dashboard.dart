@@ -19,7 +19,7 @@ final logger = Logger();
 class ChartDataPoint {
   final String x;
   final double y;
-  
+
   ChartDataPoint(this.x, this.y);
 }
 
@@ -28,7 +28,8 @@ class ResearcherDashboard extends ConsumerStatefulWidget {
   const ResearcherDashboard({super.key});
 
   @override
-  ConsumerState<ResearcherDashboard> createState() => _ResearcherDashboardState();
+  ConsumerState<ResearcherDashboard> createState() =>
+      _ResearcherDashboardState();
 }
 
 class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
@@ -40,7 +41,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Position? _currentPosition;
   Placemark? _currentPlacemark;
   String _selectedPredictionPeriod = '1week';
-  
+
   // API-related state variables
   Map<String, dynamic>? _apiAnalyticsData;
   bool _isLoadingApiData = false;
@@ -48,14 +49,42 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
 
   // All Indian states and union territories
   final List<String> indianStates = const [
-    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-    'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-    'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-    'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-    'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry',
+    'Andhra Pradesh',
+    'Arunachal Pradesh',
+    'Assam',
+    'Bihar',
+    'Chhattisgarh',
+    'Goa',
+    'Gujarat',
+    'Haryana',
+    'Himachal Pradesh',
+    'Jharkhand',
+    'Karnataka',
+    'Kerala',
+    'Madhya Pradesh',
+    'Maharashtra',
+    'Manipur',
+    'Meghalaya',
+    'Mizoram',
+    'Nagaland',
+    'Odisha',
+    'Punjab',
+    'Rajasthan',
+    'Sikkim',
+    'Tamil Nadu',
+    'Telangana',
+    'Tripura',
+    'Uttar Pradesh',
+    'Uttarakhand',
+    'West Bengal',
+    'Andaman and Nicobar Islands',
+    'Chandigarh',
+    'Dadra and Nagar Haveli and Daman and Diu',
+    'Delhi',
+    'Jammu and Kashmir',
+    'Ladakh',
+    'Lakshadweep',
+    'Puducherry',
   ];
 
   // State -> Districts map (same as citizen dashboard)
@@ -181,7 +210,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     super.didChangeDependencies();
     // Move provider modification to after build cycle
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    ref.read(locationSearchProvider.notifier).loadStates();
+      ref.read(locationSearchProvider.notifier).loadStates();
     });
   }
 
@@ -189,19 +218,16 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Widget build(BuildContext context) {
     final theme = DashboardThemes.ResearcherTheme;
     final brightness = Theme.of(context).brightness;
-    
+
     return Scaffold(
-      backgroundColor: theme.toThemeData(brightness: brightness).scaffoldBackgroundColor,
+      backgroundColor: theme
+          .toThemeData(brightness: brightness)
+          .scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text(
           'Researcher Dashboard',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: theme.primaryColor,
-        foregroundColor: theme.onPrimaryColor,
-        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -211,28 +237,25 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         ],
       ),
       body: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             // Welcome Section
             _buildWelcomeSection(),
             const SizedBox(height: 24),
-            
+
             // Main Options
             _buildMainOptions(),
             const SizedBox(height: 24),
-            
+
             // Content based on selected option
-            if (selectedOption == 'information')
-              _buildInformationContent(),
-            if (selectedOption == 'analytics')
-              _buildAnalyticsContent(),
-            if (selectedOption == 'data')
-              _buildDataDownloadContent(),
+            if (selectedOption == 'information') _buildInformationContent(),
+            if (selectedOption == 'analytics') _buildAnalyticsContent(),
+            if (selectedOption == 'data') _buildDataDownloadContent(),
           ],
-                  ),
-                ),
+        ),
+      ),
     );
   }
 
@@ -251,7 +274,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     try {
       final apiService = ApiService();
       final apiData = await apiService.getFeaturesForLocation(selectedCity!);
-      
+
       if (apiData != null && apiData.isNotEmpty) {
         final analyticsData = apiService.extractAnalyticsData(apiData);
         setState(() {
@@ -279,7 +302,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     if (_apiAnalyticsData != null && _apiAnalyticsData!.isNotEmpty) {
       return _apiAnalyticsData!;
     }
-    
+
     // Fallback to mock data
     return {
       'stationCode': 'MOCK',
@@ -335,11 +358,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red[600],
-            size: 20,
-          ),
+          Icon(Icons.error_outline, color: Colors.red[600], size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -356,10 +375,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 const SizedBox(height: 4),
                 Text(
                   _apiErrorMessage ?? 'Unknown error',
-                  style: TextStyle(
-                    color: Colors.red[600],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.red[600], fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -381,35 +397,30 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   /// Build welcome section
   Widget _buildWelcomeSection() {
     final theme = DashboardThemes.ResearcherTheme;
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            theme.primaryColor.withOpacity(0.7),
-            theme.secondaryColor.withOpacity(0.6),
-            theme.accentColor.withOpacity(0.5),
-          ],
+          colors: [theme.primaryVariant, theme.primaryColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: const [0.0, 0.5, 1.0],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: theme.primaryColor.withOpacity(0.15),
+            color: theme.primaryColor.withValues(alpha: 0.18),
             blurRadius: 20,
             offset: const Offset(0, 8),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Row(
-          children: [
+          Row(
+            children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -423,23 +434,19 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.science,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                child: const Icon(Icons.science, color: Colors.white, size: 28),
               ),
               const SizedBox(width: 16),
-            Expanded(
+              Expanded(
                 child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     const Text(
                       'Welcome, Researcher',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 26,
-            fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -450,10 +457,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         color: Colors.white.withOpacity(0.9),
                         fontSize: 16,
                         height: 1.4,
-              ),
-            ),
-          ],
-        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -465,7 +472,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   /// Build main options section
   Widget _buildMainOptions() {
     final theme = DashboardThemes.ResearcherTheme;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -484,16 +491,16 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             color: theme.primaryColor.withOpacity(0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        Row(
-          children: [
+            Row(
+              children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -512,7 +519,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   ),
                 ),
                 const SizedBox(width: 16),
-            Expanded(
+                Expanded(
                   child: Text(
                     'Choose Your Research Approach',
                     style: TextStyle(
@@ -520,23 +527,24 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                       fontWeight: FontWeight.bold,
                       color: theme.primaryColor,
                     ),
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
             const SizedBox(height: 24),
-            
+
             // Option 1: Analytics
             _buildOptionCard(
               title: 'I want analytics',
-              description: 'Access the same features as citizens with detailed analytics',
+              description:
+                  'Access the same features as citizens with detailed analytics',
               icon: Icons.analytics,
               onTap: () => setState(() => selectedOption = 'analytics'),
               isSelected: selectedOption == 'analytics',
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Option 2: Data Download
             _buildOptionCard(
               title: 'I want data',
@@ -566,7 +574,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: isSelected ? theme.primaryColor.withOpacity(0.6) : Colors.transparent,
+          color: isSelected
+              ? theme.primaryColor.withOpacity(0.6)
+              : Colors.transparent,
           width: 2,
         ),
       ),
@@ -578,25 +588,22 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
-              colors: isSelected 
-                ? [
-                    theme.primaryColor.withOpacity(0.03),
-                    theme.primaryColor.withOpacity(0.01),
-                  ]
-                : [
-                    Colors.white,
-                    Colors.grey[50]!,
-                  ],
+              colors: isSelected
+                  ? [
+                      theme.primaryColor.withOpacity(0.03),
+                      theme.primaryColor.withOpacity(0.01),
+                    ]
+                  : [Colors.white, Colors.grey[50]!],
             ),
           ),
           child: Row(
-              children: [
+            children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isSelected 
-                    ? theme.primaryColor.withOpacity(0.1)
-                    : Colors.grey.withOpacity(0.1),
+                  color: isSelected
+                      ? theme.primaryColor.withOpacity(0.1)
+                      : Colors.grey.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -606,36 +613,40 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 ),
               ),
               const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       title,
                       style: TextStyle(
                         fontSize: 18,
-            fontWeight: FontWeight.bold,
-                        color: isSelected ? theme.primaryColor : Colors.grey[800],
-                            ),
-                          ),
+                        fontWeight: FontWeight.bold,
+                        color: isSelected
+                            ? theme.primaryColor
+                            : Colors.grey[800],
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                          Text(
+                    Text(
                       description,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isSelected ? theme.primaryColor.withOpacity(0.8) : Colors.grey[600],
-                            ),
-                          ),
-                        ],
+                        color: isSelected
+                            ? theme.primaryColor.withOpacity(0.8)
+                            : Colors.grey[600],
                       ),
                     ),
+                  ],
+                ),
+              ),
               Icon(
                 isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
                 color: isSelected ? theme.primaryColor : Colors.grey[400],
                 size: 24,
-                    ),
-                  ],
-                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -649,15 +660,20 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         // Location Selection Section
         _buildLocationSelectionSection(),
         const SizedBox(height: 24),
-        
+
         // Analytics Button
-        if (selectedState != null && selectedDistrict != null && selectedCity != null)
+        if (selectedState != null &&
+            selectedDistrict != null &&
+            selectedCity != null)
           _buildAnalyticsButton(),
-        
+
         const SizedBox(height: 24),
-        
+
         // Analytics Features (same as citizen dashboard)
-        if (showAnalytics && selectedState != null && selectedDistrict != null && selectedCity != null)
+        if (showAnalytics &&
+            selectedState != null &&
+            selectedDistrict != null &&
+            selectedCity != null)
           _buildAnalyticsFeatures(),
       ],
     );
@@ -671,15 +687,20 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         // Location Selection Section
         _buildLocationSelectionSection(),
         const SizedBox(height: 24),
-        
+
         // Analytics Button
-        if (selectedState != null && selectedDistrict != null && selectedCity != null)
+        if (selectedState != null &&
+            selectedDistrict != null &&
+            selectedCity != null)
           _buildAnalyticsButton(),
-        
+
         const SizedBox(height: 24),
-        
+
         // Analytics Features (same as citizen dashboard)
-        if (showAnalytics && selectedState != null && selectedDistrict != null && selectedCity != null)
+        if (showAnalytics &&
+            selectedState != null &&
+            selectedDistrict != null &&
+            selectedCity != null)
           _buildAnalyticsFeatures(),
       ],
     );
@@ -706,10 +727,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -728,24 +749,24 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   ),
                 ),
                 const SizedBox(width: 16),
-            Expanded(
-              child: Text(
+                Expanded(
+                  child: Text(
                     'Data Download Center',
                     style: TextStyle(
                       fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                       color: theme.primaryColor,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
             const SizedBox(height: 24),
-            
+
             // Location Selection
             _buildLocationSelection(),
             const SizedBox(height: 24),
-            
+
             // Show analytics for selected location
             if (selectedCity != null) ...[
               // Download button for selected location
@@ -807,12 +828,14 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // State dropdown
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 labelText: 'State',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 prefixIcon: const Icon(Icons.location_city),
               ),
               value: selectedState,
@@ -820,10 +843,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               items: indianStates.map((String state) {
                 return DropdownMenuItem<String>(
                   value: state,
-                  child: Text(
-                    state,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  child: Text(state, overflow: TextOverflow.ellipsis),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -834,26 +854,27 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 });
               },
             ),
-            
+
             if (selectedState != null) ...[
-            const SizedBox(height: 16),
-            
+              const SizedBox(height: 16),
+
               // District dropdown
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'District',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   prefixIcon: const Icon(Icons.location_on),
                 ),
                 value: selectedDistrict,
                 isExpanded: true,
-                items: (stateDistrictsBase[selectedState!] ?? []).map((String district) {
+                items: (stateDistrictsBase[selectedState!] ?? []).map((
+                  String district,
+                ) {
                   return DropdownMenuItem<String>(
                     value: district,
-                    child: Text(
-                      district,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Text(district, overflow: TextOverflow.ellipsis),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -864,26 +885,27 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 },
               ),
             ],
-            
+
             if (selectedDistrict != null) ...[
               const SizedBox(height: 16),
-              
+
               // City dropdown
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'City',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   prefixIcon: const Icon(Icons.home),
                 ),
                 value: selectedCity,
                 isExpanded: true,
-                items: _getCitiesForDistrict(selectedDistrict!).map((String city) {
+                items: _getCitiesForDistrict(selectedDistrict!).map((
+                  String city,
+                ) {
                   return DropdownMenuItem<String>(
                     value: city,
-                    child: Text(
-                      city,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Text(city, overflow: TextOverflow.ellipsis),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -892,7 +914,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   });
                   // Update the selected location provider for API data
                   if (newValue != null) {
-                    ref.read(groundwater.selectedLocationProvider.notifier).state = newValue;
+                    ref
+                            .read(groundwater.selectedLocationProvider.notifier)
+                            .state =
+                        newValue;
                   }
                 },
               ),
@@ -911,41 +936,37 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-          padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+          children: [
             Row(
               children: [
-                Icon(
-                  Icons.analytics,
-                  color: theme.primaryColor,
-                  size: 24,
-                ),
+                Icon(Icons.analytics, color: theme.primaryColor, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   'Analytics for $selectedCity',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  color: theme.primaryColor,
+                    color: theme.primaryColor,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Analytics cards (same as information content)
             Row(
               children: [
                 Expanded(child: _buildAverageDepthCard()),
-                    const SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(child: _buildMinMaxDepthCard()),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             Row(
               children: [
                 Expanded(child: _buildYearlyChangeCard()),
@@ -978,49 +999,53 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-                      child: Column(
-                        children: [
-            Icon(
-              Icons.download,
-              color: Colors.white,
-              size: 32,
-            ),
+        child: Column(
+          children: [
+            Icon(Icons.download, color: Colors.white, size: 32),
             const SizedBox(height: 12),
-                          Text(
+            Text(
               'Download Excel Data for $selectedCity',
               style: TextStyle(
                 fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.bold,
                 color: Colors.white,
-                            ),
-                          ),
+              ),
+            ),
             const SizedBox(height: 8),
-                          Text(
+            Text(
               'Download comprehensive groundwater data in Excel format including historical records, predictions, and analytics',
-                style: TextStyle(
-                        fontSize: 14,
+              style: TextStyle(
+                fontSize: 14,
                 color: Colors.white.withOpacity(0.9),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            
+
             // Download format options - Only Excel
             Center(
               child: ElevatedButton.icon(
                 onPressed: () => _downloadData('Excel'),
                 icon: const Icon(Icons.description, color: Colors.white),
-                label: const Text('Download Excel', style: TextStyle(color: Colors.white)),
+                label: const Text(
+                  'Download Excel',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
                 ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1035,11 +1060,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.download,
-              size: 48,
-              color: theme.primaryColor,
-            ),
+            Icon(Icons.download, size: 48, color: theme.primaryColor),
             const SizedBox(height: 16),
             Text(
               'Downloading groundwater data for $selectedCity in $format format...',
@@ -1057,11 +1078,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         ],
       ),
     );
-    
+
     // Simulate download process
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pop(context); // Close loading dialog
-      
+
       // Show success dialog
       showDialog(
         context: context,
@@ -1070,11 +1091,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.check_circle,
-                size: 48,
-                color: Colors.green,
-              ),
+              Icon(Icons.check_circle, size: 48, color: Colors.green),
               const SizedBox(height: 16),
               Text(
                 'Data for $selectedCity has been downloaded successfully in $format format!',
@@ -1106,7 +1123,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Download $dataType'),
-        content: Text('This will download $dataType for your research. Choose your preferred format:'),
+        content: Text(
+          'This will download $dataType for your research. Choose your preferred format:',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -1151,44 +1170,44 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Widget _buildLocationSelectionSection() {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
-            ? [
-                const Color(0xFF1a1a1a).withOpacity(0.9),
-                const Color(0xFF2a2a2a).withOpacity(0.8),
-                const Color(0xFF1a1a1a).withOpacity(0.9),
-              ]
-            : [
-                const Color(0xFFFAFAFA), // Very light gray
-                const Color(0xFFF5F5F5), // Light gray
-                const Color(0xFFFAFAFA), // Very light gray
-              ],
+          colors: isDark
+              ? [
+                  const Color(0xFF1a1a1a).withOpacity(0.9),
+                  const Color(0xFF2a2a2a).withOpacity(0.8),
+                  const Color(0xFF1a1a1a).withOpacity(0.9),
+                ]
+              : [
+                  const Color(0xFFFAFAFA), // Very light gray
+                  const Color(0xFFF5F5F5), // Light gray
+                  const Color(0xFFFAFAFA), // Very light gray
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           stops: const [0.0, 0.5, 1.0],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark 
-            ? theme.primaryColor.withOpacity(0.3)
-            : theme.primaryColor.withOpacity(0.15), // Softer border
+          color: isDark
+              ? theme.primaryColor.withOpacity(0.3)
+              : theme.primaryColor.withOpacity(0.15), // Softer border
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark 
-              ? theme.primaryColor.withOpacity(0.1)
-              : theme.primaryColor.withOpacity(0.08), // Very subtle shadow
+            color: isDark
+                ? theme.primaryColor.withOpacity(0.1)
+                : theme.primaryColor.withOpacity(0.08), // Very subtle shadow
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: isDark 
-              ? Colors.black.withOpacity(0.3)
-              : Colors.grey.withOpacity(0.05), // Very light shadow
+            color: isDark
+                ? Colors.black.withOpacity(0.3)
+                : Colors.grey.withOpacity(0.05), // Very light shadow
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1197,23 +1216,27 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: isDark
-                        ? [
-                            theme.primaryColor.withOpacity(0.2),
-                            theme.primaryColor.withOpacity(0.1),
-                          ]
-                        : [
-                            theme.primaryColor.withOpacity(0.1), // Softer theme color
-                            theme.primaryColor.withOpacity(0.05), // Very light theme color
-                          ],
+                          ? [
+                              theme.primaryColor.withOpacity(0.2),
+                              theme.primaryColor.withOpacity(0.1),
+                            ]
+                          : [
+                              theme.primaryColor.withOpacity(
+                                0.1,
+                              ), // Softer theme color
+                              theme.primaryColor.withOpacity(
+                                0.05,
+                              ), // Very light theme color
+                            ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -1221,8 +1244,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     boxShadow: [
                       BoxShadow(
                         color: isDark
-                          ? theme.primaryColor.withOpacity(0.2)
-                          : theme.primaryColor.withOpacity(0.1), // Softer shadow
+                            ? theme.primaryColor.withOpacity(0.2)
+                            : theme.primaryColor.withOpacity(
+                                0.1,
+                              ), // Softer shadow
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -1238,22 +1263,22 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 Expanded(
                   child: Text(
                     'Select Your Location',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
                       color: theme.primaryColor,
                       fontSize: 22,
                       letterSpacing: 0.5,
-              ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            ),
-          ],
-        ),
             const SizedBox(height: 24),
 
             // Detect My Location Button
             _buildDetectLocationButton(),
             if (_currentPosition != null || _currentPlacemark != null) ...[
-        const SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDetectedDetailsCard(),
             ],
 
@@ -1271,9 +1296,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         gradient: LinearGradient(
                           colors: [
                             Colors.transparent,
-                            isDark 
-                              ? theme.primaryColor.withOpacity(0.3)
-                              : theme.primaryColor.withOpacity(0.3),
+                            isDark
+                                ? theme.primaryColor.withOpacity(0.3)
+                                : theme.primaryColor.withOpacity(0.3),
                             Colors.transparent,
                           ],
                         ),
@@ -1282,41 +1307,42 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: isDark 
-                          ? [
-                              theme.primaryColor.withOpacity(0.1),
-                              theme.primaryColor.withOpacity(0.05),
-                            ]
-                          : [
-                              theme.primaryColor.withOpacity(0.1),
-                              theme.primaryColor.withOpacity(0.05),
-                            ],
+                        colors: isDark
+                            ? [
+                                theme.primaryColor.withOpacity(0.1),
+                                theme.primaryColor.withOpacity(0.05),
+                              ]
+                            : [
+                                theme.primaryColor.withOpacity(0.1),
+                                theme.primaryColor.withOpacity(0.05),
+                              ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark 
-                          ? theme.primaryColor.withOpacity(0.3)
-                          : theme.primaryColor.withOpacity(0.3),
+                        color: isDark
+                            ? theme.primaryColor.withOpacity(0.3)
+                            : theme.primaryColor.withOpacity(0.3),
                         width: 1,
                       ),
                     ),
-              child: Text(
+                    child: Text(
                       'OR',
                       style: TextStyle(
-                        color: isDark 
-                          ? theme.primaryColor
-                          : theme.primaryColor,
-                  fontWeight: FontWeight.bold,
+                        color: isDark ? theme.primaryColor : theme.primaryColor,
+                        fontWeight: FontWeight.bold,
                         fontSize: 14,
                         letterSpacing: 1.0,
-                ),
-              ),
-            ),
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: Container(
                       height: 1,
@@ -1324,9 +1350,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         gradient: LinearGradient(
                           colors: [
                             Colors.transparent,
-                            isDark 
-                              ? theme.primaryColor.withOpacity(0.3)
-                              : theme.primaryColor.withOpacity(0.3),
+                            isDark
+                                ? theme.primaryColor.withOpacity(0.3)
+                                : theme.primaryColor.withOpacity(0.3),
                             Colors.transparent,
                           ],
                         ),
@@ -1347,10 +1373,15 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     );
   }
 
-  Widget _buildDropdown(String label, String? value, List<String> items, Function(String?) onChanged) {
+  Widget _buildDropdown(
+    String label,
+    String? value,
+    List<String> items,
+    Function(String?) onChanged,
+  ) {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1367,30 +1398,31 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           height: 45, // Fixed smaller height
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: isDark 
-                ? [
-                    const Color(0xFF2a2a2a),
-                    const Color(0xFF1a1a1a),
-                  ]
-                : [
-                    const Color(0xFFFAFAFA), // Very light background
-                    const Color(0xFFF0F0F0), // Slightly darker for subtle contrast
-                  ],
+              colors: isDark
+                  ? [const Color(0xFF2a2a2a), const Color(0xFF1a1a1a)]
+                  : [
+                      const Color(0xFFFAFAFA), // Very light background
+                      const Color(
+                        0xFFF0F0F0,
+                      ), // Slightly darker for subtle contrast
+                    ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             border: Border.all(
-              color: isDark 
-                ? theme.primaryColor.withOpacity(0.4)
-                : theme.primaryColor.withOpacity(0.2), // Softer border
+              color: isDark
+                  ? theme.primaryColor.withOpacity(0.4)
+                  : theme.primaryColor.withOpacity(0.2), // Softer border
               width: 1.5,
             ),
             borderRadius: BorderRadius.circular(10), // Smaller border radius
             boxShadow: [
               BoxShadow(
-                color: isDark 
-                  ? theme.primaryColor.withOpacity(0.1)
-                  : theme.primaryColor.withOpacity(0.05), // Very subtle shadow
+                color: isDark
+                    ? theme.primaryColor.withOpacity(0.1)
+                    : theme.primaryColor.withOpacity(
+                        0.05,
+                      ), // Very subtle shadow
                 blurRadius: 6, // Smaller blur radius
                 offset: const Offset(0, 2),
               ),
@@ -1404,20 +1436,26 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 child: Text(
                   'Select $label',
                   style: TextStyle(
-                    color: isDark ? Colors.white70 : const Color(0xFF666666), // Softer gray
+                    color: isDark
+                        ? Colors.white70
+                        : const Color(0xFF666666), // Softer gray
                     fontSize: 14, // Smaller font size
                   ),
                 ),
               ),
               isExpanded: true,
               style: TextStyle(
-                color: isDark ? Colors.white : const Color(0xFF333333), // Darker text for better contrast
+                color: isDark
+                    ? Colors.white
+                    : const Color(
+                        0xFF333333,
+                      ), // Darker text for better contrast
                 fontSize: 14, // Smaller font size
                 fontWeight: FontWeight.w500,
               ),
-              dropdownColor: isDark 
-                ? const Color(0xFF2a2a2a)
-                : const Color(0xFFFAFAFA), // Light background
+              dropdownColor: isDark
+                  ? const Color(0xFF2a2a2a)
+                  : const Color(0xFFFAFAFA), // Light background
               icon: Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: Icon(
@@ -1431,7 +1469,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 return DropdownMenuItem<String>(
                   value: item,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Even smaller padding
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ), // Even smaller padding
                     child: Text(
                       item,
                       style: TextStyle(
@@ -1460,7 +1501,8 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           if (!showAnalytics) {
             // Set the selected location provider for API data
             if (selectedCity != null) {
-              ref.read(groundwater.selectedLocationProvider.notifier).state = selectedCity!;
+              ref.read(groundwater.selectedLocationProvider.notifier).state =
+                  selectedCity!;
             }
             // Fetch API data when showing analytics
             await _fetchApiAnalyticsData();
@@ -1470,7 +1512,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         style: ElevatedButton.styleFrom(
           backgroundColor: theme.primaryColor,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: _isLoadingApiData
             ? Row(
@@ -1514,9 +1558,8 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Show API error message if any
-        if (_apiErrorMessage != null)
-          _buildApiErrorMessage(),
-        
+        if (_apiErrorMessage != null) _buildApiErrorMessage(),
+
         // Section Header
         Container(
           width: double.infinity,
@@ -1544,14 +1587,14 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             ],
           ),
         ),
-        
+
         const SizedBox(height: 20),
-        
+
         // Individual Location Traffic Signal Status (same as citizen dashboard)
         _buildLocationTrafficSignalCard(),
-        
+
         const SizedBox(height: 16),
-        
+
         // Depth Analytics Row
         Row(
           children: [
@@ -1560,9 +1603,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             Expanded(child: _buildMinMaxDepthCard()),
           ],
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Yearly Change Row
         Row(
           children: [
@@ -1571,16 +1614,15 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             Expanded(child: _buildDayForecastCard()),
           ],
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // Prediction Chart Row
         _buildPredictionChartRow(),
         const SizedBox(height: 16),
       ],
     );
   }
-
 
   /// Build Individual Location Traffic Signal Card (like citizen dashboard)
   Widget _buildLocationTrafficSignalCard() {
@@ -1624,19 +1666,27 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                       if (selectedState != null && selectedDistrict != null)
                         Text(
                           '$selectedDistrict, $selectedState',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                              ),
                         ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: _getTrafficSignalColor().withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _getTrafficSignalColor().withOpacity(0.3)),
+                    border: Border.all(
+                      color: _getTrafficSignalColor().withOpacity(0.3),
+                    ),
                   ),
                   child: Text(
                     _getTrafficSignalStatus(),
@@ -1650,7 +1700,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Traffic Signal Display
             Center(
               child: Column(
@@ -1688,7 +1738,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     // Use API data to determine traffic signal level
     final analyticsData = _getAnalyticsData();
     final avgDepth = analyticsData['averageDepth'] as double? ?? 0.0;
-    
+
     // For groundwater depth, negative values are normal (below ground level)
     // More negative = deeper = worse condition
     if (avgDepth >= -5.0) {
@@ -1702,28 +1752,40 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
 
   String _getTrafficSignalStatus() {
     switch (_getTrafficSignalLevel()) {
-      case 'good': return 'GOOD';
-      case 'warning': return 'CAUTION';
-      case 'critical': return 'CRITICAL';
-      default: return 'GOOD';
+      case 'good':
+        return 'GOOD';
+      case 'warning':
+        return 'CAUTION';
+      case 'critical':
+        return 'CRITICAL';
+      default:
+        return 'GOOD';
     }
   }
 
   Color _getTrafficSignalColor() {
     switch (_getTrafficSignalLevel()) {
-      case 'good': return const Color(0xFF33B864);
-      case 'warning': return Colors.orange;
-      case 'critical': return Colors.red;
-      default: return const Color(0xFF33B864);
+      case 'good':
+        return const Color(0xFF33B864);
+      case 'warning':
+        return Colors.orange;
+      case 'critical':
+        return Colors.red;
+      default:
+        return const Color(0xFF33B864);
     }
   }
 
   String _getTrafficSignalDescription() {
     switch (_getTrafficSignalLevel()) {
-      case 'good': return 'Water levels are healthy and sustainable';
-      case 'warning': return 'Water levels are declining, monitor closely';
-      case 'critical': return 'Water levels critically low, immediate action needed';
-      default: return 'Water levels are healthy and sustainable';
+      case 'good':
+        return 'Water levels are healthy and sustainable';
+      case 'warning':
+        return 'Water levels are declining, monitor closely';
+      case 'critical':
+        return 'Water levels critically low, immediate action needed';
+      default:
+        return 'Water levels are healthy and sustainable';
     }
   }
 
@@ -1757,13 +1819,15 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       decoration: BoxDecoration(
         color: isActive ? color : Colors.grey[400],
         shape: BoxShape.circle,
-        boxShadow: isActive ? [
-          BoxShadow(
-            color: color.withOpacity(0.5),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ] : null,
+        boxShadow: isActive
+            ? [
+                BoxShadow(
+                  color: color.withOpacity(0.5),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ]
+            : null,
       ),
     );
   }
@@ -1776,26 +1840,28 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       builder: (context, ref, child) {
         final isLoading = ref.watch(trafficSignalLoadingProvider);
         final error = ref.watch(trafficSignalErrorProvider);
-        
+
         if (isLoading) {
           return Card(
             elevation: 6,
             color: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: const Padding(
               padding: EdgeInsets.all(20),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             ),
           );
         }
-        
+
         if (error != null) {
           return Card(
             elevation: 6,
             color: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -1826,7 +1892,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             ),
           );
         }
-        
+
         return TrafficSignalWidget(
           showDetails: true,
           showRecommendations: false,
@@ -1843,7 +1909,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     return Consumer(
       builder: (context, ref, child) {
         final statisticsAsync = ref.watch(trafficSignalStatisticsProvider);
-        
+
         return statisticsAsync.when(
           data: (statistics) {
             return Column(
@@ -1918,14 +1984,20 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => _buildErrorCard('Error loading analytics: $error'),
+          error: (error, stack) =>
+              _buildErrorCard('Error loading analytics: $error'),
         );
       },
     );
   }
 
   /// Build Analytics Card
-  Widget _buildAnalyticsCard(String title, String value, IconData icon, Color color) {
+  Widget _buildAnalyticsCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       elevation: 4,
       color: Theme.of(context).cardColor,
@@ -1998,8 +2070,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           child: Consumer(
             builder: (context, ref, child) {
               final criticalRegionsAsync = ref.watch(criticalRegionsProvider);
-              final monitoringRegionsAsync = ref.watch(regionsRequiringMonitoringProvider);
-              
+              final monitoringRegionsAsync = ref.watch(
+                regionsRequiringMonitoringProvider,
+              );
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -2009,9 +2083,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     showRecommendations: false,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Critical Regions
-                  if (criticalRegionsAsync.hasValue && criticalRegionsAsync.value!.isNotEmpty) ...[
+                  if (criticalRegionsAsync.hasValue &&
+                      criticalRegionsAsync.value!.isNotEmpty) ...[
                     Text(
                       'Critical Regions (${criticalRegionsAsync.value!.length})',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -2020,37 +2095,45 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ...criticalRegionsAsync.value!.take(3).map((signal) => 
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: signal.level.color,
-                          child: Text(
-                            signal.level.status.substring(0, 1),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ...criticalRegionsAsync.value!
+                        .take(3)
+                        .map(
+                          (signal) => ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: signal.level.color,
+                              child: Text(
+                                signal.level.status.substring(0, 1),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            title: Text(signal.regionName),
+                            subtitle: Text(
+                              '${signal.formattedDepth} • ${signal.district}',
+                            ),
+                            trailing: Text(
+                              '${(signal.riskScore * 100).toStringAsFixed(1)}%',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: signal.level.color,
+                              ),
+                            ),
                           ),
                         ),
-                        title: Text(signal.regionName),
-                        subtitle: Text('${signal.formattedDepth} • ${signal.district}'),
-                        trailing: Text(
-                          '${(signal.riskScore * 100).toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: signal.level.color,
-                          ),
-                        ),
-                      ),
-                    ),
                     if (criticalRegionsAsync.value!.length > 3)
                       Text(
                         '... and ${criticalRegionsAsync.value!.length - 3} more',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                   ],
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Monitoring Regions
-                  if (monitoringRegionsAsync.hasValue && monitoringRegionsAsync.value!.isNotEmpty) ...[
+                  if (monitoringRegionsAsync.hasValue &&
+                      monitoringRegionsAsync.value!.isNotEmpty) ...[
                     Text(
                       'Regions Requiring Monitoring (${monitoringRegionsAsync.value!.length})',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -2059,26 +2142,33 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ...monitoringRegionsAsync.value!.take(3).map((signal) => 
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: signal.level.color,
-                          child: Text(
-                            signal.level.status.substring(0, 1),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ...monitoringRegionsAsync.value!
+                        .take(3)
+                        .map(
+                          (signal) => ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: signal.level.color,
+                              child: Text(
+                                signal.level.status.substring(0, 1),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            title: Text(signal.regionName),
+                            subtitle: Text(
+                              '${signal.formattedDepth} • ${signal.district}',
+                            ),
+                            trailing: Text(
+                              '${(signal.riskScore * 100).toStringAsFixed(1)}%',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: signal.level.color,
+                              ),
+                            ),
                           ),
                         ),
-                        title: Text(signal.regionName),
-                        subtitle: Text('${signal.formattedDepth} • ${signal.district}'),
-                        trailing: Text(
-                          '${(signal.riskScore * 100).toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: signal.level.color,
-                          ),
-                        ),
-                      ),
-                    ),
                     if (monitoringRegionsAsync.value!.length > 3)
                       Text(
                         '... and ${monitoringRegionsAsync.value!.length - 3} more',
@@ -2128,7 +2218,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     color: Colors.blue.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.trending_down, color: Colors.blue[600], size: 20),
+                  child: Icon(
+                    Icons.trending_down,
+                    color: Colors.blue[600],
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -2147,9 +2241,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             Builder(
               builder: (context) {
                 final analyticsData = _getAnalyticsData();
-                final avgDepth = analyticsData['averageDepth'] as double? ?? 0.0;
-                final dataSource = analyticsData['dataSource'] as String? ?? 'Mock Data';
-                
+                final avgDepth =
+                    analyticsData['averageDepth'] as double? ?? 0.0;
+                final dataSource =
+                    analyticsData['dataSource'] as String? ?? 'Mock Data';
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -2165,16 +2261,22 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     Row(
                       children: [
                         Icon(
-                          dataSource == 'API Data' ? Icons.cloud_done : Icons.sim_card,
+                          dataSource == 'API Data'
+                              ? Icons.cloud_done
+                              : Icons.sim_card,
                           size: 12,
-                          color: dataSource == 'API Data' ? Colors.green : Colors.orange,
+                          color: dataSource == 'API Data'
+                              ? Colors.green
+                              : Colors.orange,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           dataSource,
                           style: TextStyle(
                             fontSize: 10,
-                            color: dataSource == 'API Data' ? Colors.green : Colors.orange,
+                            color: dataSource == 'API Data'
+                                ? Colors.green
+                                : Colors.orange,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -2187,10 +2289,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             const SizedBox(height: 4),
             Text(
               'Current groundwater level',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
         ),
@@ -2219,7 +2318,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     color: Colors.purple.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.height, color: Colors.purple[600], size: 20),
+                  child: Icon(
+                    Icons.height,
+                    color: Colors.purple[600],
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -2240,8 +2343,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 final analyticsData = _getAnalyticsData();
                 final minDepth = analyticsData['minDepth'] as double? ?? 0.0;
                 final maxDepth = analyticsData['maxDepth'] as double? ?? 0.0;
-                final dataSource = analyticsData['dataSource'] as String? ?? 'Mock Data';
-                
+                final dataSource =
+                    analyticsData['dataSource'] as String? ?? 'Mock Data';
+
                 return Column(
                   children: [
                     Row(
@@ -2298,16 +2402,22 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     Row(
                       children: [
                         Icon(
-                          dataSource == 'API Data' ? Icons.cloud_done : Icons.sim_card,
+                          dataSource == 'API Data'
+                              ? Icons.cloud_done
+                              : Icons.sim_card,
                           size: 12,
-                          color: dataSource == 'API Data' ? Colors.green : Colors.orange,
+                          color: dataSource == 'API Data'
+                              ? Colors.green
+                              : Colors.orange,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           dataSource,
                           style: TextStyle(
                             fontSize: 10,
-                            color: dataSource == 'API Data' ? Colors.green : Colors.orange,
+                            color: dataSource == 'API Data'
+                                ? Colors.green
+                                : Colors.orange,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -2327,35 +2437,35 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Widget _buildDetectLocationButton() {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
-            ? [
-                theme.primaryColor.withOpacity(0.1),
-                theme.primaryColor.withOpacity(0.05),
-              ]
-            : [
-                theme.primaryColor.withOpacity(0.1),
-                theme.primaryColor.withOpacity(0.05),
-              ],
+          colors: isDark
+              ? [
+                  theme.primaryColor.withOpacity(0.1),
+                  theme.primaryColor.withOpacity(0.05),
+                ]
+              : [
+                  theme.primaryColor.withOpacity(0.1),
+                  theme.primaryColor.withOpacity(0.05),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark 
-            ? theme.primaryColor.withOpacity(0.3)
-            : theme.primaryColor.withOpacity(0.3),
+          color: isDark
+              ? theme.primaryColor.withOpacity(0.3)
+              : theme.primaryColor.withOpacity(0.3),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark 
-              ? theme.primaryColor.withOpacity(0.1)
-              : theme.primaryColor.withOpacity(0.1),
+            color: isDark
+                ? theme.primaryColor.withOpacity(0.1)
+                : theme.primaryColor.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -2369,34 +2479,34 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
-          children: [
+              children: [
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: isDark 
-                        ? [
-                            theme.primaryColor.withOpacity(0.2),
-                            theme.primaryColor.withOpacity(0.1),
-                          ]
-                        : [
-                            theme.primaryColor.withOpacity(0.2),
-                            theme.primaryColor.withOpacity(0.1),
-                          ],
+                      colors: isDark
+                          ? [
+                              theme.primaryColor.withOpacity(0.2),
+                              theme.primaryColor.withOpacity(0.1),
+                            ]
+                          : [
+                              theme.primaryColor.withOpacity(0.2),
+                              theme.primaryColor.withOpacity(0.1),
+                            ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: isDark 
-                          ? theme.primaryColor.withOpacity(0.2)
-                          : theme.primaryColor.withOpacity(0.2),
+                        color: isDark
+                            ? theme.primaryColor.withOpacity(0.2)
+                            : theme.primaryColor.withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+                      ),
+                    ],
+                  ),
                   child: Icon(
                     Icons.my_location,
                     color: isDark ? theme.primaryColor : theme.primaryColor,
@@ -2410,21 +2520,24 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     children: [
                       Text(
                         'Detect My Location',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? theme.primaryColor : theme.primaryColor,
-                          fontSize: 18,
-                          letterSpacing: 0.5,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? theme.primaryColor
+                                  : theme.primaryColor,
+                              fontSize: 18,
+                              letterSpacing: 0.5,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Automatically detect your current location',
                         style: TextStyle(
                           fontSize: 14,
-                          color: isDark 
-                            ? Colors.white.withOpacity(0.7)
-                            : Colors.grey[600],
+                          color: isDark
+                              ? Colors.white.withOpacity(0.7)
+                              : Colors.grey[600],
                           height: 1.3,
                         ),
                       ),
@@ -2448,35 +2561,35 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Widget _buildDetectedDetailsCard() {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
-            ? [
-                theme.primaryColor.withOpacity(0.1),
-                theme.primaryColor.withOpacity(0.05),
-              ]
-            : [
-                theme.primaryColor.withOpacity(0.1),
-                theme.primaryColor.withOpacity(0.05),
-              ],
+          colors: isDark
+              ? [
+                  theme.primaryColor.withOpacity(0.1),
+                  theme.primaryColor.withOpacity(0.05),
+                ]
+              : [
+                  theme.primaryColor.withOpacity(0.1),
+                  theme.primaryColor.withOpacity(0.05),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark 
-            ? theme.primaryColor.withOpacity(0.3)
-            : theme.primaryColor.withOpacity(0.3),
+          color: isDark
+              ? theme.primaryColor.withOpacity(0.3)
+              : theme.primaryColor.withOpacity(0.3),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark 
-              ? theme.primaryColor.withOpacity(0.1)
-              : theme.primaryColor.withOpacity(0.1),
+            color: isDark
+                ? theme.primaryColor.withOpacity(0.1)
+                : theme.primaryColor.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -2493,15 +2606,15 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: isDark 
-                        ? [
-                            theme.primaryColor.withOpacity(0.2),
-                            theme.primaryColor.withOpacity(0.1),
-                          ]
-                        : [
-                            theme.primaryColor.withOpacity(0.2),
-                            theme.primaryColor.withOpacity(0.1),
-                          ],
+                      colors: isDark
+                          ? [
+                              theme.primaryColor.withOpacity(0.2),
+                              theme.primaryColor.withOpacity(0.1),
+                            ]
+                          : [
+                              theme.primaryColor.withOpacity(0.2),
+                              theme.primaryColor.withOpacity(0.1),
+                            ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -2529,11 +2642,23 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             const SizedBox(height: 12),
             if (_currentPlacemark != null) ...[
               _buildDetailRow('City', _currentPlacemark!.locality ?? 'Unknown'),
-              _buildDetailRow('District', _currentPlacemark!.subAdministrativeArea ?? 'Unknown'),
-              _buildDetailRow('State', _currentPlacemark!.administrativeArea ?? 'Unknown'),
+              _buildDetailRow(
+                'District',
+                _currentPlacemark!.subAdministrativeArea ?? 'Unknown',
+              ),
+              _buildDetailRow(
+                'State',
+                _currentPlacemark!.administrativeArea ?? 'Unknown',
+              ),
               if (_currentPosition != null) ...[
-                _buildDetailRow('Latitude', '${_currentPosition!.latitude.toStringAsFixed(6)}'),
-                _buildDetailRow('Longitude', '${_currentPosition!.longitude.toStringAsFixed(6)}'),
+                _buildDetailRow(
+                  'Latitude',
+                  '${_currentPosition!.latitude.toStringAsFixed(6)}',
+                ),
+                _buildDetailRow(
+                  'Longitude',
+                  '${_currentPosition!.longitude.toStringAsFixed(6)}',
+                ),
               ],
             ],
           ],
@@ -2546,7 +2671,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Widget _buildDetailRow(String label, String value) {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -2559,9 +2684,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isDark 
-                  ? theme.primaryColor
-                  : theme.primaryColor,
+                color: isDark ? theme.primaryColor : theme.primaryColor,
               ),
             ),
           ),
@@ -2570,9 +2693,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               value,
               style: TextStyle(
                 fontSize: 14,
-                color: isDark 
-                  ? Colors.white.withOpacity(0.8)
-                  : Colors.grey[700],
+                color: isDark
+                    ? Colors.white.withOpacity(0.8)
+                    : Colors.grey[700],
               ),
             ),
           ),
@@ -2626,7 +2749,8 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
             });
             // Update the selected location provider for API data
             if (value != null) {
-              ref.read(groundwater.selectedLocationProvider.notifier).state = value;
+              ref.read(groundwater.selectedLocationProvider.notifier).state =
+                  value;
             }
           },
         ),
@@ -2681,23 +2805,23 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       if (_currentPlacemark != null) {
         final state = _currentPlacemark!.administrativeArea;
         final district = _currentPlacemark!.subAdministrativeArea;
-        
+
         if (state != null && indianStates.contains(state)) {
           setState(() {
             selectedState = state;
             selectedDistrict = district;
             selectedCity = _currentPlacemark!.locality;
           });
-          
+
           // Update the selected location provider for API data
           if (_currentPlacemark!.locality != null) {
-            ref.read(groundwater.selectedLocationProvider.notifier).state = _currentPlacemark!.locality!;
+            ref.read(groundwater.selectedLocationProvider.notifier).state =
+                _currentPlacemark!.locality!;
           }
         }
       }
-
     } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error detecting location: $e'),
           backgroundColor: Colors.red,
@@ -2774,78 +2898,95 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Consumer(
       builder: (context, ref, child) {
-        final availableLocations = ref.watch(groundwater.availableLocationsProvider);
-        final selectedLocation = ref.watch(groundwater.selectedLocationProvider) ?? availableLocations.first;
-        final stationData = ref.watch(groundwater.groundwaterDataProvider(selectedLocation));
-        
+        final availableLocations = ref.watch(
+          groundwater.availableLocationsProvider,
+        );
+        final selectedLocation =
+            ref.watch(groundwater.selectedLocationProvider) ??
+            availableLocations.first;
+        final stationData = ref.watch(
+          groundwater.groundwaterDataProvider(selectedLocation),
+        );
+
         return stationData.when(
           data: (data) {
             final yearlyChange = _extractYearlyChangeFromAPI(data);
-    final isPositive = yearlyChange > 0;
-    return Card(
-      elevation: 4,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: isPositive 
-                      ? Colors.red.withOpacity(0.2)
-                              : theme.primaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    isPositive ? Icons.trending_up : Icons.trending_down,
-                            color: isPositive ? Colors.red[600] : theme.primaryColor,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Yearly Change',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                              color: isPositive ? Colors.red[700] : theme.primaryColor,
+            final isPositive = yearlyChange > 0;
+            return Card(
+              elevation: 4,
+              color: Theme.of(context).cardColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isPositive
+                                ? Colors.red.withOpacity(0.2)
+                                : theme.primaryColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            isPositive
+                                ? Icons.trending_up
+                                : Icons.trending_down,
+                            color: isPositive
+                                ? Colors.red[600]
+                                : theme.primaryColor,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Yearly Change',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: isPositive
+                                  ? Colors.red[700]
+                                  : theme.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '${isPositive ? '+' : ''}${yearlyChange.toStringAsFixed(1)} m',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: isPositive
+                            ? Colors.red[600]
+                            : theme.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      isPositive
+                          ? 'Water level declining'
+                          : 'Water level improving',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '${isPositive ? '+' : ''}${yearlyChange.toStringAsFixed(1)} m',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                        color: isPositive ? Colors.red[600] : theme.primaryColor,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-                      isPositive ? 'Water level declining' : 'Water level improving',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
             );
           },
           loading: () => Card(
             elevation: 4,
             color: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -2894,7 +3035,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           error: (error, stack) => Card(
             elevation: 4,
             color: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -2947,10 +3090,10 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
 
   double _extractYearlyChangeFromAPI(Map<String, dynamic>? data) {
     if (data == null) return 0.0;
-    
+
     // Extract yearly change from the API data structure
     final yearlyChangeData = data['yearlyChange'];
-    
+
     if (yearlyChangeData is Map<String, dynamic>) {
       // Get the latest year's change (2025 if available, otherwise 2024)
       if (yearlyChangeData.containsKey('2025')) {
@@ -2967,7 +3110,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     } else if (yearlyChangeData is num) {
       return yearlyChangeData.toDouble();
     }
-    
+
     return 0.0;
   }
 
@@ -2993,7 +3136,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     color: Colors.indigo.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.calendar_month, color: Colors.indigo[600], size: 20),
+                  child: Icon(
+                    Icons.calendar_month,
+                    color: Colors.indigo[600],
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -3137,7 +3284,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     color: Colors.red.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.notifications, color: Colors.red[600], size: 20),
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.red[600],
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -3185,39 +3336,37 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 ),
               )
             else
-              ...alerts.map((alert) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.red.withOpacity(0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.warning,
-                        color: Colors.red[600],
-                        size: 20,
+              ...alerts.map(
+                (alert) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.red.withOpacity(0.3),
+                        width: 1,
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          alert,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.red[700],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.warning, color: Colors.red[600], size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            alert,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.red[700],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              )),
+              ),
           ],
         ),
       ),
@@ -3235,7 +3384,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         return Card(
           elevation: 4,
           color: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -3250,7 +3401,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         color: Colors.purple.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(Icons.show_chart, color: Colors.purple[600], size: 20),
+                      child: Icon(
+                        Icons.show_chart,
+                        color: Colors.purple[600],
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -3265,18 +3420,29 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     ),
                     // Prediction Period Selector
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.purple.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.purple.withOpacity(0.3)),
+                        border: Border.all(
+                          color: Colors.purple.withOpacity(0.3),
+                        ),
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: _selectedPredictionPeriod,
                           items: const [
-                            DropdownMenuItem(value: '1week', child: Text('1 Week')),
-                            DropdownMenuItem(value: '1month', child: Text('1 Month')),
+                            DropdownMenuItem(
+                              value: '1week',
+                              child: Text('1 Week'),
+                            ),
+                            DropdownMenuItem(
+                              value: '1month',
+                              child: Text('1 Month'),
+                            ),
                           ],
                           onChanged: (String? newValue) {
                             setState(() {
@@ -3294,12 +3460,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Chart Container
-                SizedBox(
-                  height: 300,
-                  child: _buildPredictionChart(),
-                ),
+                SizedBox(height: 300, child: _buildPredictionChart()),
               ],
             ),
           ),
@@ -3314,26 +3477,32 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Consumer(
       builder: (context, ref, child) {
-        final availableLocations = ref.watch(groundwater.availableLocationsProvider);
-        
+        final availableLocations = ref.watch(
+          groundwater.availableLocationsProvider,
+        );
+
         if (availableLocations.isEmpty) {
-          return const Center(
-            child: Text('No locations available'),
-          );
+          return const Center(child: Text('No locations available'));
         }
-        
+
         // Use selected city from dropdown, fallback to first available location
         final selectedLocation = selectedCity ?? availableLocations.first;
-        final groundwaterData = ref.watch(groundwater.groundwaterDataProvider(selectedLocation));
-        final predictionData = ref.watch(predictionDataProvider(selectedLocation));
-        final forecastData = ref.watch(groundwater.forecast30DaysProvider(selectedLocation));
-        
+        final groundwaterData = ref.watch(
+          groundwater.groundwaterDataProvider(selectedLocation),
+        );
+        final predictionData = ref.watch(
+          predictionDataProvider(selectedLocation),
+        );
+        final forecastData = ref.watch(
+          groundwater.forecast30DaysProvider(selectedLocation),
+        );
+
         return groundwaterData.when(
           data: (data) {
             if (data == null) {
               return const Center(child: Text('No data available'));
             }
-            
+
             // Generate chart data based on selected period
             final chartData = _generatePredictionChartData(
               data,
@@ -3341,7 +3510,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               forecastData.value,
               _selectedPredictionPeriod,
             );
-            
+
             return charts.SfCartesianChart(
               primaryXAxis: const charts.CategoryAxis(
                 title: charts.AxisTitle(text: 'Time Period'),
@@ -3352,7 +3521,8 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 isInversed: true,
               ),
               title: charts.ChartTitle(
-                text: 'Groundwater Forecast - ${selectedLocation} (${_selectedPredictionPeriod == '1week' ? '1 Week' : '1 Month'})',
+                text:
+                    'Groundwater Forecast - ${selectedLocation} (${_selectedPredictionPeriod == '1week' ? '1 Week' : '1 Month'})',
                 textStyle: Theme.of(context).textTheme.titleSmall,
               ),
               legend: const charts.Legend(
@@ -3397,37 +3567,43 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final chartData = <String, List<ChartDataPoint>>{};
-    
+
     // No historical data - only show forecast data
     chartData['historical'] = <ChartDataPoint>[];
     chartData['prediction'] = <ChartDataPoint>[];
-    
+
     // Forecast data only
     final forecastDataPoints = <ChartDataPoint>[];
     final forecastDataList = forecastData ?? [];
-    
+
     if (forecastDataList.isNotEmpty) {
       final limit = period == '1week' ? 7 : 30; // Show all 30 days for 1 month
-      print('🔍 DEBUG: Period: $period, Limit: $limit, Total forecast points: ${forecastDataList.length}');
+      print(
+        '🔍 DEBUG: Period: $period, Limit: $limit, Total forecast points: ${forecastDataList.length}',
+      );
       print('🔍 DEBUG: Forecast data list: $forecastDataList');
-      
+
       // Take only the specified number of points
       final limitedData = forecastDataList.take(limit).toList();
       print('🔍 DEBUG: Limited data points: ${limitedData.length}');
-      
+
       for (final forecastPoint in limitedData) {
         final date = forecastPoint['date'] as String? ?? '';
-        final depth = forecastPoint['forecast'] as double? ?? -5.0; // Use 'forecast' field and realistic fallback
-        
+        final depth =
+            forecastPoint['forecast'] as double? ??
+            -5.0; // Use 'forecast' field and realistic fallback
+
         // Format date for better display
         final formattedDate = _formatDateForChart(date);
         forecastDataPoints.add(ChartDataPoint(formattedDate, depth));
         print('🔍 DEBUG: Added point: $formattedDate -> $depth');
       }
-      print('🔍 DEBUG: Generated ${forecastDataPoints.length} chart points for $period');
+      print(
+        '🔍 DEBUG: Generated ${forecastDataPoints.length} chart points for $period',
+      );
     }
     chartData['forecast'] = forecastDataPoints;
-    
+
     return chartData;
   }
 
@@ -3443,12 +3619,22 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
 
   /// Get month abbreviation
   String _getMonthAbbreviation(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[month - 1];
   }
-
-
 
   Map<String, dynamic> _getMockMonthlyForecast() {
     final trends = ['RISING', 'STABLE', 'DECLINING'];
@@ -3457,7 +3643,6 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
       'trend': trends[DateTime.now().millisecond % 3],
     };
   }
-
 
   Map<String, dynamic> _getMockDayForecast() {
     final trends = ['RISING', 'STABLE', 'DECLINING'];
@@ -3471,16 +3656,19 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     return [];
   }
 
-
   Color _getForecastTrendColor() {
     final theme = DashboardThemes.ResearcherTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final forecast = _getMockMonthlyForecast();
     switch (forecast['trend']) {
-      case 'RISING': return theme.primaryColor;
-      case 'STABLE': return Colors.orange;
-      case 'DECLINING': return Colors.red;
-      default: return Colors.grey;
+      case 'RISING':
+        return theme.primaryColor;
+      case 'STABLE':
+        return Colors.orange;
+      case 'DECLINING':
+        return Colors.red;
+      default:
+        return Colors.grey;
     }
   }
 
@@ -3489,10 +3677,14 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final forecast = _getMockDayForecast();
     switch (forecast['trend']) {
-      case 'RISING': return theme.primaryColor;
-      case 'STABLE': return Colors.orange;
-      case 'DECLINING': return Colors.red;
-      default: return Colors.grey;
+      case 'RISING':
+        return theme.primaryColor;
+      case 'STABLE':
+        return Colors.orange;
+      case 'DECLINING':
+        return Colors.red;
+      default:
+        return Colors.grey;
     }
   }
 }

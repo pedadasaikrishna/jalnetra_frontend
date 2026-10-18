@@ -11,13 +11,11 @@ import '../widgets/station_info_card.dart';
 class StationDetailsScreen extends ConsumerStatefulWidget {
   final String stationId;
 
-  const StationDetailsScreen({
-    super.key,
-    required this.stationId,
-  });
+  const StationDetailsScreen({super.key, required this.stationId});
 
   @override
-  ConsumerState<StationDetailsScreen> createState() => _StationDetailsScreenState();
+  ConsumerState<StationDetailsScreen> createState() =>
+      _StationDetailsScreenState();
 }
 
 class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
@@ -30,7 +28,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    
+
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadWaterLevelData();
@@ -46,7 +44,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   void _loadWaterLevelData() {
     final endTime = DateTime.now();
     DateTime startTime;
-    
+
     switch (_selectedTimeRange) {
       case '7 Days':
         startTime = endTime.subtract(const Duration(days: 7));
@@ -64,46 +62,47 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
         startTime = endTime.subtract(const Duration(days: 30));
     }
 
-    ref.read(waterLevelDataProvider.notifier).loadWaterLevelData(
-      stationId: widget.stationId,
-      startDate: startTime,
-      endDate: endTime,
-      interval: _selectedInterval.toLowerCase(),
-    );
+    ref
+        .read(waterLevelDataProvider.notifier)
+        .loadWaterLevelData(
+          stationId: widget.stationId,
+          startDate: startTime,
+          endDate: endTime,
+          interval: _selectedInterval.toLowerCase(),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final station = ref.watch(dwlrStationProvider(widget.stationId));
-    final waterLevelData = ref.watch(stationWaterLevelDataProvider(widget.stationId));
-    final isLoading = ref.watch(waterLevelDataLoadingProvider(widget.stationId));
+    final waterLevelData = ref.watch(
+      stationWaterLevelDataProvider(widget.stationId),
+    );
+    final isLoading = ref.watch(
+      waterLevelDataLoadingProvider(widget.stationId),
+    );
     final error = ref.watch(waterLevelDataErrorProvider(widget.stationId));
 
     if (station == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(station.stationName),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -144,9 +143,12 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   }
 
   /// Build overview tab
-  Widget _buildOverviewTab(DWLRStation station, List<WaterLevelData> waterLevelData) {
+  Widget _buildOverviewTab(
+    DWLRStation station,
+    List<WaterLevelData> waterLevelData,
+  ) {
     final latestData = waterLevelData.isNotEmpty ? waterLevelData.first : null;
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -155,7 +157,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
           // Station info card
           StationInfoCard(station: station),
           const SizedBox(height: 16),
-          
+
           // Current measurements card
           Card(
             child: Padding(
@@ -169,10 +171,25 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                   ),
                   const SizedBox(height: 12),
                   if (latestData != null) ...[
-                    _buildMeasurementRow('Water Level', '${latestData.waterLevel.toStringAsFixed(2)} m', Icons.water_drop, Colors.blue),
-                    _buildMeasurementRow('Data Quality', latestData.quality, Icons.analytics, _getQualityColor(latestData.quality)),
+                    _buildMeasurementRow(
+                      'Water Level',
+                      '${latestData.waterLevel.toStringAsFixed(2)} m',
+                      Icons.water_drop,
+                      Colors.blue,
+                    ),
+                    _buildMeasurementRow(
+                      'Data Quality',
+                      latestData.quality,
+                      Icons.analytics,
+                      _getQualityColor(latestData.quality),
+                    ),
                     if (latestData.remarks.isNotEmpty)
-                      _buildMeasurementRow('Remarks', latestData.remarks, Icons.note, Colors.grey),
+                      _buildMeasurementRow(
+                        'Remarks',
+                        latestData.remarks,
+                        Icons.note,
+                        Colors.grey,
+                      ),
                   ] else ...[
                     const Text('No recent measurements available'),
                   ],
@@ -181,7 +198,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Station status card
           Card(
             child: Padding(
@@ -194,10 +211,26 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
-                  _buildStatusRow('Status', station.status, _getStatusColor(station.status)),
-                  _buildStatusRow('Data Availability', '${station.dataAvailability.toStringAsFixed(1)}%', _getDataQualityColor(station.dataAvailability)),
-                  _buildStatusRow('Installation Date', _formatDate(station.installationDate), Colors.grey),
-                  _buildStatusRow('Last Updated', _formatDateTime(station.lastUpdated), Colors.grey),
+                  _buildStatusRow(
+                    'Status',
+                    station.status,
+                    _getStatusColor(station.status),
+                  ),
+                  _buildStatusRow(
+                    'Data Availability',
+                    '${station.dataAvailability.toStringAsFixed(1)}%',
+                    _getDataQualityColor(station.dataAvailability),
+                  ),
+                  _buildStatusRow(
+                    'Installation Date',
+                    _formatDate(station.installationDate),
+                    Colors.grey,
+                  ),
+                  _buildStatusRow(
+                    'Last Updated',
+                    _formatDateTime(station.lastUpdated),
+                    Colors.grey,
+                  ),
                 ],
               ),
             ),
@@ -208,7 +241,12 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   }
 
   /// Build charts tab
-  Widget _buildChartsTab(DWLRStation station, List<WaterLevelData> waterLevelData, bool isLoading, String? error) {
+  Widget _buildChartsTab(
+    DWLRStation station,
+    List<WaterLevelData> waterLevelData,
+    bool isLoading,
+    String? error,
+  ) {
     return Column(
       children: [
         // Time range and interval selector
@@ -220,11 +258,10 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                 child: DropdownButtonFormField<String>(
                   value: _selectedTimeRange,
                   decoration: const InputDecoration(labelText: 'Time Range'),
-                  items: ['7 Days', '30 Days', '90 Days', '1 Year'].map((range) {
-                    return DropdownMenuItem(
-                      value: range,
-                      child: Text(range),
-                    );
+                  items: ['7 Days', '30 Days', '90 Days', '1 Year'].map((
+                    range,
+                  ) {
+                    return DropdownMenuItem(value: range, child: Text(range));
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
@@ -256,53 +293,58 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             ],
           ),
         ),
-        
+
         // Charts
         Expanded(
           child: isLoading
               ? const Center(child: CircularProgressIndicator())
               : error != null
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                          const SizedBox(height: 16),
-                          Text('Error: $error'),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadWaterLevelData,
-                            child: const Text('Retry'),
-                          ),
-                        ],
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red,
                       ),
-                    )
-                  : waterLevelData.isEmpty
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.timeline, size: 64, color: Colors.grey),
-                              SizedBox(height: 16),
-                              Text('No data available for the selected period'),
-                            ],
-                          ),
-                        )
-                      : WaterLevelChart(
-                          data: waterLevelData,
-                          stationName: station.stationName,
-                        ),
+                      const SizedBox(height: 16),
+                      Text('Error: $error'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadWaterLevelData,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : waterLevelData.isEmpty
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.timeline, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text('No data available for the selected period'),
+                    ],
+                  ),
+                )
+              : WaterLevelChart(
+                  data: waterLevelData,
+                  stationName: station.stationName,
+                ),
         ),
       ],
     );
   }
 
   /// Build statistics tab
-  Widget _buildStatisticsTab(DWLRStation station, List<WaterLevelData> waterLevelData) {
+  Widget _buildStatisticsTab(
+    DWLRStation station,
+    List<WaterLevelData> waterLevelData,
+  ) {
     if (waterLevelData.isEmpty) {
-      return const Center(
-        child: Text('No data available for statistics'),
-      );
+      return const Center(child: Text('No data available for statistics'));
     }
 
     final stats = _calculateStatistics(waterLevelData);
@@ -327,11 +369,21 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard('Average', '${stats['average'].toStringAsFixed(2)}m', Icons.trending_flat, Colors.blue),
+                        child: _buildStatCard(
+                          'Average',
+                          '${stats['average'].toStringAsFixed(2)}m',
+                          Icons.trending_flat,
+                          Colors.blue,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildStatCard('Minimum', '${stats['min'].toStringAsFixed(2)}m', Icons.trending_down, Colors.green),
+                        child: _buildStatCard(
+                          'Minimum',
+                          '${stats['min'].toStringAsFixed(2)}m',
+                          Icons.trending_down,
+                          Colors.green,
+                        ),
                       ),
                     ],
                   ),
@@ -339,11 +391,21 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard('Maximum', '${stats['max'].toStringAsFixed(2)}m', Icons.trending_up, Colors.red),
+                        child: _buildStatCard(
+                          'Maximum',
+                          '${stats['max'].toStringAsFixed(2)}m',
+                          Icons.trending_up,
+                          Colors.red,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildStatCard('Range', '${stats['range'].toStringAsFixed(2)}m', Icons.straighten, Colors.orange),
+                        child: _buildStatCard(
+                          'Range',
+                          '${stats['range'].toStringAsFixed(2)}m',
+                          Icons.straighten,
+                          Colors.orange,
+                        ),
                       ),
                     ],
                   ),
@@ -352,7 +414,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Trend analysis
           Card(
             child: Padding(
@@ -376,11 +438,12 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   }
 
   /// Build history tab
-  Widget _buildHistoryTab(DWLRStation station, List<WaterLevelData> waterLevelData) {
+  Widget _buildHistoryTab(
+    DWLRStation station,
+    List<WaterLevelData> waterLevelData,
+  ) {
     if (waterLevelData.isEmpty) {
-      return const Center(
-        child: Text('No historical data available'),
-      );
+      return const Center(child: Text('No historical data available'));
     }
 
     // Sort by date descending
@@ -399,11 +462,16 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
               backgroundColor: _getQualityColor(data.quality),
               child: Text(
                 data.quality[0].toUpperCase(),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             title: Text(_formatDateTime(data.date)),
-            subtitle: Text('Water Level: ${data.waterLevel.toStringAsFixed(2)} m'),
+            subtitle: Text(
+              'Water Level: ${data.waterLevel.toStringAsFixed(2)} m',
+            ),
             trailing: Text(
               '${data.waterLevel.toStringAsFixed(1)}m',
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -416,7 +484,12 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   }
 
   /// Build measurement row
-  Widget _buildMeasurementRow(String label, String value, IconData icon, Color color) {
+  Widget _buildMeasurementRow(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -427,10 +500,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
           const Spacer(),
           Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: color),
           ),
         ],
       ),
@@ -447,10 +517,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
           Text(label),
           Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: color),
           ),
         ],
       ),
@@ -458,7 +525,12 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   }
 
   /// Build stat card
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Column(
       children: [
         Icon(icon, color: color),
@@ -470,10 +542,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             color: color,
           ),
         ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
@@ -482,7 +551,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   Widget _buildTrendAnalysis(Map<String, dynamic> stats) {
     final trend = stats['trend'] as String;
     final trendPercentage = stats['trendPercentage'] as double;
-    
+
     return Column(
       children: [
         Row(
@@ -492,18 +561,27 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             Row(
               children: [
                 Icon(
-                  trend == 'Rising' ? Icons.trending_up : 
-                  trend == 'Declining' ? Icons.trending_down : Icons.trending_flat,
-                  color: trend == 'Rising' ? Colors.red : 
-                         trend == 'Declining' ? Colors.green : Colors.grey,
+                  trend == 'Rising'
+                      ? Icons.trending_up
+                      : trend == 'Declining'
+                      ? Icons.trending_down
+                      : Icons.trending_flat,
+                  color: trend == 'Rising'
+                      ? Colors.red
+                      : trend == 'Declining'
+                      ? Colors.green
+                      : Colors.grey,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   trend,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: trend == 'Rising' ? Colors.red : 
-                           trend == 'Declining' ? Colors.green : Colors.grey,
+                    color: trend == 'Rising'
+                        ? Colors.red
+                        : trend == 'Declining'
+                        ? Colors.green
+                        : Colors.grey,
                   ),
                 ),
               ],
@@ -516,11 +594,18 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
           children: [
             const Text('Change Rate:'),
             Text(
-              '${trendPercentage.abs().toStringAsFixed(1)}% ${trend == 'Rising' ? 'increase' : trend == 'Declining' ? 'decrease' : 'stable'}',
+              '${trendPercentage.abs().toStringAsFixed(1)}% ${trend == 'Rising'
+                  ? 'increase'
+                  : trend == 'Declining'
+                  ? 'decrease'
+                  : 'stable'}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: trend == 'Rising' ? Colors.red : 
-                       trend == 'Declining' ? Colors.green : Colors.grey,
+                color: trend == 'Rising'
+                    ? Colors.red
+                    : trend == 'Declining'
+                    ? Colors.green
+                    : Colors.grey,
               ),
             ),
           ],
@@ -552,7 +637,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
     final firstValue = values.first;
     final lastValue = values.last;
     final trendPercentage = ((lastValue - firstValue) / firstValue) * 100;
-    
+
     String trend;
     if (trendPercentage > 2) {
       trend = 'Rising';
@@ -607,8 +692,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
             Text('Date: ${_formatDateTime(data.date)}'),
             Text('Water Level: ${data.waterLevel.toStringAsFixed(2)} m'),
             Text('Quality: ${data.quality}'),
-            if (data.remarks.isNotEmpty)
-              Text('Remarks: ${data.remarks}'),
+            if (data.remarks.isNotEmpty) Text('Remarks: ${data.remarks}'),
           ],
         ),
         actions: [

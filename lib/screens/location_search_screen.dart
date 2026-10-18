@@ -9,7 +9,8 @@ class LocationSearchScreen extends ConsumerStatefulWidget {
   const LocationSearchScreen({super.key});
 
   @override
-  ConsumerState<LocationSearchScreen> createState() => _LocationSearchScreenState();
+  ConsumerState<LocationSearchScreen> createState() =>
+      _LocationSearchScreenState();
 }
 
 class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
@@ -40,20 +41,19 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search by Location'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.clear_all),
@@ -92,7 +92,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // State Dropdown
                 DropdownButtonFormField<String>(
                   value: searchState.selectedState,
@@ -102,10 +102,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: searchState.states.map((state) {
-                    return DropdownMenuItem(
-                      value: state,
-                      child: Text(state),
-                    );
+                    return DropdownMenuItem(value: state, child: Text(state));
                   }).toList(),
                   onChanged: (state) {
                     if (state != null) {
@@ -115,7 +112,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // District Dropdown
                 DropdownButtonFormField<String>(
                   value: searchState.selectedDistrict,
@@ -130,34 +127,42 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                       child: Text(district),
                     );
                   }).toList(),
-                  onChanged: searchState.selectedState != null ? (district) {
-                    if (district != null) {
-                      _districtController.text = district;
-                    }
-                  } : null,
+                  onChanged: searchState.selectedState != null
+                      ? (district) {
+                          if (district != null) {
+                            _districtController.text = district;
+                          }
+                        }
+                      : null,
                 ),
                 const SizedBox(height: 16),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Search Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: searchState.isLoading ? null : () {
-                      searchNotifier.searchStationsByLocation(
-                        stateName: searchState.selectedState,
-                        districtName: searchState.selectedDistrict,
-                      );
-                    },
-                    icon: searchState.isLoading 
+                    onPressed: searchState.isLoading
+                        ? null
+                        : () {
+                            searchNotifier.searchStationsByLocation(
+                              stateName: searchState.selectedState,
+                              districtName: searchState.selectedDistrict,
+                            );
+                          },
+                    icon: searchState.isLoading
                         ? const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.search),
-                    label: Text(searchState.isLoading ? 'Searching...' : 'Search Stations'),
+                    label: Text(
+                      searchState.isLoading
+                          ? 'Searching...'
+                          : 'Search Stations',
+                    ),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
@@ -166,17 +171,18 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
               ],
             ),
           ),
-          
+
           // Results Section
-          Expanded(
-            child: _buildResultsSection(searchState, searchNotifier),
-          ),
+          Expanded(child: _buildResultsSection(searchState, searchNotifier)),
         ],
       ),
     );
   }
 
-  Widget _buildResultsSection(LocationSearchState searchState, LocationSearchNotifier searchNotifier) {
+  Widget _buildResultsSection(
+    LocationSearchState searchState,
+    LocationSearchNotifier searchNotifier,
+  ) {
     if (searchState.isLoading) {
       return const Center(
         child: Column(
@@ -195,11 +201,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
             const SizedBox(height: 16),
             Text(
               'Error: ${searchState.error}',
@@ -226,17 +228,13 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               'No stations found for the selected location.\nTry selecting a different state, district, or city.',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -268,9 +266,9 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
               const SizedBox(width: 8),
               Text(
                 'Found ${searchState.stations.length} station(s)',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               TextButton.icon(
@@ -281,7 +279,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
             ],
           ),
         ),
-        
+
         // Stations List
         Expanded(
           child: ListView.builder(
@@ -289,8 +287,10 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
             itemCount: searchState.stations.length,
             itemBuilder: (context, index) {
               final station = searchState.stations[index];
-              final waterStatus = searchNotifier.getWaterStatus(station.currentWaterLevel);
-              
+              final waterStatus = searchNotifier.getWaterStatus(
+                station.currentWaterLevel,
+              );
+
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: InkWell(
@@ -310,33 +310,38 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                                 children: [
                                   Text(
                                     station.stationName,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     '${station.district}, ${station.state}',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Colors.grey[600],
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.grey[600]),
                                   ),
                                 ],
                               ),
                             ),
                             WaterStatusCard(
                               status: WaterStatus.values.firstWhere(
-                                (s) => s.name.toLowerCase() == waterStatus.toLowerCase(),
+                                (s) =>
+                                    s.name.toLowerCase() ==
+                                    waterStatus.toLowerCase(),
                                 orElse: () => WaterStatus.safe,
                               ),
                               title: waterStatus,
-                              subtitle: '${station.currentWaterLevel.toStringAsFixed(1)}m',
+                              subtitle:
+                                  '${station.currentWaterLevel.toStringAsFixed(1)}m',
                               stations: [station],
                             ),
                           ],
                         ),
                         const SizedBox(height: 12),
-                        
+
                         // Station Details
                         Row(
                           children: [
@@ -352,13 +357,15 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                                 Icons.trending_down,
                                 '24h Change',
                                 '${(station.currentWaterLevel * 0.1).toStringAsFixed(1)} m',
-                                color: station.currentWaterLevel > 15 ? Colors.red : Colors.green,
+                                color: station.currentWaterLevel > 15
+                                    ? Colors.red
+                                    : Colors.green,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        
+
                         Row(
                           children: [
                             Expanded(
@@ -373,7 +380,9 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                                 Icons.info_outline,
                                 'Status',
                                 station.status,
-                                color: station.status == 'Active' ? Colors.green : Colors.orange,
+                                color: station.status == 'Active'
+                                    ? Colors.green
+                                    : Colors.orange,
                               ),
                             ),
                           ],
@@ -390,14 +399,15 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String label, String value, {Color? color}) {
+  Widget _buildDetailItem(
+    IconData icon,
+    String label,
+    String value, {
+    Color? color,
+  }) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: color ?? Colors.grey[600],
-        ),
+        Icon(icon, size: 16, color: color ?? Colors.grey[600]),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -405,9 +415,9 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
             children: [
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
               ),
               Text(
                 value,
@@ -426,7 +436,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
   String _formatDateTime(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-    
+
     if (difference.inDays > 0) {
       return '${difference.inDays}d ago';
     } else if (difference.inHours > 0) {

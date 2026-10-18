@@ -35,7 +35,6 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Water Status'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -62,50 +61,50 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : error != null
-              ? _buildErrorState(error)
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await ref.read(dwlrStationsProvider.notifier).refreshStations();
-                  },
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Location status
-                        _buildLocationStatus(),
-                        const SizedBox(height: 20),
-                        
-                        // Water status overview
-                        _buildWaterStatusOverview(stations),
-                        const SizedBox(height: 20),
-                        
-                        // Quick actions
-                        _buildQuickActions(),
-                        const SizedBox(height: 20),
-                        
-                        // Location Search Section
-                        _buildLocationSearchSection(),
-                        const SizedBox(height: 20),
-                        
-                        // Nearby stations
-                        _buildNearbyStations(stations),
-                        const SizedBox(height: 20),
-                        
-                        // Tips and recommendations
-                        _buildTipsAndRecommendations(),
-                        const SizedBox(height: 20), // Extra padding at bottom
-                      ],
-                    ),
-                  ),
+          ? _buildErrorState(error)
+          : RefreshIndicator(
+              onRefresh: () async {
+                await ref.read(dwlrStationsProvider.notifier).refreshStations();
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Location status
+                    _buildLocationStatus(),
+                    const SizedBox(height: 20),
+
+                    // Water status overview
+                    _buildWaterStatusOverview(stations),
+                    const SizedBox(height: 20),
+
+                    // Quick actions
+                    _buildQuickActions(),
+                    const SizedBox(height: 20),
+
+                    // Location Search Section
+                    _buildLocationSearchSection(),
+                    const SizedBox(height: 20),
+
+                    // Nearby stations
+                    _buildNearbyStations(stations),
+                    const SizedBox(height: 20),
+
+                    // Tips and recommendations
+                    _buildTipsAndRecommendations(),
+                    const SizedBox(height: 20), // Extra padding at bottom
+                  ],
                 ),
+              ),
+            ),
     );
   }
 
   /// Build location status
   Widget _buildLocationStatus() {
     final userLocation = ref.watch(userLocationProvider);
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -127,12 +126,12 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
                     ),
                   ),
                   Text(
-                    userLocation != null 
-                        ? 'Monitoring your area' 
+                    userLocation != null
+                        ? 'Monitoring your area'
                         : 'Tap to set your location for personalized insights',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -151,15 +150,15 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
   Widget _buildWaterStatusOverview(List<DWLRStation> stations) {
     final nearbyStations = _getNearbyStations(stations);
     final overallStatus = _calculateOverallStatus(nearbyStations);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Water Status Overview',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         WaterStatusCard(
@@ -175,8 +174,11 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
               child: WaterStatusCard(
                 status: WaterStatus.safe,
                 title: 'Safe Areas',
-                subtitle: '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.safe).length} stations',
-                stations: nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.safe).toList(),
+                subtitle:
+                    '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.safe).length} stations',
+                stations: nearbyStations
+                    .where((s) => _getStationStatus(s) == WaterStatus.safe)
+                    .toList(),
               ),
             ),
             const SizedBox(width: 12),
@@ -184,8 +186,11 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
               child: WaterStatusCard(
                 status: WaterStatus.moderate,
                 title: 'Moderate Areas',
-                subtitle: '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.moderate).length} stations',
-                stations: nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.moderate).toList(),
+                subtitle:
+                    '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.moderate).length} stations',
+                stations: nearbyStations
+                    .where((s) => _getStationStatus(s) == WaterStatus.moderate)
+                    .toList(),
               ),
             ),
           ],
@@ -194,8 +199,11 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
         WaterStatusCard(
           status: WaterStatus.critical,
           title: 'Critical Areas',
-          subtitle: '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.critical).length} stations',
-          stations: nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.critical).toList(),
+          subtitle:
+              '${nearbyStations.where((s) => _getStationStatus(s) == WaterStatus.critical).length} stations',
+          stations: nearbyStations
+              .where((s) => _getStationStatus(s) == WaterStatus.critical)
+              .toList(),
         ),
       ],
     );
@@ -208,9 +216,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
       children: [
         Text(
           'Quick Actions',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Row(
@@ -267,7 +275,7 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
   /// Build nearby stations
   Widget _buildNearbyStations(List<DWLRStation> stations) {
     final nearbyStations = _getNearbyStations(stations);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -276,9 +284,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
           children: [
             Text(
               'Nearby Stations',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () => context.go('/stations'),
@@ -287,43 +295,50 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
           ],
         ),
         const SizedBox(height: 16),
-        ...nearbyStations.take(3).map((station) => Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: _getStatusColor(_getStationStatus(station)),
-              child: Text(
-                station.stationId.substring(station.stationId.length - 2),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
+        ...nearbyStations
+            .take(3)
+            .map(
+              (station) => Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: _getStatusColor(
+                      _getStationStatus(station),
+                    ),
+                    child: Text(
+                      station.stationId.substring(station.stationId.length - 2),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  title: Text(station.stationName),
+                  subtitle: Text('${station.district}, ${station.state}'),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${station.currentWaterLevel.toStringAsFixed(1)}m',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        _getStationStatus(station).name.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: _getStatusColor(_getStationStatus(station)),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () => context.go('/station/${station.stationId}'),
                 ),
               ),
-            ),
-            title: Text(station.stationName),
-            subtitle: Text('${station.district}, ${station.state}'),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${station.currentWaterLevel.toStringAsFixed(1)}m',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  _getStationStatus(station).name.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: _getStatusColor(_getStationStatus(station)),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            onTap: () => context.go('/station/${station.stationId}'),
-          ),
-        )).toList(),
+            )
+            .toList(),
       ],
     );
   }
@@ -338,9 +353,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
           children: [
             Text(
               'Tips & Recommendations',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildTipItem(
@@ -370,7 +385,12 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
   }
 
   /// Build tip item
-  Widget _buildTipItem(IconData icon, String title, String description, Color color) {
+  Widget _buildTipItem(
+    IconData icon,
+    String title,
+    String description,
+    Color color,
+  ) {
     return Row(
       children: [
         Icon(icon, color: color, size: 20),
@@ -379,16 +399,10 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(
                 description,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
           ),
@@ -436,11 +450,15 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
   /// Calculate overall status
   WaterStatus _calculateOverallStatus(List<DWLRStation> stations) {
     if (stations.isEmpty) return WaterStatus.safe;
-    
+
     final statuses = stations.map(_getStationStatus).toList();
-    final criticalCount = statuses.where((s) => s == WaterStatus.critical).length;
-    final moderateCount = statuses.where((s) => s == WaterStatus.moderate).length;
-    
+    final criticalCount = statuses
+        .where((s) => s == WaterStatus.critical)
+        .length;
+    final moderateCount = statuses
+        .where((s) => s == WaterStatus.moderate)
+        .length;
+
     if (criticalCount > stations.length * 0.3) return WaterStatus.critical;
     if (moderateCount > stations.length * 0.5) return WaterStatus.moderate;
     return WaterStatus.safe;
@@ -507,7 +525,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Water Quality Report'),
-        content: const Text('Water quality information will be displayed here.'),
+        content: const Text(
+          'Water quality information will be displayed here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -541,7 +561,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Borewell Information'),
-        content: const Text('Borewell drilling recommendations will be shown here.'),
+        content: const Text(
+          'Borewell drilling recommendations will be shown here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -558,7 +580,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Water Conservation Tips'),
-        content: const Text('Conservation tips and best practices will be displayed here.'),
+        content: const Text(
+          'Conservation tips and best practices will be displayed here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -595,9 +619,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
             const SizedBox(height: 12),
             Text(
               'Find groundwater monitoring stations in any state, district, or city across India.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
             ),
             const SizedBox(height: 16),
             SizedBox(

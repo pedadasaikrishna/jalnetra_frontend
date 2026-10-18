@@ -7,48 +7,57 @@ import '../models/india_wris_models.dart';
 class IndiaWRISService {
   static const String _baseUrl = 'https://indiawris.gov.in';
   // static const String _apiKey = 'your-india-wris-api-key'; // TODO: Get from India-WRIS
-  
-  late final Dio _dio;
-  final Logger _logger = Logger();
 
-  IndiaWRISService() {
-    _dio = Dio(BaseOptions(
-      baseUrl: _baseUrl,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        // 'Authorization': 'Bearer $_apiKey', // Uncomment when you have API key
-      },
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      validateStatus: (status) {
-        return status != null && status < 500; // Accept all status codes below 500
-      },
-    ));
+  final Dio _dio;
+  final Logger _logger;
 
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (obj) => _logger.d(obj),
-    ));
+  IndiaWRISService({Dio? dio, Logger? logger})
+    : _logger = logger ?? Logger(),
+      _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              baseUrl: _baseUrl,
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods':
+                    'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                // 'Authorization': 'Bearer $_apiKey', // Uncomment when you have API key
+              },
+              connectTimeout: const Duration(seconds: 30),
+              receiveTimeout: const Duration(seconds: 30),
+              validateStatus: (status) => status != null && status < 500,
+            ),
+          ) {
+    _dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (obj) => _logger.d(obj),
+      ),
+    );
 
     // Add CORS handling interceptor
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // Add CORS headers for web requests
-        options.headers['Access-Control-Allow-Origin'] = '*';
-        options.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
-        options.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
-        handler.next(options);
-      },
-      onError: (error, handler) {
-        _logger.e('API Error: ${error.message}');
-        handler.next(error);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // Add CORS headers for web requests
+          options.headers['Access-Control-Allow-Origin'] = '*';
+          options.headers['Access-Control-Allow-Methods'] =
+              'GET, POST, PUT, DELETE, OPTIONS';
+          options.headers['Access-Control-Allow-Headers'] =
+              'Content-Type, Authorization';
+          handler.next(options);
+        },
+        onError: (error, handler) {
+          _logger.e('API Error: ${error.message}');
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   /// Fetch DWLR stations from India-WRIS API
@@ -64,7 +73,7 @@ class IndiaWRISService {
   }) async {
     try {
       _logger.i('Fetching DWLR stations from India-WRIS...');
-      
+
       // TODO: Replace with actual India-WRIS API call
       // final response = await _dio.get('/dwlr/stations', queryParameters: {
       //   'state': state,
@@ -78,7 +87,7 @@ class IndiaWRISService {
       // return (response.data as List)
       //     .map((json) => DWLRStation.fromJson(json))
       //     .toList();
-      
+
       // Mock data based on real Indian groundwater stations
       await Future.delayed(const Duration(seconds: 1));
       return _getMockDWLRStations();
@@ -98,7 +107,7 @@ class IndiaWRISService {
   }) async {
     try {
       _logger.i('Fetching water level data for station $stationId');
-      
+
       // TODO: Replace with actual API call
       // final response = await _dio.get('/dwlr/stations/$stationId/data', queryParameters: {
       //   'start_date': startDate.toIso8601String().split('T')[0],
@@ -108,10 +117,15 @@ class IndiaWRISService {
       // return (response.data as List)
       //     .map((json) => WaterLevelData.fromJson(json))
       //     .toList();
-      
+
       // Mock data with realistic groundwater level patterns
       await Future.delayed(const Duration(seconds: 1));
-      return _generateMockWaterLevelData(stationId, startDate, endDate, interval);
+      return _generateMockWaterLevelData(
+        stationId,
+        startDate,
+        endDate,
+        interval,
+      );
     } catch (e) {
       _logger.e('Error fetching water level data: $e');
       rethrow;
@@ -123,11 +137,11 @@ class IndiaWRISService {
   Future<StationStatistics> getStationStatistics(String stationId) async {
     try {
       _logger.i('Fetching statistics for station $stationId');
-      
+
       // TODO: Replace with actual API call
       // final response = await _dio.get('/dwlr/stations/$stationId/statistics');
       // return StationStatistics.fromJson(response.data);
-      
+
       // Mock statistics
       await Future.delayed(const Duration(seconds: 1));
       return _generateMockStatistics(stationId);
@@ -142,7 +156,7 @@ class IndiaWRISService {
   Future<List<DWLRStation>> searchStations(String query) async {
     try {
       _logger.i('Searching stations with query: $query');
-      
+
       // TODO: Replace with actual API call
       // final response = await _dio.get('/dwlr/stations/search', queryParameters: {
       //   'q': query,
@@ -150,15 +164,20 @@ class IndiaWRISService {
       // return (response.data as List)
       //     .map((json) => DWLRStation.fromJson(json))
       //     .toList();
-      
+
       // Mock search results
       await Future.delayed(const Duration(seconds: 1));
       final allStations = await getDWLRStations();
-      return allStations.where((station) =>
-        station.stationName.toLowerCase().contains(query.toLowerCase()) ||
-        station.district.toLowerCase().contains(query.toLowerCase()) ||
-        station.state.toLowerCase().contains(query.toLowerCase())
-      ).toList();
+      return allStations
+          .where(
+            (station) =>
+                station.stationName.toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                station.district.toLowerCase().contains(query.toLowerCase()) ||
+                station.state.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
     } catch (e) {
       _logger.e('Error searching stations: $e');
       rethrow;
@@ -172,7 +191,9 @@ class IndiaWRISService {
     String? district,
   }) async {
     try {
-      _logger.i('Searching stations by location - State: $state, District: $district');
+      _logger.i(
+        'Searching stations by location - State: $state, District: $district',
+      );
 
       // Build query parameters for India-WRIS API
       Map<String, dynamic> queryParams = {
@@ -182,7 +203,7 @@ class IndiaWRISService {
         'page': 0,
         'size': 1000, // Maximum results per page
       };
-      
+
       if (state != null && state.isNotEmpty) {
         queryParams['stateName'] = state;
       }
@@ -206,8 +227,10 @@ class IndiaWRISService {
         try {
           // Parse the response using our new model
           final apiResponse = IndiaWRISResponse.fromJson(response.data);
-          _logger.i('Found ${apiResponse.content.length} records from India-WRIS API');
-          
+          _logger.i(
+            'Found ${apiResponse.content.length} records from India-WRIS API',
+          );
+
           // Convert GroundWaterLevelRecord to DWLRStation
           final List<DWLRStation> stations = apiResponse.content
               .map((record) {
@@ -222,7 +245,7 @@ class IndiaWRISService {
               .where((station) => station != null)
               .cast<DWLRStation>()
               .toList();
-          
+
           _logger.i('Successfully converted ${stations.length} stations');
           return stations;
         } catch (e) {
@@ -231,13 +254,17 @@ class IndiaWRISService {
           throw Exception('Failed to parse API response: $e');
         }
       } else {
-        _logger.e('India-WRIS API returned status code: ${response.statusCode}');
+        _logger.e(
+          'India-WRIS API returned status code: ${response.statusCode}',
+        );
         _logger.e('Response data: ${response.data}');
-        throw Exception('Failed to fetch stations from India-WRIS: ${response.statusCode}');
+        throw Exception(
+          'Failed to fetch stations from India-WRIS: ${response.statusCode}',
+        );
       }
     } catch (e) {
       _logger.e('Error fetching stations from India-WRIS API: $e');
-      
+
       // Fallback to mock data for development
       _logger.i('Falling back to mock data for development');
       return _getMockStationsByLocation(state, district);
@@ -251,11 +278,14 @@ class IndiaWRISService {
       _logger.i('Fetching available states from India-WRIS API');
 
       // Try to fetch from API first
-      final response = await _dio.get('/Dataset/Ground Water Level', queryParameters: {
-        'agencyName': 'CGWB',
-        'page': 0,
-        'size': 10000, // Get more data to extract states
-      });
+      final response = await _dio.get(
+        '/Dataset/Ground Water Level',
+        queryParameters: {
+          'agencyName': 'CGWB',
+          'page': 0,
+          'size': 10000, // Get more data to extract states
+        },
+      );
 
       if (response.statusCode == 200) {
         try {
@@ -272,7 +302,7 @@ class IndiaWRISService {
               .where((state) => state != null && state.isNotEmpty)
               .cast<String>()
               .toSet();
-          
+
           final statesList = uniqueStates.toList()..sort();
           _logger.i('Found ${statesList.length} unique states from API');
           return statesList;
@@ -281,7 +311,7 @@ class IndiaWRISService {
           return _getAllIndianStates();
         }
       }
-      
+
       // Fallback to predefined list if API fails
       _logger.i('Using predefined list of Indian states');
       return _getAllIndianStates();
@@ -297,12 +327,15 @@ class IndiaWRISService {
       _logger.i('Fetching districts for state: $state');
 
       // Call the India-WRIS API to get districts for the specific state
-      final response = await _dio.get('/Dataset/Ground Water Level', queryParameters: {
-        'stateName': state,
-        'agencyName': 'CGWB',
-        'page': 0,
-        'size': 10000, // Get more data to extract districts
-      });
+      final response = await _dio.get(
+        '/Dataset/Ground Water Level',
+        queryParameters: {
+          'stateName': state,
+          'agencyName': 'CGWB',
+          'page': 0,
+          'size': 10000, // Get more data to extract districts
+        },
+      );
 
       if (response.statusCode == 200) {
         try {
@@ -319,7 +352,7 @@ class IndiaWRISService {
               .where((district) => district != null && district.isNotEmpty)
               .cast<String>()
               .toSet();
-          
+
           final districtsList = uniqueDistricts.toList()..sort();
           _logger.i('Found ${districtsList.length} districts for $state');
           return districtsList;
@@ -336,7 +369,6 @@ class IndiaWRISService {
     }
   }
 
-
   /// Export data for a station
   /// TODO: Implement actual API call
   Future<String> exportStationData({
@@ -347,7 +379,7 @@ class IndiaWRISService {
   }) async {
     try {
       _logger.i('Exporting data for station $stationId');
-      
+
       // TODO: Replace with actual API call
       // final response = await _dio.get('/dwlr/stations/$stationId/export', queryParameters: {
       //   'start_date': startDate.toIso8601String().split('T')[0],
@@ -355,7 +387,7 @@ class IndiaWRISService {
       //   'format': format,
       // });
       // return response.data['download_url'];
-      
+
       // Mock export
       await Future.delayed(const Duration(seconds: 2));
       return 'https://mock-export-url.com/data_$stationId.$format';
@@ -459,26 +491,28 @@ class IndiaWRISService {
   ) {
     final data = <WaterLevelData>[];
     final days = endDate.difference(startDate).inDays;
-    
+
     for (int i = 0; i <= days; i++) {
       final date = startDate.add(Duration(days: i));
-      
+
       // Generate realistic groundwater level patterns
       final baseLevel = 15.0 + (stationId.hashCode % 20);
       final seasonalVariation = 3.0 * (1 + (date.month - 6) / 6).abs();
       final randomVariation = (i % 7) * 0.5;
-      
+
       final waterLevel = baseLevel + seasonalVariation + randomVariation;
-      
-      data.add(WaterLevelData(
-        stationId: stationId,
-        date: date,
-        waterLevel: waterLevel,
-        quality: i % 10 == 0 ? 'Poor' : (i % 5 == 0 ? 'Fair' : 'Good'),
-        remarks: i % 15 == 0 ? 'Maintenance check' : '',
-      ));
+
+      data.add(
+        WaterLevelData(
+          stationId: stationId,
+          date: date,
+          waterLevel: waterLevel,
+          quality: i % 10 == 0 ? 'Poor' : (i % 5 == 0 ? 'Fair' : 'Good'),
+          remarks: i % 15 == 0 ? 'Maintenance check' : '',
+        ),
+      );
     }
-    
+
     return data;
   }
 
@@ -499,7 +533,10 @@ class IndiaWRISService {
   }
 
   /// Mock data fallback methods for location-based search
-  List<DWLRStation> _getMockStationsByLocation(String? state, String? district) {
+  List<DWLRStation> _getMockStationsByLocation(
+    String? state,
+    String? district,
+  ) {
     final List<Map<String, dynamic>> mockData = [
       {
         'stationId': 'STN001',
@@ -586,17 +623,26 @@ class IndiaWRISService {
 
     // Filter mock data based on search criteria
     List<Map<String, dynamic>> filteredData = mockData;
-    
+
     if (state != null && state.isNotEmpty) {
-      filteredData = filteredData.where((station) => 
-        station['state'].toString().toLowerCase().contains(state.toLowerCase())).toList();
+      filteredData = filteredData
+          .where(
+            (station) => station['state'].toString().toLowerCase().contains(
+              state.toLowerCase(),
+            ),
+          )
+          .toList();
     }
-    
+
     if (district != null && district.isNotEmpty) {
-      filteredData = filteredData.where((station) => 
-        station['district'].toString().toLowerCase().contains(district.toLowerCase())).toList();
+      filteredData = filteredData
+          .where(
+            (station) => station['district'].toString().toLowerCase().contains(
+              district.toLowerCase(),
+            ),
+          )
+          .toList();
     }
-    
 
     return filteredData.map((json) => DWLRStation.fromJson(json)).toList();
   }
@@ -648,63 +694,303 @@ class IndiaWRISService {
   List<String> _getMockDistrictsByState(String state) {
     switch (state.toLowerCase()) {
       case 'andhra pradesh':
-        return ['West Godavari', 'East Godavari', 'Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Anantapur'];
+        return [
+          'West Godavari',
+          'East Godavari',
+          'Visakhapatnam',
+          'Vijayawada',
+          'Guntur',
+          'Nellore',
+          'Kurnool',
+          'Anantapur',
+        ];
       case 'delhi':
-        return ['Central Delhi', 'New Delhi', 'East Delhi', 'West Delhi', 'North Delhi', 'South Delhi'];
+        return [
+          'Central Delhi',
+          'New Delhi',
+          'East Delhi',
+          'West Delhi',
+          'North Delhi',
+          'South Delhi',
+        ];
       case 'haryana':
-        return ['Yamunanagar', 'Gurgaon', 'Faridabad', 'Panipat', 'Karnal', 'Hisar', 'Rohtak', 'Sonipat'];
+        return [
+          'Yamunanagar',
+          'Gurgaon',
+          'Faridabad',
+          'Panipat',
+          'Karnal',
+          'Hisar',
+          'Rohtak',
+          'Sonipat',
+        ];
       case 'punjab':
-        return ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Firozpur', 'Sangrur'];
+        return [
+          'Ludhiana',
+          'Amritsar',
+          'Jalandhar',
+          'Patiala',
+          'Bathinda',
+          'Mohali',
+          'Firozpur',
+          'Sangrur',
+        ];
       case 'rajasthan':
-        return ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Ajmer', 'Bikaner', 'Alwar', 'Bharatpur'];
+        return [
+          'Jaipur',
+          'Jodhpur',
+          'Udaipur',
+          'Kota',
+          'Ajmer',
+          'Bikaner',
+          'Alwar',
+          'Bharatpur',
+        ];
       case 'uttar pradesh':
-        return ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Ghaziabad'];
+        return [
+          'Lucknow',
+          'Kanpur',
+          'Agra',
+          'Varanasi',
+          'Meerut',
+          'Allahabad',
+          'Bareilly',
+          'Ghaziabad',
+        ];
       case 'maharashtra':
-        return ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur'];
+        return [
+          'Mumbai',
+          'Pune',
+          'Nagpur',
+          'Nashik',
+          'Aurangabad',
+          'Solapur',
+          'Amravati',
+          'Kolhapur',
+        ];
       case 'karnataka':
-        return ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum', 'Gulbarga', 'Davanagere', 'Bellary'];
+        return [
+          'Bangalore',
+          'Mysore',
+          'Hubli',
+          'Mangalore',
+          'Belgaum',
+          'Gulbarga',
+          'Davanagere',
+          'Bellary',
+        ];
       case 'tamil nadu':
-        return ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Erode', 'Vellore'];
+        return [
+          'Chennai',
+          'Coimbatore',
+          'Madurai',
+          'Tiruchirappalli',
+          'Salem',
+          'Tirunelveli',
+          'Erode',
+          'Vellore',
+        ];
       case 'gujarat':
-        return ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar'];
+        return [
+          'Ahmedabad',
+          'Surat',
+          'Vadodara',
+          'Rajkot',
+          'Bhavnagar',
+          'Jamnagar',
+          'Junagadh',
+          'Gandhinagar',
+        ];
       case 'west bengal':
-        return ['Kolkata', 'Howrah', 'Durgapur', 'Asansol', 'Siliguri', 'Bardhaman', 'Malda', 'Nadia'];
+        return [
+          'Kolkata',
+          'Howrah',
+          'Durgapur',
+          'Asansol',
+          'Siliguri',
+          'Bardhaman',
+          'Malda',
+          'Nadia',
+        ];
       case 'bihar':
-        return ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Darbhanga', 'Purnia', 'Sitamarhi', 'Saran'];
+        return [
+          'Patna',
+          'Gaya',
+          'Bhagalpur',
+          'Muzaffarpur',
+          'Darbhanga',
+          'Purnia',
+          'Sitamarhi',
+          'Saran',
+        ];
       case 'madhya pradesh':
-        return ['Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Ujjain', 'Sagar', 'Dewas', 'Satna'];
+        return [
+          'Bhopal',
+          'Indore',
+          'Gwalior',
+          'Jabalpur',
+          'Ujjain',
+          'Sagar',
+          'Dewas',
+          'Satna',
+        ];
       case 'kerala':
-        return ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam', 'Palakkad', 'Malappuram', 'Kannur'];
+        return [
+          'Thiruvananthapuram',
+          'Kochi',
+          'Kozhikode',
+          'Thrissur',
+          'Kollam',
+          'Palakkad',
+          'Malappuram',
+          'Kannur',
+        ];
       case 'odisha':
-        return ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Berhampur', 'Sambalpur', 'Puri', 'Balasore', 'Bhadrak'];
+        return [
+          'Bhubaneswar',
+          'Cuttack',
+          'Rourkela',
+          'Berhampur',
+          'Sambalpur',
+          'Puri',
+          'Balasore',
+          'Bhadrak',
+        ];
       case 'assam':
-        return ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Tezpur', 'Nagaon', 'Tinsukia', 'Goalpara'];
+        return [
+          'Guwahati',
+          'Silchar',
+          'Dibrugarh',
+          'Jorhat',
+          'Tezpur',
+          'Nagaon',
+          'Tinsukia',
+          'Goalpara',
+        ];
       case 'jharkhand':
-        return ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Deoghar', 'Hazaribagh', 'Giridih', 'Palamu'];
+        return [
+          'Ranchi',
+          'Jamshedpur',
+          'Dhanbad',
+          'Bokaro',
+          'Deoghar',
+          'Hazaribagh',
+          'Giridih',
+          'Palamu',
+        ];
       case 'chhattisgarh':
-        return ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Rajnandgaon', 'Durg', 'Raigarh', 'Jagdalpur'];
+        return [
+          'Raipur',
+          'Bhilai',
+          'Bilaspur',
+          'Korba',
+          'Rajnandgaon',
+          'Durg',
+          'Raigarh',
+          'Jagdalpur',
+        ];
       case 'himachal pradesh':
-        return ['Shimla', 'Kangra', 'Mandi', 'Solan', 'Una', 'Chamba', 'Sirmaur', 'Bilaspur'];
+        return [
+          'Shimla',
+          'Kangra',
+          'Mandi',
+          'Solan',
+          'Una',
+          'Chamba',
+          'Sirmaur',
+          'Bilaspur',
+        ];
       case 'uttarakhand':
-        return ['Dehradun', 'Haridwar', 'Roorkee', 'Rudrapur', 'Kashipur', 'Haldwani', 'Rishikesh', 'Nainital'];
+        return [
+          'Dehradun',
+          'Haridwar',
+          'Roorkee',
+          'Rudrapur',
+          'Kashipur',
+          'Haldwani',
+          'Rishikesh',
+          'Nainital',
+        ];
       case 'telangana':
-        return ['Hyderabad', 'Warangal', 'Nizamabad', 'Khammam', 'Karimnagar', 'Ramagundam', 'Mahbubnagar', 'Nalgonda'];
+        return [
+          'Hyderabad',
+          'Warangal',
+          'Nizamabad',
+          'Khammam',
+          'Karimnagar',
+          'Ramagundam',
+          'Mahbubnagar',
+          'Nalgonda',
+        ];
       case 'goa':
         return ['North Goa', 'South Goa'];
       case 'manipur':
-        return ['Imphal East', 'Imphal West', 'Thoubal', 'Bishnupur', 'Churachandpur', 'Senapati', 'Ukhrul', 'Chandel'];
+        return [
+          'Imphal East',
+          'Imphal West',
+          'Thoubal',
+          'Bishnupur',
+          'Churachandpur',
+          'Senapati',
+          'Ukhrul',
+          'Chandel',
+        ];
       case 'meghalaya':
-        return ['East Khasi Hills', 'West Khasi Hills', 'Jaintia Hills', 'Ri Bhoi', 'East Garo Hills', 'West Garo Hills', 'South Garo Hills'];
+        return [
+          'East Khasi Hills',
+          'West Khasi Hills',
+          'Jaintia Hills',
+          'Ri Bhoi',
+          'East Garo Hills',
+          'West Garo Hills',
+          'South Garo Hills',
+        ];
       case 'mizoram':
-        return ['Aizawl', 'Lunglei', 'Champhai', 'Serchhip', 'Kolasib', 'Mamit', 'Lawngtlai', 'Saiha'];
+        return [
+          'Aizawl',
+          'Lunglei',
+          'Champhai',
+          'Serchhip',
+          'Kolasib',
+          'Mamit',
+          'Lawngtlai',
+          'Saiha',
+        ];
       case 'nagaland':
-        return ['Kohima', 'Dimapur', 'Mokokchung', 'Tuensang', 'Wokha', 'Zunheboto', 'Phek', 'Mon'];
+        return [
+          'Kohima',
+          'Dimapur',
+          'Mokokchung',
+          'Tuensang',
+          'Wokha',
+          'Zunheboto',
+          'Phek',
+          'Mon',
+        ];
       case 'tripura':
-        return ['West Tripura', 'South Tripura', 'Dhalai', 'North Tripura', 'Unakoti', 'Khowai', 'Sepahijala', 'Gomati'];
+        return [
+          'West Tripura',
+          'South Tripura',
+          'Dhalai',
+          'North Tripura',
+          'Unakoti',
+          'Khowai',
+          'Sepahijala',
+          'Gomati',
+        ];
       case 'sikkim':
         return ['East Sikkim', 'West Sikkim', 'North Sikkim', 'South Sikkim'];
       case 'arunachal pradesh':
-        return ['Papum Pare', 'Changlang', 'Lohit', 'Tirap', 'West Siang', 'East Siang', 'Upper Siang', 'Lower Siang'];
+        return [
+          'Papum Pare',
+          'Changlang',
+          'Lohit',
+          'Tirap',
+          'West Siang',
+          'East Siang',
+          'Upper Siang',
+          'Lower Siang',
+        ];
       default:
         return ['District 1', 'District 2', 'District 3'];
     }

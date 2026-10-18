@@ -9,7 +9,8 @@ class ReportsAlertsScreen extends ConsumerStatefulWidget {
   const ReportsAlertsScreen({super.key});
 
   @override
-  ConsumerState<ReportsAlertsScreen> createState() => _ReportsAlertsScreenState();
+  ConsumerState<ReportsAlertsScreen> createState() =>
+      _ReportsAlertsScreenState();
 }
 
 class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
@@ -20,7 +21,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    
+
     // Load stations when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(dwlrStationsProvider.notifier).loadStations();
@@ -41,20 +42,19 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports & Alerts'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -101,20 +101,32 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
           child: Row(
             children: [
               Expanded(
-                child: _buildAlertSummaryCard('Critical', alerts.where((a) => a['severity'] == 'Critical').length, Colors.red),
+                child: _buildAlertSummaryCard(
+                  'Critical',
+                  alerts.where((a) => a['severity'] == 'Critical').length,
+                  Colors.red,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildAlertSummaryCard('High', alerts.where((a) => a['severity'] == 'High').length, Colors.orange),
+                child: _buildAlertSummaryCard(
+                  'High',
+                  alerts.where((a) => a['severity'] == 'High').length,
+                  Colors.orange,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildAlertSummaryCard('Medium', alerts.where((a) => a['severity'] == 'Medium').length, Colors.yellow),
+                child: _buildAlertSummaryCard(
+                  'Medium',
+                  alerts.where((a) => a['severity'] == 'Medium').length,
+                  Colors.yellow,
+                ),
               ),
             ],
           ),
         ),
-        
+
         // Alerts list
         Expanded(
           child: alerts.isEmpty
@@ -152,9 +164,8 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                             const SizedBox(height: 4),
                             Text(
                               '${alert['station']} • ${alert['time']}',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: Colors.grey[600]),
                             ),
                           ],
                         ),
@@ -177,7 +188,8 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                             }
                           },
                         ),
-                        onTap: () => context.go('/station/${alert['stationId']}'),
+                        onTap: () =>
+                            context.go('/station/${alert['stationId']}'),
                       ),
                     );
                   },
@@ -196,12 +208,12 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
         children: [
           Text(
             'Export Data',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          
+
           // Export options
           Card(
             child: Padding(
@@ -239,7 +251,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Export formats
           Card(
             child: Padding(
@@ -255,11 +267,21 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                   Row(
                     children: [
                       Expanded(
-                        child: _buildFormatCard('CSV', 'Comma-separated values', Icons.table_chart, Colors.green),
+                        child: _buildFormatCard(
+                          'CSV',
+                          'Comma-separated values',
+                          Icons.table_chart,
+                          Colors.green,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildFormatCard('Excel', 'Microsoft Excel format', Icons.description, Colors.blue),
+                        child: _buildFormatCard(
+                          'Excel',
+                          'Microsoft Excel format',
+                          Icons.description,
+                          Colors.blue,
+                        ),
                       ),
                     ],
                   ),
@@ -267,11 +289,21 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                   Row(
                     children: [
                       Expanded(
-                        child: _buildFormatCard('JSON', 'JavaScript Object Notation', Icons.code, Colors.orange),
+                        child: _buildFormatCard(
+                          'JSON',
+                          'JavaScript Object Notation',
+                          Icons.code,
+                          Colors.orange,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _buildFormatCard('PDF', 'Portable Document Format', Icons.picture_as_pdf, Colors.red),
+                        child: _buildFormatCard(
+                          'PDF',
+                          'Portable Document Format',
+                          Icons.picture_as_pdf,
+                          Colors.red,
+                        ),
                       ),
                     ],
                   ),
@@ -293,12 +325,12 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
         children: [
           Text(
             'Generated Reports',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          
+
           // Quick reports
           Card(
             child: Padding(
@@ -339,7 +371,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Recent reports
           Card(
             child: Padding(
@@ -352,13 +384,17 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  ..._getRecentReports().map((report) => ListTile(
-                    leading: Icon(report['icon'], color: report['color']),
-                    title: Text(report['title']),
-                    subtitle: Text(report['subtitle']),
-                    trailing: Text(report['date']),
-                    onTap: () => _viewReport(report['id']),
-                  )).toList(),
+                  ..._getRecentReports()
+                      .map(
+                        (report) => ListTile(
+                          leading: Icon(report['icon'], color: report['color']),
+                          title: Text(report['title']),
+                          subtitle: Text(report['subtitle']),
+                          trailing: Text(report['date']),
+                          onTap: () => _viewReport(report['id']),
+                        ),
+                      )
+                      .toList(),
                 ],
               ),
             ),
@@ -397,7 +433,12 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   }
 
   /// Build export option
-  Widget _buildExportOption(String title, String subtitle, IconData icon, VoidCallback onTap) {
+  Widget _buildExportOption(
+    String title,
+    String subtitle,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -408,7 +449,12 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   }
 
   /// Build format card
-  Widget _buildFormatCard(String title, String subtitle, IconData icon, Color color) {
+  Widget _buildFormatCard(
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       color: color.withValues(alpha: 0.1),
       child: Padding(
@@ -436,7 +482,13 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   }
 
   /// Build report card
-  Widget _buildReportCard(String title, String subtitle, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildReportCard(
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return Card(
       child: ListTile(
         leading: Icon(icon, color: color),
@@ -451,24 +503,30 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   /// Generate mock alerts
   List<Map<String, dynamic>> _generateMockAlerts(List<DWLRStation> stations) {
     final alerts = <Map<String, dynamic>>[];
-    
+
     for (int i = 0; i < stations.length && i < 5; i++) {
       final station = stations[i];
-      final alertTypes = ['Water Level Decline', 'Data Gap', 'Maintenance Required', 'Quality Issue'];
+      final alertTypes = [
+        'Water Level Decline',
+        'Data Gap',
+        'Maintenance Required',
+        'Quality Issue',
+      ];
       final severities = ['Critical', 'High', 'Medium'];
-      
+
       alerts.add({
         'id': 'alert_${i + 1}',
         'stationId': station.stationId,
         'station': station.stationName,
         'type': alertTypes[i % alertTypes.length],
         'severity': severities[i % severities.length],
-        'title': '${alertTypes[i % alertTypes.length]} - ${station.stationName}',
+        'title':
+            '${alertTypes[i % alertTypes.length]} - ${station.stationName}',
         'message': 'Water level has declined by 15% in the last 7 days',
         'time': '2 hours ago',
       });
     }
-    
+
     return alerts;
   }
 
@@ -517,7 +575,9 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
     final activeStations = stations.where((s) => s.status == 'Active').toList();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Exporting data for ${activeStations.length} active stations...'),
+        content: Text(
+          'Exporting data for ${activeStations.length} active stations...',
+        ),
         backgroundColor: Colors.green,
       ),
     );
@@ -529,7 +589,9 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Custom Export'),
-        content: const Text('Custom station selection will be implemented here.'),
+        content: const Text(
+          'Custom station selection will be implemented here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -596,7 +658,9 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Report Settings'),
-        content: const Text('Report and alert settings will be implemented here.'),
+        content: const Text(
+          'Report and alert settings will be implemented here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

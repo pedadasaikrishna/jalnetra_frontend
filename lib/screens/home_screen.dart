@@ -35,7 +35,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('JALNETRA'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -48,11 +47,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           // Filter and stats section
           _buildFilterSection(stations),
-          
+
           // Main content area
-          Expanded(
-            child: _buildListView(stations, isLoading, error),
-          ),
+          Expanded(child: _buildListView(stations, isLoading, error)),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -68,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Build filter and statistics section
   Widget _buildFilterSection(List<Station> stations) {
     final stats = ref.watch(stationStatsProvider);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -87,10 +84,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatCard('Total', stats['total'].toString(), Icons.water_drop),
-              _buildStatCard('Active', stats['active'].toString(), Icons.check_circle),
-              _buildStatCard('Recharge', stats['rechargeActive'].toString(), Icons.water),
-              _buildStatCard('Maintenance', stats['maintenance'].toString(), Icons.build),
+              _buildStatCard(
+                'Total',
+                stats['total'].toString(),
+                Icons.water_drop,
+              ),
+              _buildStatCard(
+                'Active',
+                stats['active'].toString(),
+                Icons.check_circle,
+              ),
+              _buildStatCard(
+                'Recharge',
+                stats['rechargeActive'].toString(),
+                Icons.water,
+              ),
+              _buildStatCard(
+                'Maintenance',
+                stats['maintenance'].toString(),
+                Icons.build,
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -102,11 +115,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: DropdownButton<String>(
                   value: _selectedRegion,
                   isExpanded: true,
-                  items: ['All', 'North', 'South', 'East', 'West'].map((region) {
-                    return DropdownMenuItem(
-                      value: region,
-                      child: Text(region),
-                    );
+                  items: ['All', 'North', 'South', 'East', 'West'].map((
+                    region,
+                  ) {
+                    return DropdownMenuItem(value: region, child: Text(region));
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
@@ -130,14 +142,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
@@ -213,6 +222,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (_selectedRegion == 'All') {
       return stations;
     }
-    return stations.where((station) => station.region == _selectedRegion).toList();
+    return stations
+        .where((station) => station.region == _selectedRegion)
+        .toList();
   }
 }

@@ -19,14 +19,13 @@ class WaterStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _getStatusColor(status).withValues(alpha: 0.3),
-            width: 2,
+            width: 1,
           ),
         ),
         child: Column(
@@ -65,7 +64,7 @@ class WaterStatusCard extends StatelessWidget {
             Text(
               subtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             if (stations.isNotEmpty) ...[
@@ -73,7 +72,7 @@ class WaterStatusCard extends StatelessWidget {
               Text(
                 'Stations: ${stations.map((s) => s.stationId).join(', ')}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[500],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -98,8 +97,4 @@ class WaterStatusCard extends StatelessWidget {
 }
 
 /// Water status enumeration
-enum WaterStatus {
-  safe,
-  moderate,
-  critical,
-}
+enum WaterStatus { safe, moderate, critical }

@@ -46,20 +46,19 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('DWLR Stations'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -79,14 +78,14 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
         children: [
           // Search and filter bar
           _buildSearchAndFilterBar(),
-          
+
           // Stations list
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : error != null
-                    ? _buildErrorState(error)
-                    : _buildStationsList(stations),
+                ? _buildErrorState(error)
+                : _buildStationsList(stations),
           ),
         ],
       ),
@@ -132,7 +131,10 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
             ),
             onChanged: (value) {
               if (value.isEmpty) {
@@ -143,7 +145,7 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
             },
           ),
           const SizedBox(height: 12),
-          
+
           // Filter chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -269,7 +271,9 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
     }
 
     if (_selectedDistrict != 'All') {
-      filtered = filtered.where((s) => s.district == _selectedDistrict).toList();
+      filtered = filtered
+          .where((s) => s.district == _selectedDistrict)
+          .toList();
     }
 
     if (_selectedStatus != 'All') {
@@ -285,24 +289,32 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
 
     switch (_sortBy) {
       case 'Name':
-        sorted.sort((a, b) => _isAscending
-            ? a.stationName.compareTo(b.stationName)
-            : b.stationName.compareTo(a.stationName));
+        sorted.sort(
+          (a, b) => _isAscending
+              ? a.stationName.compareTo(b.stationName)
+              : b.stationName.compareTo(a.stationName),
+        );
         break;
       case 'Water Level':
-        sorted.sort((a, b) => _isAscending
-            ? a.currentWaterLevel.compareTo(b.currentWaterLevel)
-            : b.currentWaterLevel.compareTo(a.currentWaterLevel));
+        sorted.sort(
+          (a, b) => _isAscending
+              ? a.currentWaterLevel.compareTo(b.currentWaterLevel)
+              : b.currentWaterLevel.compareTo(a.currentWaterLevel),
+        );
         break;
       case 'Status':
-        sorted.sort((a, b) => _isAscending
-            ? a.status.compareTo(b.status)
-            : b.status.compareTo(a.status));
+        sorted.sort(
+          (a, b) => _isAscending
+              ? a.status.compareTo(b.status)
+              : b.status.compareTo(a.status),
+        );
         break;
       case 'Last Updated':
-        sorted.sort((a, b) => _isAscending
-            ? a.lastUpdated.compareTo(b.lastUpdated)
-            : b.lastUpdated.compareTo(a.lastUpdated));
+        sorted.sort(
+          (a, b) => _isAscending
+              ? a.lastUpdated.compareTo(b.lastUpdated)
+              : b.lastUpdated.compareTo(a.lastUpdated),
+        );
         break;
     }
 
@@ -330,20 +342,18 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
                 value: _selectedState,
                 decoration: const InputDecoration(labelText: 'State'),
                 items: ['All', ...uniqueStates].map((state) {
-                  return DropdownMenuItem(
-                    value: state,
-                    child: Text(state),
-                  );
+                  return DropdownMenuItem(value: state, child: Text(state));
                 }).toList(),
                 onChanged: (value) {
                   setDialogState(() {
                     _selectedState = value!;
-                    _selectedDistrict = 'All'; // Reset district when state changes
+                    _selectedDistrict =
+                        'All'; // Reset district when state changes
                   });
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // District filter
               DropdownButtonFormField<String>(
                 value: _selectedDistrict,
@@ -354,23 +364,24 @@ class _StationsListScreenState extends ConsumerState<StationsListScreen> {
                     child: Text(district),
                   );
                 }).toList(),
-                onChanged: districts.isNotEmpty ? (value) {
-                  setDialogState(() {
-                    _selectedDistrict = value!;
-                  });
-                } : null,
+                onChanged: districts.isNotEmpty
+                    ? (value) {
+                        setDialogState(() {
+                          _selectedDistrict = value!;
+                        });
+                      }
+                    : null,
               ),
               const SizedBox(height: 16),
-              
+
               // Status filter
               DropdownButtonFormField<String>(
                 value: _selectedStatus,
                 decoration: const InputDecoration(labelText: 'Status'),
-                items: ['All', 'Active', 'Inactive', 'Maintenance'].map((status) {
-                  return DropdownMenuItem(
-                    value: status,
-                    child: Text(status),
-                  );
+                items: ['All', 'Active', 'Inactive', 'Maintenance'].map((
+                  status,
+                ) {
+                  return DropdownMenuItem(value: status, child: Text(status));
                 }).toList(),
                 onChanged: (value) {
                   setDialogState(() {

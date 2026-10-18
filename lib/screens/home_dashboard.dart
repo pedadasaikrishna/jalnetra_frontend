@@ -35,20 +35,19 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Groundwater Monitoring Dashboard'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: GoRouter.of(context).canPop()
-          ? IconButton(
-              icon: Icon(
-                Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icons.arrow_back_ios
-                  : Icons.arrow_back,
-              ),
-              onPressed: () {
-                context.pop();
-              },
-              tooltip: 'Back',
-            )
-          : null,
+            ? IconButton(
+                icon: Icon(
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? Icons.arrow_back_ios
+                      : Icons.arrow_back,
+                ),
+                onPressed: () {
+                  context.pop();
+                },
+                tooltip: 'Back',
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -105,38 +104,38 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : error != null
-              ? _buildErrorState(error)
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    await ref.read(dwlrStationsProvider.notifier).loadStations();
-                  },
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Quick Stats Overview
-                        _buildQuickStats(stations),
-                        const SizedBox(height: 20),
-                        
-                        // Recent Trends Chart
-                        _buildTrendsChart(stations),
-                        const SizedBox(height: 20),
-                        
-                        // State-wise Distribution
-                        _buildStateDistribution(stations),
-                        const SizedBox(height: 20),
-                        
-                        // Recent Stations
-                        _buildRecentStations(stations),
-                        const SizedBox(height: 20),
-                        
-                        // Quick Actions
-                        _buildQuickActions(),
-                      ],
-                    ),
-                  ),
+          ? _buildErrorState(error)
+          : RefreshIndicator(
+              onRefresh: () async {
+                await ref.read(dwlrStationsProvider.notifier).loadStations();
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Quick Stats Overview
+                    _buildQuickStats(stations),
+                    const SizedBox(height: 20),
+
+                    // Recent Trends Chart
+                    _buildTrendsChart(stations),
+                    const SizedBox(height: 20),
+
+                    // State-wise Distribution
+                    _buildStateDistribution(stations),
+                    const SizedBox(height: 20),
+
+                    // Recent Stations
+                    _buildRecentStations(stations),
+                    const SizedBox(height: 20),
+
+                    // Quick Actions
+                    _buildQuickActions(),
+                  ],
                 ),
+              ),
+            ),
     );
   }
 
@@ -145,10 +144,12 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
     final activeStations = stations.where((s) => s.status == 'Active').length;
     final totalStations = stations.length;
     final avgWaterLevel = stations.isNotEmpty
-        ? stations.map((s) => s.currentWaterLevel).reduce((a, b) => a + b) / stations.length
+        ? stations.map((s) => s.currentWaterLevel).reduce((a, b) => a + b) /
+              stations.length
         : 0.0;
     final dataAvailability = stations.isNotEmpty
-        ? stations.map((s) => s.dataAvailability).reduce((a, b) => a + b) / stations.length
+        ? stations.map((s) => s.dataAvailability).reduce((a, b) => a + b) /
+              stations.length
         : 0.0;
 
     return Column(
@@ -156,9 +157,9 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
       children: [
         Text(
           'Quick Overview',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Row(
@@ -179,7 +180,8 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
                 value: activeStations.toString(),
                 icon: Icons.check_circle,
                 color: Colors.green,
-                subtitle: '${((activeStations / totalStations) * 100).toStringAsFixed(1)}% active',
+                subtitle:
+                    '${((activeStations / totalStations) * 100).toStringAsFixed(1)}% active',
               ),
             ),
           ],
@@ -222,9 +224,9 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
           children: [
             Text(
               'Water Level Trends (Last 30 Days)',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -256,9 +258,9 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
           children: [
             Text(
               'Stations by State',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...stateCounts.entries.map((entry) {
@@ -267,10 +269,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(entry.key),
-                    ),
+                    Expanded(flex: 2, child: Text(entry.key)),
                     Expanded(
                       flex: 3,
                       child: LinearProgressIndicator(
@@ -319,39 +318,45 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
               ],
             ),
             const SizedBox(height: 12),
-            ...recentStations.map((station) => ListTile(
-              leading: CircleAvatar(
-                backgroundColor: _getStatusColor(station.status),
-                child: Text(
-                  station.stationId.substring(station.stationId.length - 2),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              title: Text(station.stationName),
-              subtitle: Text('${station.district}, ${station.state}'),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${station.currentWaterLevel.toStringAsFixed(1)}m',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    station.status,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: _getStatusColor(station.status),
+            ...recentStations
+                .map(
+                  (station) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: _getStatusColor(station.status),
+                      child: Text(
+                        station.stationId.substring(
+                          station.stationId.length - 2,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
                     ),
+                    title: Text(station.stationName),
+                    subtitle: Text('${station.district}, ${station.state}'),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${station.currentWaterLevel.toStringAsFixed(1)}m',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          station.status,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _getStatusColor(station.status),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () => context.go('/station/${station.stationId}'),
                   ),
-                ],
-              ),
-              onTap: () => context.go('/station/${station.stationId}'),
-            )).toList(),
+                )
+                .toList(),
           ],
         ),
       ),
@@ -368,9 +373,9 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
           children: [
             Text(
               'Quick Actions',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(

@@ -9,7 +9,8 @@ class TrafficSignalsScreen extends ConsumerStatefulWidget {
   const TrafficSignalsScreen({super.key});
 
   @override
-  ConsumerState<TrafficSignalsScreen> createState() => _TrafficSignalsScreenState();
+  ConsumerState<TrafficSignalsScreen> createState() =>
+      _TrafficSignalsScreenState();
 }
 
 class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
@@ -33,7 +34,6 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Regional Traffic Signals'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -68,7 +68,9 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
     return Consumer(
       builder: (context, ref, child) {
         final statisticsAsync = ref.watch(trafficSignalStatisticsProvider);
-        final stateWiseSummaryAsync = ref.watch(stateWiseTrafficSignalSummaryProvider);
+        final stateWiseSummaryAsync = ref.watch(
+          stateWiseTrafficSignalSummaryProvider,
+        );
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -81,11 +83,11 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                 showRecommendations: false,
               ),
               const SizedBox(height: 16),
-              
+
               // Statistics Cards
               _buildStatisticsCards(statisticsAsync),
               const SizedBox(height: 16),
-              
+
               // State-wise Summary
               _buildStateWiseSummary(stateWiseSummaryAsync),
             ],
@@ -157,7 +159,9 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
   Widget _buildMonitoringTab() {
     return Consumer(
       builder: (context, ref, child) {
-        final monitoringRegionsAsync = ref.watch(regionsRequiringMonitoringProvider);
+        final monitoringRegionsAsync = ref.watch(
+          regionsRequiringMonitoringProvider,
+        );
 
         return monitoringRegionsAsync.when(
           data: (monitoringRegions) {
@@ -166,11 +170,7 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.monitor_outlined,
-                      size: 64,
-                      color: Colors.blue,
-                    ),
+                    Icon(Icons.monitor_outlined, size: 64, color: Colors.blue),
                     SizedBox(height: 16),
                     Text(
                       'No Regions Requiring Monitoring',
@@ -214,12 +214,12 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
   }
 
   Widget _buildAllRegionsTab() {
-    return const TrafficSignalListWidget(
-      showFilters: true,
-    );
+    return const TrafficSignalListWidget(showFilters: true);
   }
 
-  Widget _buildStatisticsCards(AsyncValue<Map<String, dynamic>> statisticsAsync) {
+  Widget _buildStatisticsCards(
+    AsyncValue<Map<String, dynamic>> statisticsAsync,
+  ) {
     return statisticsAsync.when(
       data: (statistics) {
         return Column(
@@ -275,7 +275,12 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       elevation: 4,
       child: Padding(
@@ -304,7 +309,9 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
     );
   }
 
-  Widget _buildStateWiseSummary(AsyncValue<Map<String, Map<String, dynamic>>> stateWiseSummaryAsync) {
+  Widget _buildStateWiseSummary(
+    AsyncValue<Map<String, Map<String, dynamic>>> stateWiseSummaryAsync,
+  ) {
     return stateWiseSummaryAsync.when(
       data: (stateSummary) {
         if (stateSummary.isEmpty) {
@@ -319,15 +326,15 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
               children: [
                 Text(
                   'State-wise Summary',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 ...stateSummary.entries.map((entry) {
                   final state = entry.key;
                   final summary = entry.value;
-                  
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Row(
@@ -335,18 +342,33 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                         Expanded(
                           child: Text(
                             state,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        _buildStateSummaryChip('Total', '${summary['totalRegions']}', Colors.blue),
+                        _buildStateSummaryChip(
+                          'Total',
+                          '${summary['totalRegions']}',
+                          Colors.blue,
+                        ),
                         const SizedBox(width: 8),
-                        _buildStateSummaryChip('Good', '${summary['goodRegions']}', Colors.green),
+                        _buildStateSummaryChip(
+                          'Good',
+                          '${summary['goodRegions']}',
+                          Colors.green,
+                        ),
                         const SizedBox(width: 8),
-                        _buildStateSummaryChip('Warning', '${summary['warningRegions']}', Colors.orange),
+                        _buildStateSummaryChip(
+                          'Warning',
+                          '${summary['warningRegions']}',
+                          Colors.orange,
+                        ),
                         const SizedBox(width: 8),
-                        _buildStateSummaryChip('Critical', '${summary['criticalRegions']}', Colors.red),
+                        _buildStateSummaryChip(
+                          'Critical',
+                          '${summary['criticalRegions']}',
+                          Colors.red,
+                        ),
                       ],
                     ),
                   );
@@ -385,11 +407,7 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.red,
-            size: 64,
-          ),
+          Icon(Icons.error_outline, color: Colors.red, size: 64),
           const SizedBox(height: 16),
           Text(
             'Error Loading Data',

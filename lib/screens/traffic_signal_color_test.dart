@@ -9,7 +9,7 @@ class TrafficSignalColorTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final apiService = ApiService();
-    
+
     // Test data with different average depths
     final testData = [
       {'name': 'Good Region', 'avg_depth': -3.5, 'yearly_change': 0.2},
@@ -18,10 +18,7 @@ class TrafficSignalColorTest extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Traffic Signal Color Test'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      appBar: AppBar(title: const Text('Traffic Signal Color Test')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -29,37 +26,59 @@ class TrafficSignalColorTest extends StatelessWidget {
           children: [
             Text(
               'Traffic Signal Colors Based on Average Depth from API',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
               'Color Logic:',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildColorRule('🟢 GOOD', '0 to -5 meters', 'Healthy and sustainable', const Color(0xFF33B864)),
-            _buildColorRule('🟠 CAUTION', '-5 to -15 meters', 'Declining, monitor closely', Colors.orange),
-            _buildColorRule('🔴 CRITICAL', '-15 and above', 'Immediate action needed', Colors.red),
+            _buildColorRule(
+              '🟢 GOOD',
+              '0 to -5 meters',
+              'Healthy and sustainable',
+              const Color(0xFF33B864),
+            ),
+            _buildColorRule(
+              '🟠 CAUTION',
+              '-5 to -15 meters',
+              'Declining, monitor closely',
+              Colors.orange,
+            ),
+            _buildColorRule(
+              '🔴 CRITICAL',
+              '-15 and above',
+              'Immediate action needed',
+              Colors.red,
+            ),
             const SizedBox(height: 24),
             Text(
               'Test Results:',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            ...testData.map((data) => _buildTestResult(context, apiService, data)),
+            ...testData.map(
+              (data) => _buildTestResult(context, apiService, data),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildColorRule(String emoji, String range, String description, Color color) {
+  Widget _buildColorRule(
+    String emoji,
+    String range,
+    String description,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -69,10 +88,7 @@ class TrafficSignalColorTest extends StatelessWidget {
           Container(
             width: 20,
             height: 20,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -85,10 +101,7 @@ class TrafficSignalColorTest extends StatelessWidget {
                 ),
                 Text(
                   description,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -98,10 +111,17 @@ class TrafficSignalColorTest extends StatelessWidget {
     );
   }
 
-  Widget _buildTestResult(BuildContext context, ApiService apiService, Map<String, dynamic> data) {
+  Widget _buildTestResult(
+    BuildContext context,
+    ApiService apiService,
+    Map<String, dynamic> data,
+  ) {
     final avgDepth = data['avg_depth'] as double;
-    final trafficSignal = apiService.generateTrafficSignalFromData(data, data['name']);
-    
+    final trafficSignal = apiService.generateTrafficSignalFromData(
+      data,
+      data['name'],
+    );
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(

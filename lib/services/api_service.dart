@@ -1,13 +1,53 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import '../models/measurement.dart';
+import '../models/recharge_estimate.dart';
+import '../models/station.dart';
 import '../models/traffic_signal.dart';
 
 final logger = Logger();
 
 class ApiService {
-  static const String _baseUrl = 'https://groundwater-level-predictor-backend.onrender.com';
-  
+  static const String _baseUrl =
+      'https://groundwater-level-predictor-backend.onrender.com';
+
+  Never _unsupportedEndpoint(String feature) {
+    final message =
+        '$feature is unavailable: the configured backend does not expose this API.';
+    logger.e(message);
+    throw UnsupportedError(message);
+  }
+
+  Future<List<Station>> getStations() async {
+    _unsupportedEndpoint('Station inventory');
+  }
+
+  Future<List<Measurement>> getMeasurements({
+    required String stationId,
+    required DateTime startTime,
+    required DateTime endTime,
+    required TimeInterval interval,
+  }) async {
+    _unsupportedEndpoint('Station measurements');
+  }
+
+  Stream<Measurement> subscribeRealtime(String stationId) {
+    return Stream<Measurement>.error(
+      UnsupportedError(
+        'Real-time monitoring is unavailable: the configured backend does not expose a streaming API.',
+      ),
+    );
+  }
+
+  Future<List<RechargeEstimate>> getRechargeEstimates({
+    required String stationId,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) async {
+    _unsupportedEndpoint('Recharge estimates');
+  }
+
   /// Location codes mapping for API data matching
   static const Map<String, String> locationCodes = {
     'Addanki': 'CGWHYD0500',
@@ -26,11 +66,11 @@ class ApiService {
   Future<Map<String, dynamic>> fetchFeatures() async {
     try {
       logger.i('🌊 Fetching features from API...');
-      
+
       final res = await http.get(
         Uri.parse("$_baseUrl/features"),
-      headers: {
-        'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       );
@@ -59,7 +99,9 @@ class ApiService {
   }
 
   /// Get features data for a specific location
-  Future<Map<String, dynamic>?> getFeaturesForLocation(String locationName) async {
+  Future<Map<String, dynamic>?> getFeaturesForLocation(
+    String locationName,
+  ) async {
     try {
       final stationCode = locationCodes[locationName];
       if (stationCode == null) {
@@ -68,15 +110,16 @@ class ApiService {
       }
 
       logger.i('🔍 Looking for data for $locationName (Code: $stationCode)');
-      
+
       final featuresData = await fetchFeatures();
-      
+
       // Extract station summary data for the specific station code
-      final stationSummary = featuresData['station_summary'] as Map<String, dynamic>?;
+      final stationSummary =
+          featuresData['station_summary'] as Map<String, dynamic>?;
       if (stationSummary != null && stationSummary.containsKey(stationCode)) {
         final stationData = stationSummary[stationCode] as Map<String, dynamic>;
         logger.i('✅ Found data for $locationName');
-        
+
         // Return the station data with additional context
         return {
           'stationCode': stationCode,
@@ -89,7 +132,7 @@ class ApiService {
           'dataSource': 'API Data',
         };
       }
-      
+
       logger.w('⚠️ No data found for $locationName ($stationCode)');
       return null;
     } catch (e) {
@@ -103,9 +146,10 @@ class ApiService {
     try {
       final featuresData = await fetchFeatures();
       final locations = <String>[];
-      
+
       // Extract station codes from station_summary
-      final stationSummary = featuresData['station_summary'] as Map<String, dynamic>?;
+      final stationSummary =
+          featuresData['station_summary'] as Map<String, dynamic>?;
       if (stationSummary != null) {
         for (final stationCode in stationSummary.keys) {
           // Find location name from station code
@@ -113,13 +157,13 @@ class ApiService {
               .where((entry) => entry.value == stationCode)
               .map((entry) => entry.key)
               .firstOrNull;
-          
+
           if (locationName != null && !locations.contains(locationName)) {
             locations.add(locationName);
           }
         }
       }
-      
+
       logger.i('📍 Available locations: $locations');
       return locations;
     } catch (e) {
@@ -132,14 +176,17 @@ class ApiService {
   Map<String, dynamic> extractAnalyticsData(Map<String, dynamic> apiData) {
     try {
       // Handle the new API structure where data is already extracted
-      if (apiData.containsKey('stationCode') && apiData.containsKey('averageDepth')) {
+      if (apiData.containsKey('stationCode') &&
+          apiData.containsKey('averageDepth')) {
         return {
           'stationCode': apiData['stationCode'],
           'stationName': apiData['stationName'],
           'averageDepth': apiData['averageDepth'] as double? ?? 0.0,
           'minDepth': apiData['minDepth'] as double? ?? 0.0,
           'maxDepth': apiData['maxDepth'] as double? ?? 0.0,
-          'currentLevel': apiData['averageDepth'] as double? ?? 0.0, // Use average as current
+          'currentLevel':
+              apiData['averageDepth'] as double? ??
+              0.0, // Use average as current
           'yearlyChange': _extractYearlyChange(apiData['yearlyChange']),
           'lastUpdated': DateTime.now().toIso8601String(),
           'dataPoints': 365, // Default value
@@ -148,20 +195,52 @@ class ApiService {
           'dataSource': 'API Data',
         };
       }
-      
+
       // Fallback for old structure
       return {
-        'stationCode': apiData['station_code'] ?? apiData['stationCode'] ?? apiData['station_id'],
-        'stationName': apiData['station_name'] ?? apiData['stationName'] ?? apiData['name'],
-        'averageDepth': _extractNumericValue(apiData, ['average_depth', 'avg_depth', 'mean_depth']),
-        'minDepth': _extractNumericValue(apiData, ['min_depth', 'minimum_depth']),
-        'maxDepth': _extractNumericValue(apiData, ['max_depth', 'maximum_depth']),
-        'currentLevel': _extractNumericValue(apiData, ['current_level', 'currentLevel', 'water_level']),
-        'yearlyChange': _extractNumericValue(apiData, ['yearly_change', 'annual_change', 'trend']),
-        'lastUpdated': apiData['last_updated'] ?? apiData['lastUpdated'] ?? apiData['timestamp'],
-        'dataPoints': apiData['data_points'] ?? apiData['dataPoints'] ?? apiData['count'],
-        'aquiferType': apiData['aquifer_type'] ?? apiData['aquiferType'] ?? apiData['aquifer'],
-        'wellType': apiData['well_type'] ?? apiData['wellType'] ?? apiData['type'],
+        'stationCode':
+            apiData['station_code'] ??
+            apiData['stationCode'] ??
+            apiData['station_id'],
+        'stationName':
+            apiData['station_name'] ??
+            apiData['stationName'] ??
+            apiData['name'],
+        'averageDepth': _extractNumericValue(apiData, [
+          'average_depth',
+          'avg_depth',
+          'mean_depth',
+        ]),
+        'minDepth': _extractNumericValue(apiData, [
+          'min_depth',
+          'minimum_depth',
+        ]),
+        'maxDepth': _extractNumericValue(apiData, [
+          'max_depth',
+          'maximum_depth',
+        ]),
+        'currentLevel': _extractNumericValue(apiData, [
+          'current_level',
+          'currentLevel',
+          'water_level',
+        ]),
+        'yearlyChange': _extractNumericValue(apiData, [
+          'yearly_change',
+          'annual_change',
+          'trend',
+        ]),
+        'lastUpdated':
+            apiData['last_updated'] ??
+            apiData['lastUpdated'] ??
+            apiData['timestamp'],
+        'dataPoints':
+            apiData['data_points'] ?? apiData['dataPoints'] ?? apiData['count'],
+        'aquiferType':
+            apiData['aquifer_type'] ??
+            apiData['aquiferType'] ??
+            apiData['aquifer'],
+        'wellType':
+            apiData['well_type'] ?? apiData['wellType'] ?? apiData['type'],
         'dataSource': 'API Data',
       };
     } catch (e) {
@@ -189,7 +268,10 @@ class ApiService {
   }
 
   /// Extract numeric value from API data with multiple possible keys
-  double _extractNumericValue(Map<String, dynamic> data, List<String> possibleKeys) {
+  double _extractNumericValue(
+    Map<String, dynamic> data,
+    List<String> possibleKeys,
+  ) {
     for (final key in possibleKeys) {
       final value = data[key];
       if (value != null) {
@@ -208,7 +290,7 @@ class ApiService {
   Future<List<TrafficSignal>> fetchTrafficSignals() async {
     try {
       logger.i('🚦 Fetching traffic signals for all regions...');
-      
+
       final res = await http.get(
         Uri.parse("$_baseUrl/traffic-signals"),
         headers: {
@@ -221,13 +303,18 @@ class ApiService {
 
       if (res.statusCode == 200) {
         final dynamic jsonData = jsonDecode(res.body);
-        
+
         if (jsonData is List) {
           final trafficSignals = jsonData
-              .map((data) => TrafficSignal.fromApiData(data as Map<String, dynamic>))
+              .map(
+                (data) =>
+                    TrafficSignal.fromApiData(data as Map<String, dynamic>),
+              )
               .toList();
-          
-          logger.i('✅ Successfully fetched ${trafficSignals.length} traffic signals');
+
+          logger.i(
+            '✅ Successfully fetched ${trafficSignals.length} traffic signals',
+          );
           return trafficSignals;
         } else if (jsonData is Map<String, dynamic>) {
           // Handle single region response
@@ -253,7 +340,7 @@ class ApiService {
   Future<TrafficSignal?> fetchTrafficSignalForRegion(String regionId) async {
     try {
       logger.i('🚦 Fetching traffic signal for region: $regionId');
-      
+
       final res = await http.get(
         Uri.parse("$_baseUrl/traffic-signals/$regionId"),
         headers: {
@@ -266,7 +353,7 @@ class ApiService {
 
       if (res.statusCode == 200) {
         final dynamic jsonData = jsonDecode(res.body);
-        
+
         if (jsonData is Map<String, dynamic>) {
           final trafficSignal = TrafficSignal.fromApiData(jsonData);
           logger.i('✅ Successfully fetched traffic signal for $regionId');
@@ -293,7 +380,7 @@ class ApiService {
   Future<List<TrafficSignal>> fetchTrafficSignalsByState(String state) async {
     try {
       logger.i('🚦 Fetching traffic signals for state: $state');
-      
+
       final res = await http.get(
         Uri.parse("$_baseUrl/traffic-signals/state/$state"),
         headers: {
@@ -302,25 +389,36 @@ class ApiService {
         },
       );
 
-      logger.i('📡 Traffic Signals by State API Response Status: ${res.statusCode}');
+      logger.i(
+        '📡 Traffic Signals by State API Response Status: ${res.statusCode}',
+      );
 
       if (res.statusCode == 200) {
         final dynamic jsonData = jsonDecode(res.body);
-        
+
         if (jsonData is List) {
           final trafficSignals = jsonData
-              .map((data) => TrafficSignal.fromApiData(data as Map<String, dynamic>))
+              .map(
+                (data) =>
+                    TrafficSignal.fromApiData(data as Map<String, dynamic>),
+              )
               .toList();
-          
-          logger.i('✅ Successfully fetched ${trafficSignals.length} traffic signals for $state');
+
+          logger.i(
+            '✅ Successfully fetched ${trafficSignals.length} traffic signals for $state',
+          );
           return trafficSignals;
         } else {
           logger.e('❌ Unexpected JSON structure: ${jsonData.runtimeType}');
           throw Exception("Unexpected JSON structure - expected List");
         }
       } else {
-        logger.e('❌ Failed to fetch traffic signals for state: ${res.statusCode}');
-        throw Exception("Failed to fetch traffic signals for state: ${res.statusCode}");
+        logger.e(
+          '❌ Failed to fetch traffic signals for state: ${res.statusCode}',
+        );
+        throw Exception(
+          "Failed to fetch traffic signals for state: ${res.statusCode}",
+        );
       }
     } catch (e) {
       logger.e('❌ Error fetching traffic signals for state $state: $e');
@@ -333,7 +431,7 @@ class ApiService {
   Future<List<TrafficSignal>> fetchCriticalRegions() async {
     try {
       logger.i('🚨 Fetching critical regions...');
-      
+
       final res = await http.get(
         Uri.parse("$_baseUrl/traffic-signals/critical"),
         headers: {
@@ -346,13 +444,18 @@ class ApiService {
 
       if (res.statusCode == 200) {
         final dynamic jsonData = jsonDecode(res.body);
-        
+
         if (jsonData is List) {
           final trafficSignals = jsonData
-              .map((data) => TrafficSignal.fromApiData(data as Map<String, dynamic>))
+              .map(
+                (data) =>
+                    TrafficSignal.fromApiData(data as Map<String, dynamic>),
+              )
               .toList();
-          
-          logger.i('✅ Successfully fetched ${trafficSignals.length} critical regions');
+
+          logger.i(
+            '✅ Successfully fetched ${trafficSignals.length} critical regions',
+          );
           return trafficSignals;
         } else {
           logger.e('❌ Unexpected JSON structure: ${jsonData.runtimeType}');
@@ -370,15 +473,35 @@ class ApiService {
   }
 
   /// Generate traffic signal from existing groundwater data
-  TrafficSignal generateTrafficSignalFromData(Map<String, dynamic> data, String regionName) {
+  TrafficSignal generateTrafficSignalFromData(
+    Map<String, dynamic> data,
+    String regionName,
+  ) {
     try {
-      final avgDepth = _extractNumericValue(data, ['averageDepth', 'avg_depth', 'mean_depth']);
-      final minDepth = _extractNumericValue(data, ['minDepth', 'min_depth', 'minimum_depth']);
-      final maxDepth = _extractNumericValue(data, ['maxDepth', 'max_depth', 'maximum_depth']);
-      final yearlyChange = _extractYearlyChange(data['yearlyChange'] ?? data['yearly_change'] ?? 0.0);
-      
+      final avgDepth = _extractNumericValue(data, [
+        'averageDepth',
+        'avg_depth',
+        'mean_depth',
+      ]);
+      final minDepth = _extractNumericValue(data, [
+        'minDepth',
+        'min_depth',
+        'minimum_depth',
+      ]);
+      final maxDepth = _extractNumericValue(data, [
+        'maxDepth',
+        'max_depth',
+        'maximum_depth',
+      ]);
+      final yearlyChange = _extractYearlyChange(
+        data['yearlyChange'] ?? data['yearly_change'] ?? 0.0,
+      );
+
       return TrafficSignal.fromApiData({
-        'regionId': data['stationCode'] ?? data['station_code'] ?? regionName.toLowerCase().replaceAll(' ', '_'),
+        'regionId':
+            data['stationCode'] ??
+            data['station_code'] ??
+            regionName.toLowerCase().replaceAll(' ', '_'),
         'regionName': regionName,
         'district': data['district'] ?? 'Unknown',
         'state': data['state'] ?? 'Andhra Pradesh',
@@ -407,7 +530,7 @@ class ApiService {
   List<String> _generateRecommendations(double avgDepth, double yearlyChange) {
     final recommendations = <String>[];
     final depthValue = avgDepth.abs();
-    
+
     if (depthValue > 16) {
       recommendations.addAll([
         'Immediate water conservation measures required',
@@ -434,7 +557,7 @@ class ApiService {
         'Promote sustainable water usage',
       ]);
     }
-    
+
     return recommendations;
   }
 
@@ -454,7 +577,10 @@ class ApiService {
         'activeStations': 3,
         'lastUpdated': DateTime.now().toIso8601String(),
         'dataSource': 'Mock Data',
-        'recommendations': ['Monitor closely', 'Implement conservation measures'],
+        'recommendations': [
+          'Monitor closely',
+          'Implement conservation measures',
+        ],
       }),
       TrafficSignal.fromApiData({
         'regionId': 'anantapur',
@@ -489,29 +615,38 @@ class ApiService {
       'activeStations': 2,
       'lastUpdated': DateTime.now().toIso8601String(),
       'dataSource': 'Mock Data',
-      'recommendations': ['Monitor groundwater levels', 'Implement conservation'],
+      'recommendations': [
+        'Monitor groundwater levels',
+        'Implement conservation',
+      ],
     });
   }
 
   /// Mock traffic signals by state
   List<TrafficSignal> _getMockTrafficSignalsByState(String state) {
-    return _getMockTrafficSignals().where((signal) => signal.state == state).toList();
+    return _getMockTrafficSignals()
+        .where((signal) => signal.state == state)
+        .toList();
   }
 
   /// Mock critical regions
   List<TrafficSignal> _getMockCriticalRegions() {
-    return _getMockTrafficSignals().where((signal) => signal.level == TrafficSignalLevel.critical).toList();
+    return _getMockTrafficSignals()
+        .where((signal) => signal.level == TrafficSignalLevel.critical)
+        .toList();
   }
 
   /// Fetch forecast data from the API
-  Future<Map<String, dynamic>> fetchForecast(String stationCode, int horizonDays) async {
+  Future<Map<String, dynamic>> fetchForecast(
+    String stationCode,
+    int horizonDays,
+  ) async {
     try {
-      logger.i('🔮 Fetching forecast for station: $stationCode, horizon: $horizonDays days');
-      
-      final requestBody = {
-        'station_code': stationCode,
-        'horizon': horizonDays,
-      };
+      logger.i(
+        '🔮 Fetching forecast for station: $stationCode, horizon: $horizonDays days',
+      );
+
+      final requestBody = {'station_code': stationCode, 'horizon': horizonDays};
 
       final res = await http.post(
         Uri.parse("$_baseUrl/forecast"),
@@ -526,7 +661,7 @@ class ApiService {
 
       if (res.statusCode == 200) {
         final dynamic jsonData = jsonDecode(res.body);
-        
+
         if (jsonData is Map<String, dynamic>) {
           logger.i('✅ Successfully fetched forecast data');
           return jsonData;
@@ -545,7 +680,10 @@ class ApiService {
   }
 
   /// Get forecast data for a specific location
-  Future<List<Map<String, dynamic>>> getForecastForLocation(String locationName, int horizonDays) async {
+  Future<List<Map<String, dynamic>>> getForecastForLocation(
+    String locationName,
+    int horizonDays,
+  ) async {
     try {
       final stationCode = locationCodes[locationName];
       if (stationCode == null) {
@@ -554,21 +692,28 @@ class ApiService {
       }
 
       logger.i('🔮 Getting forecast for $locationName (Code: $stationCode)');
-      
+
       final forecastData = await fetchForecast(stationCode, horizonDays);
-      
-      if (forecastData['status'] == 'success' && forecastData['forecast'] != null) {
+
+      if (forecastData['status'] == 'success' &&
+          forecastData['forecast'] != null) {
         final forecastList = forecastData['forecast'] as List<dynamic>;
-        logger.i('✅ Found ${forecastList.length} forecast points for $locationName');
-        
-        return forecastList.map((item) => {
-          'date': item['date'],
-          'forecast': item['forecast'],
-          'stationCode': stationCode,
-          'stationName': locationName,
-        }).toList();
+        logger.i(
+          '✅ Found ${forecastList.length} forecast points for $locationName',
+        );
+
+        return forecastList
+            .map(
+              (item) => {
+                'date': item['date'],
+                'forecast': item['forecast'],
+                'stationCode': stationCode,
+                'stationName': locationName,
+              },
+            )
+            .toList();
       }
-      
+
       logger.w('⚠️ No forecast data found for $locationName ($stationCode)');
       return [];
     } catch (e) {

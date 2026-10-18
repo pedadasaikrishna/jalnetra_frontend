@@ -1,13 +1,51 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jalnetra/services/india_wris_service.dart';
 import 'package:jalnetra/models/india_wris_models.dart';
 
 void main() {
-  group('India-WRIS API Tests', () {
+  group('India-WRIS service tests', () {
     late IndiaWRISService service;
 
     setUp(() {
-      service = IndiaWRISService();
+      final dio = Dio(BaseOptions(baseUrl: 'https://indiawris.gov.in'));
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            final requestedState =
+                options.queryParameters['stateName'] as String?;
+            final requestedDistrict =
+                options.queryParameters['districtName'] as String?;
+            final records = _stationRecords.where((record) {
+              final matchesState =
+                  requestedState == null ||
+                  record['stateName'] == requestedState;
+              final matchesDistrict =
+                  requestedDistrict == null ||
+                  record['districtName'] == requestedDistrict;
+              return matchesState && matchesDistrict;
+            }).toList();
+
+            handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'content': records,
+                  'totalElements': records.length,
+                  'totalPages': 1,
+                  'size': records.length,
+                  'number': 0,
+                  'first': true,
+                  'last': true,
+                  'numberOfElements': records.length,
+                },
+              ),
+            );
+          },
+        ),
+      );
+      service = IndiaWRISService(dio: dio);
     });
 
     test('should fetch available states', () async {
@@ -73,7 +111,7 @@ void main() {
 
       final record = GroundWaterLevelRecord.fromJson(json);
       final station = record.toDWLRStation();
-      
+
       expect(station.stationId, equals('TEST001'));
       expect(station.stationName, equals('Test Station'));
       expect(station.state, equals('Test State'));
@@ -85,3 +123,30 @@ void main() {
     });
   });
 }
+
+const _stationRecords = [
+  {
+    'stationId': 'AP001',
+    'stationName': 'West Godavari Monitoring Station',
+    'stateName': 'Andhra Pradesh',
+    'districtName': 'West Godavari',
+    'latitude': 16.7107,
+    'longitude': 81.0952,
+    'waterLevelBelowGroundLevel': 15.5,
+    'dateOfReading': '2023-10-26T10:00:00Z',
+    'wellStatus': 'Active',
+    'dataQuality': 'Good',
+  },
+  {
+    'stationId': 'DL001',
+    'stationName': 'North Delhi Monitoring Station',
+    'stateName': 'Delhi',
+    'districtName': 'North Delhi',
+    'latitude': 28.7041,
+    'longitude': 77.1025,
+    'waterLevelBelowGroundLevel': 12.0,
+    'dateOfReading': '2023-10-26T10:00:00Z',
+    'wellStatus': 'Active',
+    'dataQuality': 'Good',
+  },
+];

@@ -9,13 +9,11 @@ import '../models/measurement.dart';
 class StationDetailScreen extends ConsumerStatefulWidget {
   final String stationId;
 
-  const StationDetailScreen({
-    super.key,
-    required this.stationId,
-  });
+  const StationDetailScreen({super.key, required this.stationId});
 
   @override
-  ConsumerState<StationDetailScreen> createState() => _StationDetailScreenState();
+  ConsumerState<StationDetailScreen> createState() =>
+      _StationDetailScreenState();
 }
 
 class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
@@ -27,7 +25,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    
+
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
@@ -44,35 +42,36 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
     // Load measurements for the last 7 days
     final endTime = DateTime.now();
     final startTime = endTime.subtract(const Duration(days: 7));
-    
-    ref.read(measurementsProvider.notifier).loadMeasurements(
-      stationId: widget.stationId,
-      startTime: startTime,
-      endTime: endTime,
-      interval: TimeInterval.hour,
-    );
+
+    ref
+        .read(measurementsProvider.notifier)
+        .loadMeasurements(
+          stationId: widget.stationId,
+          startTime: startTime,
+          endTime: endTime,
+          interval: TimeInterval.hour,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final station = ref.watch(stationProvider(widget.stationId));
-    final measurements = ref.watch(stationMeasurementsProvider(widget.stationId));
-    final latestMeasurement = ref.watch(latestMeasurementProvider(widget.stationId));
+    final measurements = ref.watch(
+      stationMeasurementsProvider(widget.stationId),
+    );
+    final latestMeasurement = ref.watch(
+      latestMeasurementProvider(widget.stationId),
+    );
     final isLoading = ref.watch(measurementsLoadingProvider(widget.stationId));
     final error = ref.watch(measurementsErrorProvider(widget.stationId));
 
     if (station == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(station.name),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: Icon(_isRealtimeEnabled ? Icons.stop : Icons.play_arrow),
@@ -129,17 +128,27 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
-                  _buildInfoRow('Status', station.status, _getStatusColor(station.status)),
+                  _buildInfoRow(
+                    'Status',
+                    station.status,
+                    _getStatusColor(station.status),
+                  ),
                   _buildInfoRow('Region', station.region),
                   _buildInfoRow('District', station.district),
-                  _buildInfoRow('Elevation', '${station.elevation.toStringAsFixed(1)} m'),
-                  _buildInfoRow('Last Updated', _formatDateTime(station.lastUpdated)),
+                  _buildInfoRow(
+                    'Elevation',
+                    '${station.elevation.toStringAsFixed(1)} m',
+                  ),
+                  _buildInfoRow(
+                    'Last Updated',
+                    _formatDateTime(station.lastUpdated),
+                  ),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Current measurements card
           Card(
             child: Padding(
@@ -153,12 +162,36 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
                   ),
                   const SizedBox(height: 12),
                   if (latestMeasurement != null) ...[
-                    _buildMeasurementRow('Water Level', '${latestMeasurement.waterLevel.toStringAsFixed(2)} m', Icons.water_drop),
-                    _buildMeasurementRow('Temperature', '${latestMeasurement.temperature.toStringAsFixed(1)} °C', Icons.thermostat),
-                    _buildMeasurementRow('pH', latestMeasurement.ph.toStringAsFixed(2), Icons.science),
-                    _buildMeasurementRow('Recharge Rate', '${latestMeasurement.rechargeRate.toStringAsFixed(1)} L/h', Icons.water),
-                    _buildMeasurementRow('Battery', '${latestMeasurement.batteryLevel.toStringAsFixed(0)}%', Icons.battery_std),
-                    _buildMeasurementRow('Signal', '${latestMeasurement.signalStrength.toStringAsFixed(0)}%', Icons.signal_cellular_alt),
+                    _buildMeasurementRow(
+                      'Water Level',
+                      '${latestMeasurement.waterLevel.toStringAsFixed(2)} m',
+                      Icons.water_drop,
+                    ),
+                    _buildMeasurementRow(
+                      'Temperature',
+                      '${latestMeasurement.temperature.toStringAsFixed(1)} °C',
+                      Icons.thermostat,
+                    ),
+                    _buildMeasurementRow(
+                      'pH',
+                      latestMeasurement.ph.toStringAsFixed(2),
+                      Icons.science,
+                    ),
+                    _buildMeasurementRow(
+                      'Recharge Rate',
+                      '${latestMeasurement.rechargeRate.toStringAsFixed(1)} L/h',
+                      Icons.water,
+                    ),
+                    _buildMeasurementRow(
+                      'Battery',
+                      '${latestMeasurement.batteryLevel.toStringAsFixed(0)}%',
+                      Icons.battery_std,
+                    ),
+                    _buildMeasurementRow(
+                      'Signal',
+                      '${latestMeasurement.signalStrength.toStringAsFixed(0)}%',
+                      Icons.signal_cellular_alt,
+                    ),
                   ] else ...[
                     const Text('No recent measurements available'),
                   ],
@@ -167,7 +200,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Recharge status card
           Card(
             child: Padding(
@@ -191,7 +224,12 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
   }
 
   /// Build charts tab
-  Widget _buildChartsTab(Station station, List<Measurement> measurements, bool isLoading, String? error) {
+  Widget _buildChartsTab(
+    Station station,
+    List<Measurement> measurements,
+    bool isLoading,
+    String? error,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,9 +240,9 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
           const SizedBox(height: 8),
           Text(
             'Using FL Chart for data visualization',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.grey[600],
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
           ),
         ],
       ),
@@ -214,9 +252,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
   /// Build history tab
   Widget _buildHistoryTab(Station station, List<Measurement> measurements) {
     if (measurements.isEmpty) {
-      return const Center(
-        child: Text('No historical data available'),
-      );
+      return const Center(child: Text('No historical data available'));
     }
 
     return ListView.builder(
@@ -231,16 +267,25 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
               backgroundColor: _getQualityColor(measurement.quality),
               child: Text(
                 measurement.quality[0].toUpperCase(),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             title: Text(_formatDateTime(measurement.timestamp)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Water Level: ${measurement.waterLevel.toStringAsFixed(2)} m'),
-                Text('Temperature: ${measurement.temperature.toStringAsFixed(1)} °C'),
-                Text('Recharge Rate: ${measurement.rechargeRate.toStringAsFixed(1)} L/h'),
+                Text(
+                  'Water Level: ${measurement.waterLevel.toStringAsFixed(2)} m',
+                ),
+                Text(
+                  'Temperature: ${measurement.temperature.toStringAsFixed(1)} °C',
+                ),
+                Text(
+                  'Recharge Rate: ${measurement.rechargeRate.toStringAsFixed(1)} L/h',
+                ),
               ],
             ),
             trailing: IconButton(
@@ -263,10 +308,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
           Text(label),
           Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: color),
           ),
         ],
       ),
@@ -283,10 +325,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
           const SizedBox(width: 8),
           Text(label),
           const Spacer(),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -388,9 +427,13 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
     });
 
     if (_isRealtimeEnabled) {
-      ref.read(measurementsProvider.notifier).startRealtimeMonitoring(widget.stationId);
+      ref
+          .read(measurementsProvider.notifier)
+          .startRealtimeMonitoring(widget.stationId);
     } else {
-      ref.read(measurementsProvider.notifier).stopRealtimeMonitoring(widget.stationId);
+      ref
+          .read(measurementsProvider.notifier)
+          .stopRealtimeMonitoring(widget.stationId);
     }
   }
 
@@ -423,14 +466,26 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
           children: [
             Text('Timestamp: ${_formatDateTime(measurement.timestamp)}'),
             Text('Water Level: ${measurement.waterLevel.toStringAsFixed(2)} m'),
-            Text('Temperature: ${measurement.temperature.toStringAsFixed(1)} °C'),
+            Text(
+              'Temperature: ${measurement.temperature.toStringAsFixed(1)} °C',
+            ),
             Text('pH: ${measurement.ph.toStringAsFixed(2)}'),
-            Text('Conductivity: ${measurement.conductivity.toStringAsFixed(1)} μS/cm'),
+            Text(
+              'Conductivity: ${measurement.conductivity.toStringAsFixed(1)} μS/cm',
+            ),
             Text('Turbidity: ${measurement.turbidity.toStringAsFixed(1)} NTU'),
-            Text('Dissolved Oxygen: ${measurement.dissolvedOxygen.toStringAsFixed(1)} mg/L'),
-            Text('Recharge Rate: ${measurement.rechargeRate.toStringAsFixed(1)} L/h'),
-            Text('Battery Level: ${measurement.batteryLevel.toStringAsFixed(0)}%'),
-            Text('Signal Strength: ${measurement.signalStrength.toStringAsFixed(0)}%'),
+            Text(
+              'Dissolved Oxygen: ${measurement.dissolvedOxygen.toStringAsFixed(1)} mg/L',
+            ),
+            Text(
+              'Recharge Rate: ${measurement.rechargeRate.toStringAsFixed(1)} L/h',
+            ),
+            Text(
+              'Battery Level: ${measurement.batteryLevel.toStringAsFixed(0)}%',
+            ),
+            Text(
+              'Signal Strength: ${measurement.signalStrength.toStringAsFixed(0)}%',
+            ),
             Text('Quality: ${measurement.quality}'),
             if (measurement.notes.isNotEmpty)
               Text('Notes: ${measurement.notes}'),

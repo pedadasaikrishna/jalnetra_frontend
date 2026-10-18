@@ -1136,7 +1136,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
                 'Green Zones',
                 regionData['green'].toString(),
                 'Safe',
-                Colors.green,
+                const Color(0xFF0284C7),
                 Icons.check_circle,
               ),
             ),
@@ -1183,19 +1183,23 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
             if (greenZones.isNotEmpty) ...[
               Row(
                 children: [
-                  Icon(Icons.check_circle, color: Colors.green, size: 16),
+                  Icon(
+                    Icons.check_circle,
+                    color: const Color(0xFF0284C7),
+                    size: 16,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Green Zones (${greenZones.length}): ',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: Colors.green[700],
+                      color: const Color(0xFF0369A1),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       greenZones.join(', '),
-                      style: TextStyle(color: Colors.green[600]),
+                      style: TextStyle(color: const Color(0xFF0284C7)),
                     ),
                   ),
                 ],
@@ -1286,7 +1290,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
     } else if (selectedZoneType == 'Green Zones') {
       zonesToShow = regionData['greenZones'] as List<String>;
       zoneTypeTitle = 'Green Zones (Safe)';
-      zoneColor = Colors.green;
+      zoneColor = const Color(0xFF0284C7);
       zoneIcon = Icons.check_circle;
     }
 
@@ -1453,7 +1457,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
                         ? Icons.warning
                         : zoneDetails['zoneColor'] == Colors.orange
                         ? Icons.warning_amber
-                        : zoneDetails['zoneColor'] == Colors.green
+                        : zoneDetails['zoneColor'] == const Color(0xFF0284C7)
                         ? Icons.check_circle
                         : Icons.location_on,
                     color: zoneDetails['zoneColor'],
@@ -1711,7 +1715,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
                   ? Colors.red
                   : zone.contains('Orange')
                   ? Colors.orange
-                  : Colors.green,
+                  : const Color(0xFF0284C7),
               shape: BoxShape.circle,
             ),
           ),

@@ -1091,7 +1091,11 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.check_circle, size: 48, color: Colors.green),
+              Icon(
+                Icons.check_circle,
+                size: 48,
+                color: const Color(0xFF0284C7),
+              ),
               const SizedBox(height: 16),
               Text(
                 'Data for $selectedCity has been downloaded successfully in $format format!',
@@ -1766,13 +1770,13 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
   Color _getTrafficSignalColor() {
     switch (_getTrafficSignalLevel()) {
       case 'good':
-        return const Color(0xFF33B864);
+        return const Color(0xFF0284C7);
       case 'warning':
         return Colors.orange;
       case 'critical':
         return Colors.red;
       default:
-        return const Color(0xFF33B864);
+        return const Color(0xFF0284C7);
     }
   }
 
@@ -1806,7 +1810,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
         children: [
           _buildTrafficLightBulb(Colors.red, status == 'critical'),
           _buildTrafficLightBulb(Colors.orange, status == 'warning'),
-          _buildTrafficLightBulb(const Color(0xFF33B864), status == 'good'),
+          _buildTrafficLightBulb(const Color(0xFF0284C7), status == 'good'),
         ],
       ),
     );
@@ -1953,7 +1957,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         'Good Regions',
                         '${statistics['goodRegions'] ?? 0}',
                         Icons.check_circle,
-                        const Color(0xFF33B864),
+                        const Color(0xFF0284C7),
                       ),
                     ),
                   ],
@@ -1966,7 +1970,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         'Active Stations',
                         '${statistics['activeStations'] ?? 0}',
                         Icons.sensors,
-                        Colors.green,
+                        const Color(0xFF0284C7),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -2266,7 +2270,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                               : Icons.sim_card,
                           size: 12,
                           color: dataSource == 'API Data'
-                              ? Colors.green
+                              ? const Color(0xFF0284C7)
                               : Colors.orange,
                         ),
                         const SizedBox(width: 4),
@@ -2275,7 +2279,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                           style: TextStyle(
                             fontSize: 10,
                             color: dataSource == 'API Data'
-                                ? Colors.green
+                                ? const Color(0xFF0284C7)
                                 : Colors.orange,
                             fontWeight: FontWeight.w500,
                           ),
@@ -2359,7 +2363,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.green[600],
+                                  color: const Color(0xFF0284C7),
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -2407,7 +2411,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                               : Icons.sim_card,
                           size: 12,
                           color: dataSource == 'API Data'
-                              ? Colors.green
+                              ? const Color(0xFF0284C7)
                               : Colors.orange,
                         ),
                         const SizedBox(width: 4),
@@ -2416,7 +2420,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                           style: TextStyle(
                             fontSize: 10,
                             color: dataSource == 'API Data'
-                                ? Colors.green
+                                ? const Color(0xFF0284C7)
                                 : Colors.orange,
                             fontWeight: FontWeight.w500,
                           ),

@@ -5,73 +5,73 @@ class DashboardThemes {
   // Private constructor to prevent instantiation
   DashboardThemes._();
 
-  /// Citizen Dashboard - deep teal and soft sage
+  /// Citizen Dashboard - deep ocean blue with clear-water cyan
   static const CitizenTheme = DashboardTheme(
-    primaryColor: Color(0xFF0F766E),
-    primaryVariant: Color(0xFF115E59),
-    secondaryColor: Color(0xFF5EEAD4),
-    secondaryVariant: Color(0xFF0D9488),
-    surfaceColor: Color(0xFFF7FAF9),
-    backgroundColor: Color(0xFFF0F7F5),
+    primaryColor: Color(0xFF075985),
+    primaryVariant: Color(0xFF0B3B60),
+    secondaryColor: Color(0xFF67E8F9),
+    secondaryVariant: Color(0xFF0891B2),
+    surfaceColor: Color(0xFFF5FAFE),
+    backgroundColor: Color(0xFFECF6FB),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF073B38),
-    onSurfaceColor: Color(0xFF172B29),
-    onBackgroundColor: Color(0xFF172B29),
+    onSecondaryColor: Color(0xFF083344),
+    onSurfaceColor: Color(0xFF142B3A),
+    onBackgroundColor: Color(0xFF142B3A),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFE1EBE8),
-    shadowColor: Color(0x120F766E),
-    accentColor: Color(0xFF14B8A6),
-    successColor: Color(0xFF16845B),
+    dividerColor: Color(0xFFDCEAF2),
+    shadowColor: Color(0x12075985),
+    accentColor: Color(0xFF06B6D4),
+    successColor: Color(0xFF0284C7),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF2673A8),
+    infoColor: Color(0xFF0284C7),
   );
 
-  /// Researcher Dashboard - clear, analytical blue
+  /// Researcher Dashboard - crisp blue with glacial cyan
   static const ResearcherTheme = DashboardTheme(
-    primaryColor: Color(0xFF315E9E),
-    primaryVariant: Color(0xFF244777),
-    secondaryColor: Color(0xFF9CC8F2),
-    secondaryVariant: Color(0xFF548DCB),
-    surfaceColor: Color(0xFFF6F8FC),
-    backgroundColor: Color(0xFFEEF3FA),
+    primaryColor: Color(0xFF0369A1),
+    primaryVariant: Color(0xFF164E78),
+    secondaryColor: Color(0xFF7DD3FC),
+    secondaryVariant: Color(0xFF38BDF8),
+    surfaceColor: Color(0xFFF4F9FD),
+    backgroundColor: Color(0xFFEAF4FA),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF172B45),
-    onSurfaceColor: Color(0xFF1A2637),
-    onBackgroundColor: Color(0xFF1A2637),
+    onSecondaryColor: Color(0xFF0C3148),
+    onSurfaceColor: Color(0xFF172A3B),
+    onBackgroundColor: Color(0xFF172A3B),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFE2E9F2),
-    shadowColor: Color(0x12315E9E),
-    accentColor: Color(0xFF548DCB),
-    successColor: Color(0xFF16845B),
+    dividerColor: Color(0xFFDCE8F1),
+    shadowColor: Color(0x120369A1),
+    accentColor: Color(0xFF0EA5E9),
+    successColor: Color(0xFF0284C7),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF2673A8),
+    infoColor: Color(0xFF0284C7),
   );
 
-  /// Policy Maker Dashboard - confident indigo
+  /// Policy Maker Dashboard - deep-water blue with bright aqua
   static const PolicyMakerTheme = DashboardTheme(
-    primaryColor: Color(0xFF5B5BD6),
-    primaryVariant: Color(0xFF4545A8),
-    secondaryColor: Color(0xFFB7B7F5),
-    secondaryVariant: Color(0xFF7777E5),
-    surfaceColor: Color(0xFFF8F8FD),
-    backgroundColor: Color(0xFFF1F1FA),
+    primaryColor: Color(0xFF1D4ED8),
+    primaryVariant: Color(0xFF1E3A8A),
+    secondaryColor: Color(0xFF7DD3FC),
+    secondaryVariant: Color(0xFF38BDF8),
+    surfaceColor: Color(0xFFF5F8FE),
+    backgroundColor: Color(0xFFEEF4FC),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF29294F),
-    onSurfaceColor: Color(0xFF24243B),
-    onBackgroundColor: Color(0xFF24243B),
+    onSecondaryColor: Color(0xFF102C4A),
+    onSurfaceColor: Color(0xFF1A2940),
+    onBackgroundColor: Color(0xFF1A2940),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFE6E6F2),
-    shadowColor: Color(0x125B5BD6),
-    accentColor: Color(0xFF7777E5),
-    successColor: Color(0xFF16845B),
+    dividerColor: Color(0xFFDDE7F2),
+    shadowColor: Color(0x121D4ED8),
+    accentColor: Color(0xFF0EA5E9),
+    successColor: Color(0xFF0284C7),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF2673A8),
+    infoColor: Color(0xFF0284C7),
   );
 }
 
@@ -122,10 +122,10 @@ class DashboardTheme {
   /// Convert to Flutter ThemeData with brightness support
   ThemeData toThemeData({Brightness brightness = Brightness.light}) {
     final isDark = brightness == Brightness.dark;
-    final surface = isDark ? const Color(0xFF172523) : cardColor;
-    final background = isDark ? const Color(0xFF101A19) : surfaceColor;
-    final foreground = isDark ? const Color(0xFFE5EFED) : onSurfaceColor;
-    final outline = isDark ? const Color(0xFF344744) : dividerColor;
+    final surface = isDark ? const Color(0xFF10283A) : cardColor;
+    final background = isDark ? const Color(0xFF091A28) : surfaceColor;
+    final foreground = isDark ? const Color(0xFFE5F4FC) : onSurfaceColor;
+    final outline = isDark ? const Color(0xFF29465A) : dividerColor;
 
     return ThemeData(
       brightness: brightness,
@@ -233,7 +233,7 @@ class DashboardTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF1C2B29) : surface,
+        fillColor: isDark ? const Color(0xFF153247) : surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -273,8 +273,8 @@ class DashboardTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: isDark
-            ? const Color(0xFF263A37)
-            : const Color(0xFF193B37),
+            ? const Color(0xFF12334A)
+            : const Color(0xFF103B5C),
         contentTextStyle: const TextStyle(color: Colors.white),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
@@ -290,7 +290,7 @@ class DashboardTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: isDark
-            ? const Color(0xFF263A37)
+            ? const Color(0xFF17384E)
             : primaryColor.withValues(alpha: 0.07),
         selectedColor: primaryColor.withValues(alpha: 0.14),
         side: BorderSide(color: outline),

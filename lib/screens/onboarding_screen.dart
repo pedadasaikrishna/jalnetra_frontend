@@ -27,7 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: 'For Everyone',
       subtitle: 'Know Your Water Status',
       description:
-          'Check if your area is safe (green), moderate (orange), or critical (red). Plan your daily water needs and get alerts when water levels change.',
+          'Check if your area is safe (blue), moderate (orange), or critical (red). Plan your daily water needs and get alerts when water levels change.',
       icon: Icons.home,
       color: DashboardThemes.CitizenTheme.secondaryColor,
     ),

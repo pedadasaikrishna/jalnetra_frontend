@@ -87,7 +87,7 @@ class WaterStatusCard extends StatelessWidget {
   Color _getStatusColor(WaterStatus status) {
     switch (status) {
       case WaterStatus.safe:
-        return Colors.green;
+        return const Color(0xFF0284C7);
       case WaterStatus.moderate:
         return Colors.orange;
       case WaterStatus.critical:

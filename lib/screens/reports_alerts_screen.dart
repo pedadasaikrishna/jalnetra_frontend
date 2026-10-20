@@ -134,7 +134,11 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.check_circle, size: 64, color: Colors.green),
+                      Icon(
+                        Icons.check_circle,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       SizedBox(height: 16),
                       Text('No alerts'),
                       Text('All stations are operating normally'),
@@ -271,7 +275,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                           'CSV',
                           'Comma-separated values',
                           Icons.table_chart,
-                          Colors.green,
+                          Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -355,7 +359,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
                     'Station Health',
                     'Overall health status and data quality assessment',
                     Icons.health_and_safety,
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                     () => _generateHealthReport(stations),
                   ),
                   const SizedBox(height: 12),
@@ -547,7 +551,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
         'subtitle': 'Overall health assessment',
         'date': '1 week ago',
         'icon': Icons.health_and_safety,
-        'color': Colors.green,
+        'color': Theme.of(context).colorScheme.primary,
       },
       {
         'id': 'report_3',
@@ -578,7 +582,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
         content: Text(
           'Exporting data for ${activeStations.length} active stations...',
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -617,7 +621,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Generating health report...'),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -647,7 +651,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Alert $alertId dismissed'),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }

@@ -135,6 +135,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     width: _currentPage == index ? 24 : 8,
                     height: 8,
+                    duration: const Duration(milliseconds: 260),
+                    curve: Curves.easeOutCubic,
                     decoration: BoxDecoration(
                       color: _currentPage == index
                           ? _pages[index].color
@@ -212,36 +214,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 172,
-            height: 172,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  page.color.withValues(alpha: isDark ? 0.32 : 0.16),
-                  page.color.withValues(alpha: isDark ? 0.12 : 0.05),
-                ],
-              ),
-            ),
-            child: Center(
-              child: Container(
-                width: 118,
-                height: 118,
-                decoration: BoxDecoration(
-                  color: page.color,
-                  borderRadius: BorderRadius.circular(38),
-                  boxShadow: [
-                    BoxShadow(
-                      color: page.color.withValues(alpha: 0.24),
-                      blurRadius: 24,
-                      offset: const Offset(0, 12),
-                    ),
+          TweenAnimationBuilder<double>(
+            key: ValueKey(page.title),
+            tween: Tween(begin: 0.88, end: 1),
+            duration: const Duration(milliseconds: 520),
+            curve: Curves.easeOutBack,
+            builder: (context, scale, child) =>
+                Transform.scale(scale: scale, child: child),
+            child: Container(
+              width: 172,
+              height: 172,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    page.color.withValues(alpha: isDark ? 0.32 : 0.16),
+                    page.color.withValues(alpha: isDark ? 0.12 : 0.05),
                   ],
                 ),
-                child: Icon(page.icon, size: 56, color: Colors.white),
+              ),
+              child: Center(
+                child: Container(
+                  width: 118,
+                  height: 118,
+                  decoration: BoxDecoration(
+                    color: page.color,
+                    borderRadius: BorderRadius.circular(38),
+                    boxShadow: [
+                      BoxShadow(
+                        color: page.color.withValues(alpha: 0.24),
+                        blurRadius: 24,
+                        offset: const Offset(0, 12),
+                      ),
+                    ],
+                  ),
+                  child: Icon(page.icon, size: 56, color: Colors.white),
+                ),
               ),
             ),
           ),

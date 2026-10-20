@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/user_provider.dart';
 import '../themes/dashboard_themes.dart';
+import '../widgets/page_entrance.dart';
 
 /// Role selection screen for choosing user type
 class RoleSelectionScreen extends ConsumerStatefulWidget {
@@ -24,134 +25,154 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          child: Column(
-            children: [
-              Container(
-                width: 58,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(
-                  Icons.water_drop_rounded,
-                  size: 30,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Choose Your Role',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Select how you\'d like to use JALNETRA',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isDark ? Colors.white70 : Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 48),
-
-              // Role Selection Tabs
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+        child: PageEntrance(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+            child: Column(
+              children: [
+                Container(
+                  width: 58,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Icon(
+                    Icons.water_drop_rounded,
+                    size: 30,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                padding: const EdgeInsets.all(6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildRoleTab(
-                        context,
-                        'Citizen',
-                        Icons.person,
-                        DashboardThemes.CitizenTheme.primaryColor,
-                        UserRole.user,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _buildRoleTab(
-                        context,
-                        'Researcher',
-                        Icons.search,
-                        DashboardThemes.ResearcherTheme.primaryColor,
-                        UserRole.researcher,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _buildRoleTab(
-                        context,
-                        'Policy Makers',
-                        Icons.admin_panel_settings,
-                        DashboardThemes.PolicyMakerTheme.primaryColor,
-                        UserRole.policyMaker,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // Features Section
-              _buildFeaturesSection(context),
-
-              const SizedBox(height: 32),
-
-              // Continue Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () => _selectRole(ref, _selectedRole, context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _getRoleColor(_selectedRole),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                    minimumSize: const Size.fromHeight(56),
+                const SizedBox(height: 24),
+                Text(
+                  'Choose Your Role',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
-                  child: Text(
-                    'Continue as ${_getRoleDisplayName(_selectedRole)}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Select how you\'d like to use JALNETRA',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: isDark ? Colors.white70 : Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 34),
+
+                // Role Selection Tabs
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outlineVariant,
                     ),
                   ),
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildRoleTab(
+                          context,
+                          'Citizen',
+                          Icons.person,
+                          DashboardThemes.CitizenTheme.primaryColor,
+                          UserRole.user,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildRoleTab(
+                          context,
+                          'Researcher',
+                          Icons.search,
+                          DashboardThemes.ResearcherTheme.primaryColor,
+                          UserRole.researcher,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildRoleTab(
+                          context,
+                          'Policy Makers',
+                          Icons.admin_panel_settings,
+                          DashboardThemes.PolicyMakerTheme.primaryColor,
+                          UserRole.policyMaker,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
-              // Footer note
-              Text(
-                'You can change your role anytime in settings',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: isDark ? Colors.white60 : Colors.grey[500],
+                // Features Section
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 280),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.025),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  ),
+                  child: KeyedSubtree(
+                    key: ValueKey(_selectedRole),
+                    child: _buildFeaturesSection(context),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-            ],
+
+                const SizedBox(height: 32),
+
+                // Continue Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => _selectRole(ref, _selectedRole, context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _getRoleColor(_selectedRole),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                      minimumSize: const Size.fromHeight(56),
+                    ),
+                    child: Text(
+                      'Continue as ${_getRoleDisplayName(_selectedRole)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Footer note
+                Text(
+                  'You can change your role anytime in settings',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isDark ? Colors.white60 : Colors.grey[500],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
@@ -355,7 +376,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     switch (role) {
       case UserRole.user:
         return const [
-          'Traffic light status (Green/Orange/Red)',
+          'Clear, at-a-glance water health indicators',
           'Daily water planning',
           'Local alerts & notifications',
           'Simple, easy-to-understand interface',

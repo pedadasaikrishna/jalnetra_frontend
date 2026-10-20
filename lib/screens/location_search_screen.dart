@@ -359,7 +359,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                                 '${(station.currentWaterLevel * 0.1).toStringAsFixed(1)} m',
                                 color: station.currentWaterLevel > 15
                                     ? Colors.red
-                                    : Colors.green,
+                                    : Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ],
@@ -381,7 +381,7 @@ class _LocationSearchScreenState extends ConsumerState<LocationSearchScreen> {
                                 'Status',
                                 station.status,
                                 color: station.status == 'Active'
-                                    ? Colors.green
+                                    ? Theme.of(context).colorScheme.primary
                                     : Colors.orange,
                               ),
                             ),

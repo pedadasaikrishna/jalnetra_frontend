@@ -498,16 +498,23 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
 
             const SizedBox(height: 24),
 
-            // New Features Section - Show after analytics button is clicked
-            if (showAnalytics &&
-                selectedState != null &&
-                selectedDistrict != null &&
-                selectedCity != null) ...[
-              // Show API error message if any
-              if (_apiErrorMessage != null) _buildApiErrorMessage(),
-
-              _buildNewFeaturesSection(),
-            ],
+            AnimatedSize(
+              duration: const Duration(milliseconds: 320),
+              curve: Curves.easeInOutCubic,
+              child:
+                  showAnalytics &&
+                      selectedState != null &&
+                      selectedDistrict != null &&
+                      selectedCity != null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_apiErrorMessage != null) _buildApiErrorMessage(),
+                        _buildNewFeaturesSection(),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
 
             const SizedBox(height: 24),
 
@@ -1089,7 +1096,10 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue[600]!, Colors.blue[800]!],
+              colors: [
+                DashboardThemes.CitizenTheme.primaryColor!,
+                DashboardThemes.CitizenTheme.primaryColor!,
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -1341,12 +1351,13 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.2),
+                        color: DashboardThemes.CitizenTheme.primaryColor
+                            .withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         Icons.trending_down,
-                        color: Colors.blue[600],
+                        color: DashboardThemes.CitizenTheme.primaryColor,
                         size: 20,
                       ),
                     ),
@@ -1357,7 +1368,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Colors.blue[700],
+                          color: DashboardThemes.CitizenTheme.primaryColor,
                         ),
                       ),
                     ),
@@ -1380,7 +1391,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue[600],
+                            color: DashboardThemes.CitizenTheme.primaryColor,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -1448,12 +1459,13 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.2),
+                        color: DashboardThemes.CitizenTheme.secondaryVariant
+                            .withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         Icons.height,
-                        color: Colors.purple[600],
+                        color: DashboardThemes.CitizenTheme.secondaryVariant,
                         size: 20,
                       ),
                     ),
@@ -1464,7 +1476,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: Colors.purple[700],
+                          color: DashboardThemes.CitizenTheme.secondaryVariant,
                         ),
                       ),
                     ),
@@ -2149,12 +2161,13 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.2),
+                        color: DashboardThemes.CitizenTheme.secondaryVariant
+                            .withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         Icons.show_chart,
-                        color: Colors.purple[600],
+                        color: DashboardThemes.CitizenTheme.secondaryVariant,
                         size: 20,
                       ),
                     ),
@@ -2165,7 +2178,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.purple[700],
+                          color: DashboardThemes.CitizenTheme.secondaryVariant,
                         ),
                       ),
                     ),
@@ -2176,10 +2189,12 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.1),
+                        color: DashboardThemes.CitizenTheme.secondaryVariant
+                            .withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: Colors.purple.withOpacity(0.3),
+                          color: DashboardThemes.CitizenTheme.secondaryVariant
+                              .withOpacity(0.3),
                         ),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -2201,7 +2216,8 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                             });
                           },
                           style: TextStyle(
-                            color: Colors.purple[700],
+                            color:
+                                DashboardThemes.CitizenTheme.secondaryVariant,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -2288,7 +2304,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
                   xValueMapper: (ChartDataPoint data, _) => data.x,
                   yValueMapper: (ChartDataPoint data, _) => data.y,
                   name: 'Forecast',
-                  color: Colors.blue,
+                  color: DashboardThemes.CitizenTheme.primaryColor,
                   width: 2,
                   markerSettings: const charts.MarkerSettings(
                     isVisible: true,
@@ -2410,13 +2426,13 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
   Color _getForecastTrendColor() {
     switch (_getForecastTrend()) {
       case 'STABLE':
-        return Colors.blue;
+        return DashboardThemes.CitizenTheme.primaryColor;
       case 'DECLINING':
         return Colors.red;
       case 'RISING':
         return const Color(0xFF0284C7);
       default:
-        return Colors.blue;
+        return DashboardThemes.CitizenTheme.primaryColor;
     }
   }
 
@@ -2437,13 +2453,13 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
   Color _getDayForecastTrendColor() {
     switch (_getDayForecastTrend()) {
       case 'STABLE':
-        return Colors.blue;
+        return DashboardThemes.CitizenTheme.primaryColor;
       case 'DECLINING':
         return Colors.red;
       case 'RISING':
         return const Color(0xFF0284C7);
       default:
-        return Colors.blue;
+        return DashboardThemes.CitizenTheme.primaryColor;
     }
   }
 
@@ -2493,7 +2509,7 @@ class _CitizenDashboardState extends ConsumerState<CitizenDashboard> {
       case 'warning':
         return Colors.orange;
       case 'info':
-        return Colors.blue;
+        return DashboardThemes.CitizenTheme.primaryColor;
       default:
         return Colors.grey;
     }

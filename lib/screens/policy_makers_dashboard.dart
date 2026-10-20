@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/policy_maker_provider.dart';
 import '../themes/dashboard_themes.dart';
+import '../widgets/page_entrance.dart';
 
 /// Policy Makers Dashboard - Clean minimal version
 class PolicyMakersDashboard extends ConsumerStatefulWidget {
@@ -765,7 +766,6 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
                   Theme.of(context).platform == TargetPlatform.iOS
                       ? Icons.arrow_back_ios
                       : Icons.arrow_back,
-                  color: Colors.white,
                 ),
                 onPressed: () {
                   context.pop();
@@ -781,23 +781,29 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Welcome Section
-            _buildWelcomeSection(),
-            const SizedBox(height: 24),
+      body: PageEntrance(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Welcome Section
+              _buildWelcomeSection(),
+              const SizedBox(height: 24),
 
-            // Danger Zone Selection
-            _buildDangerZoneSection(),
-            const SizedBox(height: 24),
+              // Danger Zone Selection
+              _buildDangerZoneSection(),
+              const SizedBox(height: 24),
 
-            // Zone Details (shown when region is selected)
-            if (showZoneDetails && selectedRegion != null)
-              _buildZoneDetailsSection(),
-          ],
+              AnimatedSize(
+                duration: const Duration(milliseconds: 320),
+                curve: Curves.easeInOutCubic,
+                child: showZoneDetails && selectedRegion != null
+                    ? _buildZoneDetailsSection()
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1146,7 +1152,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
                 'Total Zones',
                 regionData['total'].toString(),
                 'All',
-                Colors.blue,
+                DashboardThemes.PolicyMakerTheme.primaryColor,
                 Icons.location_on,
               ),
             ),
@@ -1275,7 +1281,7 @@ class _PolicyMakersDashboardState extends ConsumerState<PolicyMakersDashboard> {
         ...(regionData['greenZones'] as List<String>),
       ];
       zoneTypeTitle = 'All Zones';
-      zoneColor = Colors.blue;
+      zoneColor = DashboardThemes.PolicyMakerTheme.primaryColor;
       zoneIcon = Icons.location_on;
     } else if (selectedZoneType == 'Red Zones') {
       zonesToShow = regionData['redZones'] as List<String>;

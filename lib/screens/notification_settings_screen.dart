@@ -8,10 +8,12 @@ class NotificationSettingsScreen extends ConsumerStatefulWidget {
   const NotificationSettingsScreen({super.key});
 
   @override
-  ConsumerState<NotificationSettingsScreen> createState() => _NotificationSettingsScreenState();
+  ConsumerState<NotificationSettingsScreen> createState() =>
+      _NotificationSettingsScreenState();
 }
 
-class _NotificationSettingsScreenState extends ConsumerState<NotificationSettingsScreen> {
+class _NotificationSettingsScreenState
+    extends ConsumerState<NotificationSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final notificationSettings = ref.watch(notificationSettingsProvider);
@@ -20,12 +22,11 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notification Settings'),
-        backgroundColor: Colors.blue.shade600,
-        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.science),
-            onPressed: () => _showTestNotificationDialog(context, notificationService),
+            onPressed: () =>
+                _showTestNotificationDialog(context, notificationService),
             tooltip: 'Test Notification',
           ),
         ],
@@ -37,12 +38,18 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
           children: [
             // Header
             Card(
-              color: Colors.blue.shade50,
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.08),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    Icon(Icons.notifications_active, color: Colors.blue.shade600, size: 32),
+                    Icon(
+                      Icons.notifications_active,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 32,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -50,17 +57,19 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                         children: [
                           Text(
                             'Groundwater Alert Settings',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade800,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Configure notifications for critical groundwater conditions',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.blue.shade700,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                         ],
                       ),
@@ -69,9 +78,9 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Critical Alerts Section
             _buildAlertSection(
               context,
@@ -82,7 +91,9 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   'Critical Level Alerts',
                   'Alert when water levels are critically low or high',
                   notificationSettings.criticalAlertsEnabled,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateCriticalAlerts(value),
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateCriticalAlerts(value),
                   Colors.red,
                 ),
                 _buildSliderTile(
@@ -91,15 +102,17 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   notificationSettings.criticalThreshold,
                   -15.0,
                   -2.0,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateCriticalThreshold(value),
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateCriticalThreshold(value),
                   Colors.red,
                   '${notificationSettings.criticalThreshold.toStringAsFixed(1)}m',
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Trend Alerts Section
             _buildAlertSection(
               context,
@@ -110,14 +123,16 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   'Trend Change Alerts',
                   'Alert when groundwater levels show significant trends',
                   notificationSettings.trendAlertsEnabled,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateTrendAlerts(value),
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateTrendAlerts(value),
                   Colors.orange,
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Recharge Alerts Section
             _buildAlertSection(
               context,
@@ -128,14 +143,16 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   'Recharge Opportunity Alerts',
                   'Alert when conditions are optimal for groundwater recharge',
                   notificationSettings.rechargeAlertsEnabled,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateRechargeAlerts(value),
-                  Colors.green,
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateRechargeAlerts(value),
+                  Theme.of(context).colorScheme.primary,
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Data Quality Alerts Section
             _buildAlertSection(
               context,
@@ -146,14 +163,16 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   'Data Quality Issues',
                   'Alert when data quality issues are detected',
                   notificationSettings.dataQualityAlertsEnabled,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateDataQualityAlerts(value),
-                  Colors.purple,
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateDataQualityAlerts(value),
+                  Theme.of(context).colorScheme.primary,
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Scheduled Checks Section
             _buildAlertSection(
               context,
@@ -164,8 +183,10 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                   'Scheduled Monitoring',
                   'Receive regular reminders to check groundwater levels',
                   notificationSettings.scheduledChecksEnabled,
-                  (value) => ref.read(notificationSettingsProvider.notifier).updateScheduledChecks(value),
-                  Colors.blue,
+                  (value) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateScheduledChecks(value),
+                  Theme.of(context).colorScheme.primary,
                 ),
                 if (notificationSettings.scheduledChecksEnabled)
                   _buildSliderTile(
@@ -174,20 +195,22 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                     notificationSettings.checkIntervalHours.toDouble(),
                     1.0,
                     168.0, // 1 hour to 1 week
-                    (value) => ref.read(notificationSettingsProvider.notifier).updateCheckInterval(value.toInt()),
-                    Colors.blue,
+                    (value) => ref
+                        .read(notificationSettingsProvider.notifier)
+                        .updateCheckInterval(value.toInt()),
+                    Theme.of(context).colorScheme.primary,
                     _formatInterval(notificationSettings.checkIntervalHours),
                   ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Notification Management
             _buildNotificationManagement(context, notificationService),
-            
+
             const SizedBox(height: 24),
-            
+
             // Alert Types Information
             _buildAlertTypesInfo(context),
           ],
@@ -212,15 +235,15 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.blue.shade800,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 16),
             ...children,
@@ -262,15 +285,15 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.grey.shade600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
         ),
         const SizedBox(height: 8),
         Row(
@@ -294,10 +317,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
               ),
               child: Text(
                 displayValue,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, color: color),
               ),
             ),
           ],
@@ -306,7 +326,10 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     );
   }
 
-  Widget _buildNotificationManagement(BuildContext context, GroundwaterNotificationService notificationService) {
+  Widget _buildNotificationManagement(
+    BuildContext context,
+    GroundwaterNotificationService notificationService,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -317,7 +340,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
               'Notification Management',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.blue.shade800,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 16),
@@ -326,13 +349,14 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () async {
-                      final pending = await notificationService.getPendingNotifications();
+                      final pending = await notificationService
+                          .getPendingNotifications();
                       _showPendingNotificationsDialog(context, pending);
                     },
                     icon: const Icon(Icons.schedule),
                     label: const Text('View Pending'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -344,7 +368,9 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                       await notificationService.cancelAllNotifications();
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('All notifications cancelled')),
+                          const SnackBar(
+                            content: Text('All notifications cancelled'),
+                          ),
                         );
                       }
                     },
@@ -393,7 +419,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
             _buildAlertTypeInfo(
               '💧 Recharge Alerts',
               'Informational alerts for recharge opportunities',
-              'Green notifications with sound',
+              'Water-blue notifications with sound',
             ),
             _buildAlertTypeInfo(
               '📊 Data Quality Alerts',
@@ -432,10 +458,7 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
                 Text(description),
                 Text(
                   details,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -455,7 +478,10 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     }
   }
 
-  void _showTestNotificationDialog(BuildContext context, GroundwaterNotificationService notificationService) {
+  void _showTestNotificationDialog(
+    BuildContext context,
+    GroundwaterNotificationService notificationService,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -501,7 +527,10 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
     );
   }
 
-  void _showPendingNotificationsDialog(BuildContext context, List<PendingNotificationRequest> pending) {
+  void _showPendingNotificationsDialog(
+    BuildContext context,
+    List<PendingNotificationRequest> pending,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

@@ -112,7 +112,7 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                     Icon(
                       Icons.check_circle_outline,
                       size: 64,
-                      color: Colors.green,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     SizedBox(height: 16),
                     Text(
@@ -240,7 +240,7 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                     'Active Stations',
                     '${statistics['activeStations'] ?? 0}',
                     Icons.sensors,
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
@@ -355,7 +355,7 @@ class _TrafficSignalsScreenState extends ConsumerState<TrafficSignalsScreen>
                         _buildStateSummaryChip(
                           'Good',
                           '${summary['goodRegions']}',
-                          Colors.green,
+                          Theme.of(context).colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
                         _buildStateSummaryChip(

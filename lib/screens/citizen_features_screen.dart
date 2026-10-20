@@ -12,8 +12,6 @@ class CitizenFeaturesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Citizen Features'),
-        backgroundColor: Colors.blue.shade600,
-        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -26,12 +24,18 @@ class CitizenFeaturesScreen extends ConsumerWidget {
           children: [
             // Header
             Card(
-              color: Colors.blue.shade50,
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.08),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    Icon(Icons.person, color: Colors.blue.shade600, size: 32),
+                    Icon(
+                      Icons.person,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 32,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -39,17 +43,19 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                         children: [
                           Text(
                             'Citizen Dashboard Features',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade800,
-                            ),
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Comprehensive groundwater monitoring and analysis tools for citizens',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.blue.shade700,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                         ],
                       ),
@@ -58,9 +64,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Location Detection Features
             _buildFeatureSection(
               context,
@@ -72,7 +78,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'GPS Location Detection',
                   'Automatically detect your current location using GPS',
                   Icons.my_location,
-                  Colors.green,
+                  Theme.of(context).colorScheme.primary,
                   'Real-time GPS tracking with high accuracy',
                 ),
                 _buildFeatureCard(
@@ -80,7 +86,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Address Resolution',
                   'Convert GPS coordinates to readable addresses',
                   Icons.location_on,
-                  Colors.blue,
+                  Theme.of(context).colorScheme.primary,
                   'Reverse geocoding for better location understanding',
                 ),
                 _buildFeatureCard(
@@ -96,14 +102,14 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Location Permission Management',
                   'Smart permission handling for location access',
                   Icons.security,
-                  Colors.purple,
+                  Theme.of(context).colorScheme.primary,
                   'Secure and privacy-focused location handling',
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Groundwater Monitoring Features
             _buildFeatureSection(
               context,
@@ -115,7 +121,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Average Depth Tracking',
                   'Monitor average groundwater depth in your area',
                   Icons.water_drop,
-                  Colors.cyan,
+                  Theme.of(context).colorScheme.primary,
                   'Real-time depth measurements with historical data',
                 ),
                 _buildFeatureCard(
@@ -136,9 +142,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Forecasting Features
             _buildFeatureSection(
               context,
@@ -150,7 +156,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Monthly Forecast',
                   'Predict groundwater levels for the next month',
                   Icons.calendar_month,
-                  Colors.indigo,
+                  Theme.of(context).colorScheme.primary,
                   'Machine learning-based monthly predictions',
                 ),
                 _buildFeatureCard(
@@ -171,9 +177,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Alert & Notification Features
             _buildFeatureSection(
               context,
@@ -201,14 +207,14 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Location-based Alerts',
                   'Alerts specific to your selected location',
                   Icons.location_city,
-                  Colors.purple,
+                  Theme.of(context).colorScheme.primary,
                   'Personalized alerts for your area',
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Data Management Features
             _buildFeatureSection(
               context,
@@ -220,7 +226,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Manual Data Entry',
                   'Enter your own groundwater measurements',
                   Icons.edit,
-                  Colors.green,
+                  Theme.of(context).colorScheme.primary,
                   'Custom data entry with validation',
                 ),
                 _buildFeatureCard(
@@ -228,7 +234,7 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Data Export',
                   'Export your data in various formats',
                   Icons.download,
-                  Colors.blue,
+                  Theme.of(context).colorScheme.primary,
                   'CSV, JSON, and PDF export options',
                 ),
                 _buildFeatureCard(
@@ -244,14 +250,14 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   'Data Visualization',
                   'Visual charts and graphs for data analysis',
                   Icons.bar_chart,
-                  Colors.purple,
+                  Theme.of(context).colorScheme.primary,
                   'Interactive charts and visualizations',
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Traffic Light System
             _buildFeatureSection(
               context,
@@ -260,10 +266,10 @@ class CitizenFeaturesScreen extends ConsumerWidget {
               [
                 _buildFeatureCard(
                   context,
-                  'Green Status',
+                  'Safe Status',
                   'Good groundwater levels - safe to use',
                   Icons.circle,
-                  Colors.green,
+                  Theme.of(context).colorScheme.primary,
                   'Optimal groundwater conditions',
                 ),
                 _buildFeatureCard(
@@ -284,9 +290,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Action Buttons
             Card(
               child: Padding(
@@ -308,7 +314,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                             icon: const Icon(Icons.dashboard),
                             label: const Text('Open Citizen Dashboard'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue.shade600,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -321,7 +329,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                             icon: const Icon(Icons.water_drop),
                             label: const Text('Groundwater Data'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.cyan.shade600,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -338,7 +348,9 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                             icon: const Icon(Icons.api),
                             label: const Text('Test API'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green.shade600,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -363,12 +375,14 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Summary
             Card(
-              color: Colors.green.shade50,
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.08),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -376,14 +390,18 @@ class CitizenFeaturesScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green.shade600),
+                        Icon(
+                          Icons.check_circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           'Citizen Features Summary',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green.shade800,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ],
                     ),
@@ -421,15 +439,15 @@ class CitizenFeaturesScreen extends ConsumerWidget {
           title,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.blue.shade800,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey.shade600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
         ),
         const SizedBox(height: 16),
         ...features,

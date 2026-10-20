@@ -6,6 +6,7 @@ import '../providers/dwlr_provider.dart';
 import '../models/dwlr_station.dart';
 import '../widgets/overview_card.dart';
 import '../widgets/mini_chart.dart';
+import '../widgets/page_entrance.dart';
 
 /// Home Dashboard with overview cards and mini charts
 class HomeDashboard extends ConsumerStatefulWidget {
@@ -34,7 +35,34 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Groundwater Monitoring Dashboard'),
+        title: const Row(
+          children: [
+            Icon(Icons.water_drop_rounded, size: 24),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'JALNETRA',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1,
+                  ),
+                ),
+                Text(
+                  'WATER INTELLIGENCE',
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
         leading: GoRouter.of(context).canPop()
             ? IconButton(
                 icon: Icon(
@@ -49,55 +77,82 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
               )
             : null,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () => context.go('/citizen-features'),
-            tooltip: 'Citizen Features',
-          ),
-          IconButton(
-            icon: const Icon(Icons.analytics),
-            onPressed: () => context.go('/advanced-analytics'),
-            tooltip: 'Advanced Analytics',
-          ),
-          IconButton(
-            icon: const Icon(Icons.trending_up),
-            onPressed: () => context.go('/prediction-forecast'),
-            tooltip: 'Predictions & Forecasts',
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_active),
-            onPressed: () => context.go('/notification-settings'),
-            tooltip: 'Notification Settings',
-          ),
-          IconButton(
-            icon: const Icon(Icons.water_drop),
-            onPressed: () => context.go('/groundwater-data'),
-            tooltip: 'Groundwater Data',
-          ),
-          IconButton(
-            icon: const Icon(Icons.api),
-            onPressed: () => context.go('/api-test'),
-            tooltip: 'Test API Connection',
-          ),
-          IconButton(
-            icon: const Icon(Icons.bug_report),
-            onPressed: () => context.go('/groundwater-test'),
-            tooltip: 'Test Groundwater API',
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => context.go('/stations'),
-            tooltip: 'Search Stations',
-          ),
-          IconButton(
-            icon: const Icon(Icons.map),
-            onPressed: () => context.go('/map'),
-            tooltip: 'View Map',
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () => context.go('/alerts'),
-            tooltip: 'View Alerts',
+          PopupMenuButton<String>(
+            tooltip: 'Open dashboard menu',
+            icon: const Icon(Icons.grid_view_rounded),
+            onSelected: (route) => context.go(route),
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: '/citizen-features',
+                child: _DashboardMenuItem(
+                  icon: Icons.person_outline,
+                  label: 'Citizen features',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/advanced-analytics',
+                child: _DashboardMenuItem(
+                  icon: Icons.query_stats_rounded,
+                  label: 'Advanced analytics',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/prediction-forecast',
+                child: _DashboardMenuItem(
+                  icon: Icons.trending_up_rounded,
+                  label: 'Predictions',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/notification-settings',
+                child: _DashboardMenuItem(
+                  icon: Icons.notifications_none_rounded,
+                  label: 'Notifications',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/groundwater-data',
+                child: _DashboardMenuItem(
+                  icon: Icons.water_drop_outlined,
+                  label: 'Groundwater data',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/stations',
+                child: _DashboardMenuItem(
+                  icon: Icons.search_rounded,
+                  label: 'Find stations',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/alerts',
+                child: _DashboardMenuItem(
+                  icon: Icons.campaign_outlined,
+                  label: 'Alerts',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/settings',
+                child: _DashboardMenuItem(
+                  icon: Icons.settings_outlined,
+                  label: 'Settings',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/api-test',
+                child: _DashboardMenuItem(
+                  icon: Icons.api_rounded,
+                  label: 'API connection',
+                ),
+              ),
+              PopupMenuItem(
+                value: '/groundwater-test',
+                child: _DashboardMenuItem(
+                  icon: Icons.science_outlined,
+                  label: 'Groundwater test',
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -109,30 +164,32 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
               onRefresh: () async {
                 await ref.read(dwlrStationsProvider.notifier).loadStations();
               },
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Quick Stats Overview
-                    _buildQuickStats(stations),
-                    const SizedBox(height: 20),
+              child: PageEntrance(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Quick Stats Overview
+                      _buildQuickStats(stations),
+                      const SizedBox(height: 20),
 
-                    // Recent Trends Chart
-                    _buildTrendsChart(stations),
-                    const SizedBox(height: 20),
+                      // Recent Trends Chart
+                      _buildTrendsChart(stations),
+                      const SizedBox(height: 20),
 
-                    // State-wise Distribution
-                    _buildStateDistribution(stations),
-                    const SizedBox(height: 20),
+                      // State-wise Distribution
+                      _buildStateDistribution(stations),
+                      const SizedBox(height: 20),
 
-                    // Recent Stations
-                    _buildRecentStations(stations),
-                    const SizedBox(height: 20),
+                      // Recent Stations
+                      _buildRecentStations(stations),
+                      const SizedBox(height: 20),
 
-                    // Quick Actions
-                    _buildQuickActions(),
-                  ],
+                      // Quick Actions
+                      _buildQuickActions(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -169,7 +226,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
                 title: 'Total Stations',
                 value: totalStations.toString(),
                 icon: Icons.water_drop,
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primary,
                 subtitle: 'DWLR Stations',
               ),
             ),
@@ -179,7 +236,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
                 title: 'Active Stations',
                 value: activeStations.toString(),
                 icon: Icons.check_circle,
-                color: Colors.green,
+                color: Theme.of(context).colorScheme.primary,
                 subtitle:
                     '${((activeStations / totalStations) * 100).toStringAsFixed(1)}% active',
               ),
@@ -204,7 +261,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
                 title: 'Data Quality',
                 value: '${dataAvailability.toStringAsFixed(1)}%',
                 icon: Icons.analytics,
-                color: Colors.purple,
+                color: Theme.of(context).colorScheme.secondary,
                 subtitle: 'Availability',
               ),
             ),
@@ -234,7 +291,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
               child: MiniChart(
                 data: _generateTrendData(),
                 title: 'Average Water Level',
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ],
@@ -467,7 +524,7 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'active':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case 'inactive':
         return Colors.red;
       case 'maintenance':
@@ -480,13 +537,31 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
   /// Get state color
   Color _getStateColor(String state) {
     final colors = [
-      Colors.blue,
-      Colors.green,
+      Theme.of(context).colorScheme.primary,
+      Theme.of(context).colorScheme.secondary,
       Colors.orange,
-      Colors.purple,
+      const Color(0xFF5166D8),
       Colors.red,
-      Colors.teal,
+      const Color(0xFF39A9D6),
     ];
     return colors[state.hashCode % colors.length];
+  }
+}
+
+class _DashboardMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _DashboardMenuItem({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(width: 12),
+        Text(label),
+      ],
+    );
   }
 }

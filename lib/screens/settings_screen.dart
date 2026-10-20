@@ -361,7 +361,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Connection test completed'),
-          backgroundColor: Colors.green,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
       );
     });
@@ -386,7 +386,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Cache cleared successfully'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               );
             },
@@ -403,7 +403,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Data export started'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -414,7 +414,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Data sync started'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -446,7 +446,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Settings reset to defaults'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               );
             },

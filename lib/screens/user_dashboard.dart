@@ -112,7 +112,9 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
           children: [
             Icon(
               Icons.location_on,
-              color: userLocation != null ? Colors.green : Colors.grey,
+              color: userLocation != null
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -228,7 +230,7 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
                 title: 'Check Water Quality',
                 subtitle: 'Latest quality reports',
                 icon: Icons.science,
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.primary,
                 onTap: () => _showWaterQualityDialog(),
               ),
             ),
@@ -238,7 +240,7 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
                 title: 'Plan Storage',
                 subtitle: 'Water storage calculator',
                 icon: Icons.water_drop,
-                color: Colors.green,
+                color: Theme.of(context).colorScheme.primary,
                 onTap: () => _showStorageCalculator(),
               ),
             ),
@@ -262,7 +264,7 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
                 title: 'Conservation Tips',
                 subtitle: 'Save water daily',
                 icon: Icons.eco,
-                color: Colors.teal,
+                color: Theme.of(context).colorScheme.primary,
                 onTap: () => _showConservationTips(),
               ),
             ),
@@ -362,14 +364,14 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
               Icons.water_drop,
               'Water Storage',
               'Store 2-3 days worth of water for emergencies',
-              Colors.blue,
+              Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 12),
             _buildTipItem(
               Icons.eco,
               'Conservation',
               'Fix leaks immediately - they waste 20% of water',
-              Colors.green,
+              Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 12),
             _buildTipItem(
@@ -487,7 +489,7 @@ class _UserDashboardState extends ConsumerState<UserDashboard> {
   Color _getStatusColor(WaterStatus status) {
     switch (status) {
       case WaterStatus.safe:
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case WaterStatus.moderate:
         return Colors.orange;
       case WaterStatus.critical:

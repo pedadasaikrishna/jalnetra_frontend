@@ -336,7 +336,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     'Water Quality',
                     'Good',
                     Icons.check_circle,
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                     'Safe for drinking',
                   ),
                 ),
@@ -346,7 +346,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     'Recharge Status',
                     'Moderate',
                     Icons.water,
-                    Colors.teal,
+                    Theme.of(context).colorScheme.tertiary,
                     'Seasonal variation',
                   ),
                 ),
@@ -516,7 +516,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: _buildStatCard(
                     'Aquifer Type',
                     data['aquiferType'] ?? 'N/A',
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -524,7 +524,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: _buildStatCard(
                     'Aquifer Type',
                     data['aquiferType'] ?? 'N/A',
-                    Colors.teal,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],
@@ -536,7 +536,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: _buildStatCard(
                     'Well Type',
                     data['wellType'] ?? 'N/A',
-                    Colors.indigo,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -544,7 +544,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: _buildStatCard(
                     'Data Source',
                     data['dataSource'] ?? 'N/A',
-                    Colors.purple,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ],

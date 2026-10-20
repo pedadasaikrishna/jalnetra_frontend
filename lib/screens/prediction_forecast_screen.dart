@@ -11,43 +11,49 @@ class PredictionForecastScreen extends ConsumerStatefulWidget {
   const PredictionForecastScreen({super.key});
 
   @override
-  ConsumerState<PredictionForecastScreen> createState() => _PredictionForecastScreenState();
+  ConsumerState<PredictionForecastScreen> createState() =>
+      _PredictionForecastScreenState();
 }
 
-class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScreen> {
+class _PredictionForecastScreenState
+    extends ConsumerState<PredictionForecastScreen> {
   String? _selectedLocation;
   String _selectedTab = 'Prediction';
 
   @override
   Widget build(BuildContext context) {
-    final availableLocations = ref.watch(groundwater.availableLocationsProvider);
-    final predictionData = _selectedLocation != null 
+    final availableLocations = ref.watch(
+      groundwater.availableLocationsProvider,
+    );
+    final predictionData = _selectedLocation != null
         ? ref.watch(predictionDataProvider(_selectedLocation!))
         : const AsyncValue.data(null);
-    final forecastDataRaw = _selectedLocation != null 
+    final forecastDataRaw = _selectedLocation != null
         ? ref.watch(groundwater.forecast30DaysProvider(_selectedLocation!))
         : const AsyncValue.data(<Map<String, dynamic>>[]);
     final AsyncValue<Map<String, dynamic>?> forecastData = forecastDataRaw.when(
-      data: (data) => AsyncValue.data(data.isNotEmpty ? {'forecastData': data} : null),
+      data: (data) =>
+          AsyncValue.data(data.isNotEmpty ? {'forecastData': data} : null),
       loading: () => const AsyncValue.loading(),
       error: (error, stack) => AsyncValue.error(error, stack),
     );
-    final AsyncValue<Map<String, dynamic>> combinedData = _selectedLocation != null 
+    final AsyncValue<Map<String, dynamic>> combinedData =
+        _selectedLocation != null
         ? ref.watch(combinedPredictionForecastProvider(_selectedLocation!))
         : const AsyncValue.data(<String, dynamic>{});
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Predictions & Forecasts'),
-        backgroundColor: Colors.purple.shade600,
-        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
               if (_selectedLocation != null) {
                 ref.invalidate(predictionDataProvider(_selectedLocation!));
-                ref.invalidate(groundwater.forecast30DaysProvider(_selectedLocation!));
+                ref.invalidate(
+                  groundwater.forecast30DaysProvider(_selectedLocation!),
+                );
               }
             },
           ),
@@ -57,15 +63,20 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         children: [
           // Location Selection
           _buildLocationSelector(availableLocations),
-          
+
           // Tab Selection
           _buildTabSelector(),
-          
+
           // Content based on selected tab
           Expanded(
             child: _selectedLocation == null
                 ? _buildLocationPrompt()
-                : _buildContent(_selectedTab, predictionData, forecastData, combinedData),
+                : _buildContent(
+                    _selectedTab,
+                    predictionData,
+                    forecastData,
+                    combinedData,
+                  ),
           ),
         ],
       ),
@@ -82,9 +93,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Select Location for Predictions',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
@@ -121,15 +132,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
       ),
       child: Row(
         children: [
-          Expanded(
-            child: _buildTabButton('Prediction', Icons.trending_up),
-          ),
-          Expanded(
-            child: _buildTabButton('Forecast', Icons.timeline),
-          ),
-          Expanded(
-            child: _buildTabButton('Combined', Icons.analytics),
-          ),
+          Expanded(child: _buildTabButton('Prediction', Icons.trending_up)),
+          Expanded(child: _buildTabButton('Forecast', Icons.timeline)),
+          Expanded(child: _buildTabButton('Combined', Icons.analytics)),
         ],
       ),
     );
@@ -146,7 +151,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.purple.shade600 : Colors.transparent,
+          color: isSelected
+              ? Theme.of(context).colorScheme.tertiary
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -184,16 +191,16 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           const SizedBox(height: 16),
           Text(
             'Select a Location',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
             'Choose a location from the dropdown above to view predictions and forecasts',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey.shade500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade500),
             textAlign: TextAlign.center,
           ),
         ],
@@ -219,13 +226,15 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
     }
   }
 
-  Widget _buildPredictionContent(AsyncValue<Map<String, dynamic>?> predictionData) {
+  Widget _buildPredictionContent(
+    AsyncValue<Map<String, dynamic>?> predictionData,
+  ) {
     return predictionData.when(
       data: (data) {
         if (data == null) {
           return _buildErrorState('No prediction data available');
         }
-        
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -234,15 +243,15 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
               // Prediction Overview
               _buildPredictionOverview(data),
               const SizedBox(height: 24),
-              
+
               // Prediction Details
               _buildPredictionDetails(data),
               const SizedBox(height: 24),
-              
+
               // Confidence Chart
               _buildConfidenceChart(data),
               const SizedBox(height: 24),
-              
+
               // Prediction Alerts
               _buildPredictionAlerts(),
             ],
@@ -250,7 +259,8 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _buildErrorState('Error loading prediction data: $error'),
+      error: (error, stack) =>
+          _buildErrorState('Error loading prediction data: $error'),
     );
   }
 
@@ -260,7 +270,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         if (data == null) {
           return _buildErrorState('No forecast data available');
         }
-        
+
         // Debug: Print the actual data being used
         print('=== FORECAST DATA DEBUG ===');
         print('Data keys: ${data.keys}');
@@ -273,7 +283,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           }
         }
         print('=== END DEBUG ===');
-        
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -287,9 +297,8 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     children: [
                       Text(
                         'API Test',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       ElevatedButton(
@@ -303,19 +312,19 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Forecast Overview
               _buildForecastOverview(data),
               const SizedBox(height: 24),
-              
+
               // Forecast Chart
               _buildForecastChart(data),
               const SizedBox(height: 24),
-              
+
               // Forecast Statistics
               _buildForecastStatistics(data),
               const SizedBox(height: 24),
-              
+
               // Forecast Alerts
               _buildForecastAlerts(),
             ],
@@ -323,7 +332,8 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         );
       },
       loading: () => _buildLoadingState('Loading forecast data...'),
-      error: (error, stack) => _buildErrorState('Error loading forecast data: $error'),
+      error: (error, stack) =>
+          _buildErrorState('Error loading forecast data: $error'),
     );
   }
 
@@ -338,11 +348,11 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
               // Combined Overview
               _buildCombinedOverview(data),
               const SizedBox(height: 24),
-              
+
               // Comparison Chart
               _buildComparisonChart(data),
               const SizedBox(height: 24),
-              
+
               // Summary Statistics
               _buildSummaryStatistics(data),
             ],
@@ -350,14 +360,15 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _buildErrorState('Error loading combined data: $error'),
+      error: (error, stack) =>
+          _buildErrorState('Error loading combined data: $error'),
     );
   }
 
   Widget _buildPredictionOverview(Map<String, dynamic> data) {
     final predictedDepth = data['predictedDepth'] as double? ?? 0.0;
     final confidence = data['confidence'] as double? ?? 0.0;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -366,9 +377,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Prediction Overview',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(
@@ -387,7 +398,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     'Confidence',
                     '${(confidence * 100).toStringAsFixed(1)}%',
                     Icons.analytics,
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
@@ -400,7 +411,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     'Model Version',
                     data['modelVersion'] ?? 'Unknown',
                     Icons.science,
-                    Colors.purple,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -421,9 +432,10 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
   }
 
   Widget _buildForecastOverview(Map<String, dynamic> data) {
-    final forecastDataList = data['forecastData'] as List<Map<String, dynamic>>? ?? [];
+    final forecastDataList =
+        data['forecastData'] as List<Map<String, dynamic>>? ?? [];
     final reliability = data['reliability'] as double? ?? 0.0;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -432,9 +444,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Forecast Overview',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(
@@ -453,7 +465,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     'Reliability',
                     '${(reliability * 100).toStringAsFixed(1)}%',
                     Icons.verified,
-                    Colors.green,
+                    Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],
@@ -466,7 +478,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     'Data Points',
                     '${forecastDataList.length}',
                     Icons.data_usage,
-                    Colors.purple,
+                    Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -495,9 +507,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Combined Analysis',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
@@ -507,9 +519,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
             const SizedBox(height: 8),
             Text(
               'Last Updated: ${_formatDateTime(data['lastUpdated'])}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             ),
           ],
         ),
@@ -517,7 +529,12 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -549,7 +566,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
   Widget _buildConfidenceChart(Map<String, dynamic> data) {
     final confidence = data['confidence'] as double? ?? 0.0;
     final accuracy = data['accuracy'] as double? ?? 0.0;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -558,9 +575,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Model Performance',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -588,22 +605,23 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
   }
 
   Widget _buildForecastChart(Map<String, dynamic> data) {
-    final forecastDataList = data['forecastData'] as List<Map<String, dynamic>>? ?? [];
-    
+    final forecastDataList =
+        data['forecastData'] as List<Map<String, dynamic>>? ?? [];
+
     // Debug print to see what data we're receiving
     print('=== CHART DEBUG ===');
     print('Forecast Chart Data: ${forecastDataList.length} points');
     if (forecastDataList.isNotEmpty) {
       print('First point: ${forecastDataList.first}');
       print('Last point: ${forecastDataList.last}');
-      
+
       // Check if we have the right data structure
       final firstPoint = forecastDataList.first;
       print('First point keys: ${firstPoint.keys}');
       print('First point forecast value: ${firstPoint['forecast']}');
     }
     print('=== END CHART DEBUG ===');
-    
+
     if (forecastDataList.isEmpty) {
       return Card(
         child: Padding(
@@ -613,32 +631,36 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
             children: [
               Text(
                 'Groundwater Forecast Trend',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              const Center(
-                child: Text('No forecast data available from API'),
-              ),
+              const Center(child: Text('No forecast data available from API')),
             ],
           ),
         ),
       );
     }
-    
+
     // Calculate data range for proper Y-axis scaling
-    final forecastValues = forecastDataList.map((item) => item['forecast'] as double).toList();
+    final forecastValues = forecastDataList
+        .map((item) => item['forecast'] as double)
+        .toList();
     final minValue = forecastValues.reduce((a, b) => a < b ? a : b);
     final maxValue = forecastValues.reduce((a, b) => a > b ? a : b);
     final range = maxValue - minValue;
     final yAxisMin = minValue - (range * 0.05); // Add 5% padding
     final yAxisMax = maxValue + (range * 0.05);
-    
+
     // Debug print to verify data range
-    print('Chart Data Range: Min=${minValue.toStringAsFixed(2)}, Max=${maxValue.toStringAsFixed(2)}');
-    print('Y-Axis Range: ${yAxisMin.toStringAsFixed(2)} to ${yAxisMax.toStringAsFixed(2)}');
-    
+    print(
+      'Chart Data Range: Min=${minValue.toStringAsFixed(2)}, Max=${maxValue.toStringAsFixed(2)}',
+    );
+    print(
+      'Y-Axis Range: ${yAxisMin.toStringAsFixed(2)} to ${yAxisMax.toStringAsFixed(2)}',
+    );
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -647,16 +669,16 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Groundwater Forecast Trend (30 Days)',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'Station: CGWHYD0500 (Addanki)',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -668,11 +690,13 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                 ),
                 primaryYAxis: NumericAxis(
                   title: const AxisTitle(text: 'Depth (m)'),
-                  isInversed: true, // Invert Y-axis so negative values appear lower
+                  isInversed:
+                      true, // Invert Y-axis so negative values appear lower
                   minimum: yAxisMin,
                   maximum: yAxisMax,
                   numberFormat: NumberFormat('#,##0.00'),
-                  interval: range / 10, // Show 10 intervals for better readability
+                  interval:
+                      range / 10, // Show 10 intervals for better readability
                 ),
                 tooltipBehavior: TooltipBehavior(
                   enable: true,
@@ -695,8 +719,20 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                       if (dateValue != null) {
                         try {
                           final date = DateTime.parse(dateValue);
-                          final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                          final months = [
+                            'Jan',
+                            'Feb',
+                            'Mar',
+                            'Apr',
+                            'May',
+                            'Jun',
+                            'Jul',
+                            'Aug',
+                            'Sep',
+                            'Oct',
+                            'Nov',
+                            'Dec',
+                          ];
                           return '${date.day.toString().padLeft(2, '0')}-${months[date.month - 1]}';
                         } catch (e) {
                           return dateValue.substring(5, 10); // Fallback
@@ -707,7 +743,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                     yValueMapper: (data, _) {
                       // Use the exact 'forecast' field from API response
                       final value = data['forecast'] as double;
-                      print('Chart Point: ${data['date']} -> ${value.toStringAsFixed(2)}');
+                      print(
+                        'Chart Point: ${data['date']} -> ${value.toStringAsFixed(2)}',
+                      );
                       return value;
                     },
                     name: 'Forecast Depth',
@@ -752,10 +790,11 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                       ),
                       Text(
                         '${forecastDataList.length}',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                            ),
                       ),
                     ],
                   ),
@@ -769,10 +808,11 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                       ),
                       Text(
                         '${maxValue.toStringAsFixed(2)} m',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green.shade700,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ),
                     ],
                   ),
@@ -786,10 +826,11 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
                       ),
                       Text(
                         '${minValue.toStringAsFixed(2)} m',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade700,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red.shade700,
+                            ),
                       ),
                     ],
                   ),
@@ -812,9 +853,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Prediction vs Forecast Comparison',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             const Center(
@@ -835,13 +876,16 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Prediction Details',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildDetailRow('Station Code', data['stationCode'] ?? 'Unknown'),
-            _buildDetailRow('Prediction Date', _formatDateTime(data['predictionDate'])),
+            _buildDetailRow(
+              'Prediction Date',
+              _formatDateTime(data['predictionDate']),
+            ),
             _buildDetailRow('Data Source', data['dataSource'] ?? 'API'),
             _buildDetailRow('Model Version', data['modelVersion'] ?? 'Unknown'),
           ],
@@ -851,17 +895,20 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
   }
 
   Widget _buildForecastStatistics(Map<String, dynamic> data) {
-    final forecastDataList = data['forecastData'] as List<Map<String, dynamic>>? ?? [];
-    
+    final forecastDataList =
+        data['forecastData'] as List<Map<String, dynamic>>? ?? [];
+
     if (forecastDataList.isEmpty) {
       return const SizedBox.shrink();
     }
-    
-    final depths = forecastDataList.map((d) => d['forecast'] as double).toList();
+
+    final depths = forecastDataList
+        .map((d) => d['forecast'] as double)
+        .toList();
     final minDepth = depths.reduce((a, b) => a < b ? a : b);
     final maxDepth = depths.reduce((a, b) => a > b ? a : b);
     final avgDepth = depths.reduce((a, b) => a + b) / depths.length;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -870,19 +917,29 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Forecast Statistics',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
-                  child: _buildMetricCard('Min Depth', '${minDepth.toStringAsFixed(2)}m', Icons.trending_down, Colors.red),
+                  child: _buildMetricCard(
+                    'Min Depth',
+                    '${minDepth.toStringAsFixed(2)}m',
+                    Icons.trending_down,
+                    Colors.red,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildMetricCard('Max Depth', '${maxDepth.toStringAsFixed(2)}m', Icons.trending_up, Colors.green),
+                  child: _buildMetricCard(
+                    'Max Depth',
+                    '${maxDepth.toStringAsFixed(2)}m',
+                    Icons.trending_up,
+                    Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ],
             ),
@@ -890,11 +947,21 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
             Row(
               children: [
                 Expanded(
-                  child: _buildMetricCard('Avg Depth', '${avgDepth.toStringAsFixed(2)}m', Icons.water_drop, Colors.blue),
+                  child: _buildMetricCard(
+                    'Avg Depth',
+                    '${avgDepth.toStringAsFixed(2)}m',
+                    Icons.water_drop,
+                    Colors.blue,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildMetricCard('Range', '${(maxDepth - minDepth).toStringAsFixed(2)}m', Icons.straighten, Colors.purple),
+                  child: _buildMetricCard(
+                    'Range',
+                    '${(maxDepth - minDepth).toStringAsFixed(2)}m',
+                    Icons.straighten,
+                    Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
               ],
             ),
@@ -913,12 +980,14 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Summary Statistics',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            const Text('Summary statistics would be calculated and displayed here'),
+            const Text(
+              'Summary statistics would be calculated and displayed here',
+            ),
           ],
         ),
       ),
@@ -935,16 +1004,13 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
             width: 120,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
@@ -953,11 +1019,11 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
 
   Widget _buildPredictionAlerts() {
     final alerts = ref.watch(predictionAlertsProvider(_selectedLocation!));
-    
+
     if (alerts.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -966,9 +1032,9 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           children: [
             Text(
               'Prediction Alerts',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             ...alerts.map((alert) => _buildAlertItem(alert)),
@@ -987,7 +1053,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
     final severity = alert['severity'] as String? ?? 'medium';
     Color color;
     IconData icon;
-    
+
     switch (severity) {
       case 'high':
         color = Colors.red;
@@ -1001,7 +1067,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
         color = Colors.blue;
         icon = Icons.info_outline;
     }
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
@@ -1028,21 +1094,21 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
   Future<void> _testForecastAPI() async {
     try {
       print('=== TESTING FORECAST API DIRECTLY ===');
-      
+
       final apiService = ApiService();
       final result = await apiService.fetchForecast('CGWHYD0500', 30);
-      
+
       print('API Response: $result');
       print('Response keys: ${result.keys}');
-      
+
       if (result['status'] == 'success' && result['forecast'] != null) {
         final forecastList = result['forecast'] as List;
         print('Forecast data points: ${forecastList.length}');
-        
+
         if (forecastList.isNotEmpty) {
           print('First point: ${forecastList.first}');
           print('Last point: ${forecastList.last}');
-          
+
           // Check the actual values
           final firstPoint = forecastList.first;
           print('First forecast value: ${firstPoint['forecast']}');
@@ -1051,7 +1117,7 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
       } else {
         print('API returned no forecast data');
       }
-      
+
       print('=== END API TEST ===');
     } catch (e) {
       print('API Test Error: $e');
@@ -1071,16 +1137,16 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
           Text(
             message,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.blue.shade600,
+              color: Theme.of(context).colorScheme.primary,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'Fetching 30-day groundwater forecast...',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
         ],
@@ -1093,17 +1159,13 @@ class _PredictionForecastScreenState extends ConsumerState<PredictionForecastScr
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red.shade400,
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red.shade400),
           const SizedBox(height: 16),
           Text(
             message,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.red.shade600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.red.shade600),
             textAlign: TextAlign.center,
           ),
         ],

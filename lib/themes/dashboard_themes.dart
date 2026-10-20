@@ -5,73 +5,73 @@ class DashboardThemes {
   // Private constructor to prevent instantiation
   DashboardThemes._();
 
-  /// Citizen Dashboard - deep ocean blue with clear-water cyan
+  /// Citizen Dashboard - confident cobalt, deep navy and clear aqua
   static const CitizenTheme = DashboardTheme(
-    primaryColor: Color(0xFF075985),
-    primaryVariant: Color(0xFF0B3B60),
-    secondaryColor: Color(0xFF67E8F9),
-    secondaryVariant: Color(0xFF0891B2),
-    surfaceColor: Color(0xFFF5FAFE),
-    backgroundColor: Color(0xFFECF6FB),
+    primaryColor: Color(0xFF176BFF),
+    primaryVariant: Color(0xFF102B4E),
+    secondaryColor: Color(0xFF53D8E8),
+    secondaryVariant: Color(0xFF1599B6),
+    surfaceColor: Color(0xFFFFFFFF),
+    backgroundColor: Color(0xFFF3F6FB),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF083344),
-    onSurfaceColor: Color(0xFF142B3A),
-    onBackgroundColor: Color(0xFF142B3A),
+    onSecondaryColor: Color(0xFF103047),
+    onSurfaceColor: Color(0xFF17283F),
+    onBackgroundColor: Color(0xFF17283F),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFDCEAF2),
-    shadowColor: Color(0x12075985),
-    accentColor: Color(0xFF06B6D4),
-    successColor: Color(0xFF0284C7),
+    dividerColor: Color(0xFFE2E9F2),
+    shadowColor: Color(0x14102B4E),
+    accentColor: Color(0xFF25BFD0),
+    successColor: Color(0xFF147DAB),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF0284C7),
+    infoColor: Color(0xFF176BFF),
   );
 
-  /// Researcher Dashboard - crisp blue with glacial cyan
+  /// Researcher Dashboard - focused sapphire with clear aqua
   static const ResearcherTheme = DashboardTheme(
-    primaryColor: Color(0xFF0369A1),
-    primaryVariant: Color(0xFF164E78),
-    secondaryColor: Color(0xFF7DD3FC),
-    secondaryVariant: Color(0xFF38BDF8),
-    surfaceColor: Color(0xFFF4F9FD),
-    backgroundColor: Color(0xFFEAF4FA),
+    primaryColor: Color(0xFF245FE5),
+    primaryVariant: Color(0xFF102B4E),
+    secondaryColor: Color(0xFF53D8E8),
+    secondaryVariant: Color(0xFF1599B6),
+    surfaceColor: Color(0xFFFFFFFF),
+    backgroundColor: Color(0xFFF3F6FB),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF0C3148),
-    onSurfaceColor: Color(0xFF172A3B),
-    onBackgroundColor: Color(0xFF172A3B),
+    onSecondaryColor: Color(0xFF103047),
+    onSurfaceColor: Color(0xFF17283F),
+    onBackgroundColor: Color(0xFF17283F),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFDCE8F1),
-    shadowColor: Color(0x120369A1),
-    accentColor: Color(0xFF0EA5E9),
-    successColor: Color(0xFF0284C7),
+    dividerColor: Color(0xFFE2E9F2),
+    shadowColor: Color(0x14102B4E),
+    accentColor: Color(0xFF25BFD0),
+    successColor: Color(0xFF147DAB),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF0284C7),
+    infoColor: Color(0xFF176BFF),
   );
 
-  /// Policy Maker Dashboard - deep-water blue with bright aqua
+  /// Policy Maker Dashboard - royal blue with the shared aqua accent
   static const PolicyMakerTheme = DashboardTheme(
-    primaryColor: Color(0xFF1D4ED8),
-    primaryVariant: Color(0xFF1E3A8A),
-    secondaryColor: Color(0xFF7DD3FC),
-    secondaryVariant: Color(0xFF38BDF8),
-    surfaceColor: Color(0xFFF5F8FE),
-    backgroundColor: Color(0xFFEEF4FC),
+    primaryColor: Color(0xFF4057D6),
+    primaryVariant: Color(0xFF102B4E),
+    secondaryColor: Color(0xFF53D8E8),
+    secondaryVariant: Color(0xFF1599B6),
+    surfaceColor: Color(0xFFFFFFFF),
+    backgroundColor: Color(0xFFF3F6FB),
     errorColor: Color(0xFFB42318),
     onPrimaryColor: Colors.white,
-    onSecondaryColor: Color(0xFF102C4A),
-    onSurfaceColor: Color(0xFF1A2940),
-    onBackgroundColor: Color(0xFF1A2940),
+    onSecondaryColor: Color(0xFF103047),
+    onSurfaceColor: Color(0xFF17283F),
+    onBackgroundColor: Color(0xFF17283F),
     cardColor: Colors.white,
-    dividerColor: Color(0xFFDDE7F2),
-    shadowColor: Color(0x121D4ED8),
-    accentColor: Color(0xFF0EA5E9),
-    successColor: Color(0xFF0284C7),
+    dividerColor: Color(0xFFE2E9F2),
+    shadowColor: Color(0x14102B4E),
+    accentColor: Color(0xFF25BFD0),
+    successColor: Color(0xFF147DAB),
     warningColor: Color(0xFFB76E12),
     dangerColor: Color(0xFFB42318),
-    infoColor: Color(0xFF0284C7),
+    infoColor: Color(0xFF176BFF),
   );
 }
 
@@ -122,14 +122,25 @@ class DashboardTheme {
   /// Convert to Flutter ThemeData with brightness support
   ThemeData toThemeData({Brightness brightness = Brightness.light}) {
     final isDark = brightness == Brightness.dark;
-    final surface = isDark ? const Color(0xFF10283A) : cardColor;
-    final background = isDark ? const Color(0xFF091A28) : surfaceColor;
-    final foreground = isDark ? const Color(0xFFE5F4FC) : onSurfaceColor;
-    final outline = isDark ? const Color(0xFF29465A) : dividerColor;
+    final surface = isDark ? const Color(0xFF142840) : cardColor;
+    final background = isDark ? const Color(0xFF0B1728) : backgroundColor;
+    final foreground = isDark ? const Color(0xFFEAF2FF) : onSurfaceColor;
+    final outline = isDark ? const Color(0xFF29415B) : dividerColor;
 
     return ThemeData(
       brightness: brightness,
       useMaterial3: true,
+      splashFactory: InkSparkle.splashFactory,
+      visualDensity: VisualDensity.standard,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: ZoomPageTransitionsBuilder(),
+        },
+      ),
       primarySwatch: _createMaterialColor(primaryColor),
       primaryColor: primaryColor,
       primaryColorDark: primaryVariant,
@@ -138,14 +149,29 @@ class DashboardTheme {
         seedColor: primaryColor,
         primary: primaryColor,
         secondary: secondaryColor,
+        tertiary: secondaryVariant,
         surface: surface,
         error: errorColor,
         onPrimary: onPrimaryColor,
         onSecondary: onSecondaryColor,
+        onTertiary: Colors.white,
         onSurface: foreground,
         brightness: brightness,
       ),
       scaffoldBackgroundColor: background,
+      iconTheme: IconThemeData(color: primaryColor),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: primaryColor,
+        selectionColor: primaryColor.withValues(alpha: 0.2),
+        selectionHandleColor: primaryColor,
+      ),
+      tooltipTheme: TooltipThemeData(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF243A52) : const Color(0xFF102B4E),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        textStyle: const TextStyle(color: Colors.white, fontSize: 12),
+      ),
       textTheme:
           (isDark
                   ? Typography.material2021(
@@ -181,19 +207,22 @@ class DashboardTheme {
         color: surface,
         shadowColor: isDark ? Colors.black26 : shadowColor,
         surfaceTintColor: Colors.transparent,
-        elevation: 0,
+        elevation: isDark ? 0 : 1,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           side: BorderSide(color: outline),
         ),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: background,
+        backgroundColor: surface,
         foregroundColor: foreground,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
+        iconTheme: IconThemeData(color: foreground),
+        actionsIconTheme: IconThemeData(color: primaryColor),
         titleTextStyle: TextStyle(
           color: foreground,
           fontSize: 20,
@@ -233,7 +262,7 @@ class DashboardTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF153247) : surface,
+        fillColor: isDark ? const Color(0xFF102239) : surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -250,11 +279,19 @@ class DashboardTheme {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: outline),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: errorColor),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: errorColor, width: 2),
+        ),
       ),
       dividerTheme: DividerThemeData(color: outline, thickness: 1, space: 1),
       listTileTheme: ListTileThemeData(
         iconColor: primaryColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 3),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       dialogTheme: DialogThemeData(
@@ -263,6 +300,23 @@ class DashboardTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(color: outline),
+        ),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: surface,
+          surfaceTintColor: Colors.transparent,
+          showDragHandle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+        ),
+        tabBarTheme: TabBarThemeData(
+          labelColor: primaryColor,
+          unselectedLabelColor: foreground.withValues(alpha: 0.6),
+          indicatorColor: primaryColor,
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorWeight: 3,
+          dividerColor: outline,
+          labelStyle: const TextStyle(fontWeight: FontWeight.w700),
         ),
         titleTextStyle: TextStyle(
           color: foreground,
@@ -273,8 +327,8 @@ class DashboardTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: isDark
-            ? const Color(0xFF12334A)
-            : const Color(0xFF103B5C),
+            ? const Color(0xFF142840)
+            : const Color(0xFF102B4E),
         contentTextStyle: const TextStyle(color: Colors.white),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
@@ -287,10 +341,11 @@ class DashboardTheme {
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: primaryColor,
         linearTrackColor: primaryColor.withValues(alpha: 0.12),
+        circularTrackColor: primaryColor.withValues(alpha: 0.12),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: isDark
-            ? const Color(0xFF17384E)
+            ? const Color(0xFF1B3652)
             : primaryColor.withValues(alpha: 0.07),
         selectedColor: primaryColor.withValues(alpha: 0.14),
         side: BorderSide(color: outline),
@@ -312,6 +367,38 @@ class DashboardTheme {
                 ? primaryColor
                 : foreground.withValues(alpha: 0.7),
           );
+        }),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: surface,
+        indicatorColor: primaryColor.withValues(alpha: isDark ? 0.24 : 0.1),
+        selectedIconTheme: IconThemeData(color: primaryColor),
+        unselectedIconTheme: IconThemeData(
+          color: foreground.withValues(alpha: 0.65),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.white;
+          return isDark ? const Color(0xFF9AAEC4) : Colors.white;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return primaryColor;
+          return isDark ? const Color(0xFF344B64) : const Color(0xFFD8E1ED);
+        }),
+        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected) ? primaryColor : null;
+        }),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? primaryColor
+              : foreground.withValues(alpha: 0.55);
         }),
       ),
     );

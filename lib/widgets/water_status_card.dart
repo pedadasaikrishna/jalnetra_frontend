@@ -24,7 +24,7 @@ class WaterStatusCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: _getStatusColor(status).withValues(alpha: 0.3),
+            color: _getStatusColor(status, context).withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -37,7 +37,7 @@ class WaterStatusCard extends StatelessWidget {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: _getStatusColor(status),
+                    color: _getStatusColor(status, context),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -55,7 +55,7 @@ class WaterStatusCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: _getStatusColor(status),
+                    color: _getStatusColor(status, context),
                   ),
                 ),
               ],
@@ -84,10 +84,10 @@ class WaterStatusCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(WaterStatus status) {
+  Color _getStatusColor(WaterStatus status, BuildContext context) {
     switch (status) {
       case WaterStatus.safe:
-        return const Color(0xFF0284C7);
+        return Theme.of(context).colorScheme.primary;
       case WaterStatus.moderate:
         return Colors.orange;
       case WaterStatus.critical:

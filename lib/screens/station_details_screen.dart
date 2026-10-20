@@ -382,7 +382,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                           'Minimum',
                           '${stats['min'].toStringAsFixed(2)}m',
                           Icons.trending_down,
-                          Colors.green,
+                          Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ],
@@ -569,7 +569,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                   color: trend == 'Rising'
                       ? Colors.red
                       : trend == 'Declining'
-                      ? Colors.green
+                      ? Theme.of(context).colorScheme.primary
                       : Colors.grey,
                 ),
                 const SizedBox(width: 4),
@@ -580,7 +580,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                     color: trend == 'Rising'
                         ? Colors.red
                         : trend == 'Declining'
-                        ? Colors.green
+                        ? Theme.of(context).colorScheme.primary
                         : Colors.grey,
                   ),
                 ),
@@ -604,7 +604,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
                 color: trend == 'Rising'
                     ? Colors.red
                     : trend == 'Declining'
-                    ? Colors.green
+                    ? Theme.of(context).colorScheme.primary
                     : Colors.grey,
               ),
             ),
@@ -674,7 +674,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Sharing ${station.stationName}...'),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -709,7 +709,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'active':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case 'inactive':
         return Colors.red;
       case 'maintenance':
@@ -723,7 +723,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
   Color _getQualityColor(String quality) {
     switch (quality.toLowerCase()) {
       case 'good':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case 'fair':
         return Colors.orange;
       case 'poor':
@@ -735,7 +735,7 @@ class _StationDetailsScreenState extends ConsumerState<StationDetailsScreen>
 
   /// Get data quality color
   Color _getDataQualityColor(double quality) {
-    if (quality >= 90) return Colors.green;
+    if (quality >= 90) return Theme.of(context).colorScheme.primary;
     if (quality >= 70) return Colors.orange;
     return Colors.red;
   }

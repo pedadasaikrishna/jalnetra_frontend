@@ -8,16 +8,23 @@ class AdvancedAnalyticsScreen extends ConsumerStatefulWidget {
   const AdvancedAnalyticsScreen({super.key});
 
   @override
-  ConsumerState<AdvancedAnalyticsScreen> createState() => _AdvancedAnalyticsScreenState();
+  ConsumerState<AdvancedAnalyticsScreen> createState() =>
+      _AdvancedAnalyticsScreenState();
 }
 
-class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScreen> {
+class _AdvancedAnalyticsScreenState
+    extends ConsumerState<AdvancedAnalyticsScreen> {
   String _selectedTimeRange = '30 Days';
   String _selectedChartType = 'Line Chart';
   String? _selectedLocation;
 
   final List<String> _timeRanges = ['7 Days', '30 Days', '90 Days', '1 Year'];
-  final List<String> _chartTypes = ['Line Chart', 'Bar Chart', 'Area Chart', 'Scatter Plot'];
+  final List<String> _chartTypes = [
+    'Line Chart',
+    'Bar Chart',
+    'Area Chart',
+    'Scatter Plot',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +33,6 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     return Scaffold(
       appBar: AppBar(
         title: const Text('Advanced Analytics'),
-        backgroundColor: Colors.blue.shade600,
-        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -43,25 +48,27 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Control Panel
-            _buildControlPanel(ref.watch(groundwater.availableLocationsProvider)),
+            _buildControlPanel(
+              ref.watch(groundwater.availableLocationsProvider),
+            ),
             const SizedBox(height: 24),
-            
+
             // Key Metrics Cards
             _buildKeyMetricsCards(allLocationsData),
             const SizedBox(height: 24),
-            
+
             // Interactive Charts
             _buildInteractiveCharts(allLocationsData),
             const SizedBox(height: 24),
-            
+
             // Location Comparison
             _buildLocationComparison(allLocationsData),
             const SizedBox(height: 24),
-            
+
             // Trend Analysis
             _buildTrendAnalysis(allLocationsData),
             const SizedBox(height: 24),
-            
+
             // Export Options
             _buildExportOptions(),
           ],
@@ -79,9 +86,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           children: [
             Text(
               'Analytics Controls',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(
@@ -98,10 +105,12 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                         value: null,
                         child: Text('All Locations'),
                       ),
-                      ...availableLocations.map((location) => DropdownMenuItem<String>(
-                        value: location,
-                        child: Text(location),
-                      )),
+                      ...availableLocations.map(
+                        (location) => DropdownMenuItem<String>(
+                          value: location,
+                          child: Text(location),
+                        ),
+                      ),
                     ],
                     onChanged: (value) {
                       setState(() {
@@ -118,10 +127,14 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                       labelText: 'Time Range',
                       border: OutlineInputBorder(),
                     ),
-                    items: _timeRanges.map((range) => DropdownMenuItem<String>(
-                      value: range,
-                      child: Text(range),
-                    )).toList(),
+                    items: _timeRanges
+                        .map(
+                          (range) => DropdownMenuItem<String>(
+                            value: range,
+                            child: Text(range),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedTimeRange = value!;
@@ -137,10 +150,14 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                       labelText: 'Chart Type',
                       border: OutlineInputBorder(),
                     ),
-                    items: _chartTypes.map((type) => DropdownMenuItem<String>(
-                      value: type,
-                      child: Text(type),
-                    )).toList(),
+                    items: _chartTypes
+                        .map(
+                          (type) => DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedChartType = value!;
@@ -156,7 +173,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     );
   }
 
-  Widget _buildKeyMetricsCards(AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData) {
+  Widget _buildKeyMetricsCards(
+    AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData,
+  ) {
     return allLocationsData.when(
       data: (data) {
         if (data.isEmpty) {
@@ -170,9 +189,17 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
 
         // Calculate aggregate metrics
         double totalLocations = data.length.toDouble();
-        double avgDepth = data.values.map((d) => d['averageDepth'] as double).reduce((a, b) => a + b) / totalLocations;
-        int criticalLocations = data.values.where((d) => d['riskLevel'] == 'High').length;
-        int goodLocations = data.values.where((d) => d['riskLevel'] == 'Low').length;
+        double avgDepth =
+            data.values
+                .map((d) => d['averageDepth'] as double)
+                .reduce((a, b) => a + b) /
+            totalLocations;
+        int criticalLocations = data.values
+            .where((d) => d['riskLevel'] == 'High')
+            .length;
+        int goodLocations = data.values
+            .where((d) => d['riskLevel'] == 'Low')
+            .length;
 
         return Row(
           children: [
@@ -208,7 +235,7 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                 'Good Status',
                 goodLocations.toString(),
                 Icons.check_circle,
-                Colors.green,
+                Theme.of(context).colorScheme.primary,
               ),
             ),
           ],
@@ -224,7 +251,12 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -250,7 +282,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     );
   }
 
-  Widget _buildInteractiveCharts(AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData) {
+  Widget _buildInteractiveCharts(
+    AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -259,9 +293,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           children: [
             Text(
               'Interactive Charts',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -269,7 +303,8 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
               child: allLocationsData.when(
                 data: (data) => _buildChart(data),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(child: Text('Chart Error: $error')),
+                error: (error, stack) =>
+                    Center(child: Text('Chart Error: $error')),
               ),
             ),
           ],
@@ -331,7 +366,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     }
   }
 
-  Widget _buildLocationComparison(AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData) {
+  Widget _buildLocationComparison(
+    AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -340,9 +377,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           children: [
             Text(
               'Location Comparison',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             allLocationsData.when(
@@ -351,17 +388,26 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                   final locationData = entry.value;
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: _getRiskColor(locationData['riskLevel'] as String),
+                      backgroundColor: _getRiskColor(
+                        locationData['riskLevel'] as String,
+                      ),
                       child: Text(
                         entry.key.substring(0, 1),
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     title: Text(entry.key),
-                    subtitle: Text('Depth: ${locationData['averageDepth']}m | Status: ${locationData['currentStatus']}'),
+                    subtitle: Text(
+                      'Depth: ${locationData['averageDepth']}m | Status: ${locationData['currentStatus']}',
+                    ),
                     trailing: Chip(
                       label: Text(locationData['riskLevel'] as String),
-                      backgroundColor: _getRiskColor(locationData['riskLevel'] as String).withOpacity(0.2),
+                      backgroundColor: _getRiskColor(
+                        locationData['riskLevel'] as String,
+                      ).withOpacity(0.2),
                     ),
                   );
                 }).toList(),
@@ -375,7 +421,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
     );
   }
 
-  Widget _buildTrendAnalysis(AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData) {
+  Widget _buildTrendAnalysis(
+    AsyncValue<Map<String, Map<String, dynamic>>> allLocationsData,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -384,24 +432,38 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           children: [
             Text(
               'Trend Analysis',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             allLocationsData.when(
               data: (data) {
-                int declining = data.values.where((d) => d['trendDirection'] == 'Declining').length;
-                int rising = data.values.where((d) => d['trendDirection'] == 'Rising').length;
-                
+                int declining = data.values
+                    .where((d) => d['trendDirection'] == 'Declining')
+                    .length;
+                int rising = data.values
+                    .where((d) => d['trendDirection'] == 'Rising')
+                    .length;
+
                 return Row(
                   children: [
                     Expanded(
-                      child: _buildTrendCard('Declining', declining, Icons.trending_down, Colors.red),
+                      child: _buildTrendCard(
+                        'Declining',
+                        declining,
+                        Icons.trending_down,
+                        Colors.red,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildTrendCard('Rising', rising, Icons.trending_up, Colors.green),
+                      child: _buildTrendCard(
+                        'Rising',
+                        rising,
+                        Icons.trending_up,
+                        Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ],
                 );
@@ -447,9 +509,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
           children: [
             Text(
               'Export Options',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Row(
@@ -459,7 +521,9 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                     onPressed: () {
                       // TODO: Implement PDF export
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('PDF Export - Coming Soon!')),
+                        const SnackBar(
+                          content: Text('PDF Export - Coming Soon!'),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.picture_as_pdf),
@@ -476,13 +540,15 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                     onPressed: () {
                       // TODO: Implement Excel export
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Excel Export - Coming Soon!')),
+                        const SnackBar(
+                          content: Text('Excel Export - Coming Soon!'),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.table_chart),
                     label: const Text('Export Excel'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green.shade600,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -493,13 +559,15 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
                     onPressed: () {
                       // TODO: Implement CSV export
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('CSV Export - Coming Soon!')),
+                        const SnackBar(
+                          content: Text('CSV Export - Coming Soon!'),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.file_download),
                     label: const Text('Export CSV'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -519,7 +587,7 @@ class _AdvancedAnalyticsScreenState extends ConsumerState<AdvancedAnalyticsScree
       case 'medium':
         return Colors.orange;
       case 'low':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       default:
         return Colors.grey;
     }
@@ -534,4 +602,3 @@ class ChartData {
 
   ChartData(this.location, this.averageDepth, this.maxDepth, this.minDepth);
 }
-

@@ -347,7 +347,9 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: isActive ? Colors.green : Colors.red,
+                color: isActive
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.red,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -391,7 +393,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
   Color _getStatusColor(String status) {
     switch (status) {
       case 'active':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case 'inactive':
         return Colors.red;
       case 'maintenance':
@@ -405,7 +407,7 @@ class _StationDetailScreenState extends ConsumerState<StationDetailScreen>
   Color _getQualityColor(String quality) {
     switch (quality) {
       case 'good':
-        return Colors.green;
+        return Theme.of(context).colorScheme.primary;
       case 'fair':
         return Colors.orange;
       case 'poor':

@@ -10,6 +10,7 @@ import '../providers/groundwater_data_provider.dart' as groundwater;
 import '../providers/prediction_forecast_provider.dart';
 import '../providers/traffic_signal_provider.dart';
 import '../services/api_service.dart';
+import '../widgets/page_entrance.dart';
 import '../widgets/traffic_signal_widget.dart';
 import 'package:logger/logger.dart';
 
@@ -236,24 +237,49 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Welcome Section
-            _buildWelcomeSection(),
-            const SizedBox(height: 24),
+      body: PageEntrance(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Welcome Section
+              _buildWelcomeSection(),
+              const SizedBox(height: 24),
 
-            // Main Options
-            _buildMainOptions(),
-            const SizedBox(height: 24),
+              // Main Options
+              _buildMainOptions(),
+              const SizedBox(height: 24),
 
-            // Content based on selected option
-            if (selectedOption == 'information') _buildInformationContent(),
-            if (selectedOption == 'analytics') _buildAnalyticsContent(),
-            if (selectedOption == 'data') _buildDataDownloadContent(),
-          ],
+              // Content based on selected option
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.025),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: KeyedSubtree(
+                  key: ValueKey(selectedOption),
+                  child: switch (selectedOption) {
+                    'information' => _buildInformationContent(),
+                    'analytics' => _buildAnalyticsContent(),
+                    'data' => _buildDataDownloadContent(),
+                    _ => const SizedBox.shrink(),
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -744,7 +770,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   ),
                   child: const Icon(
                     Icons.download,
-                    color: Color(0xFF6A1B9A),
+                    color: theme.primaryColor,
                     size: 28,
                   ),
                 ),
@@ -994,7 +1020,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           gradient: LinearGradient(
             colors: [
               theme.primaryColor.withOpacity(0.7),
-              const Color(0xFF8E24AA).withOpacity(0.6),
+              DashboardThemes.ResearcherTheme.secondaryVariant.withOpacity(0.6),
             ],
           ),
           borderRadius: BorderRadius.circular(12),
@@ -1570,7 +1596,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [theme.primaryColor, const Color(0xFF8E24AA)],
+              colors: [theme.primaryVariant, theme.primaryColor],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -1926,7 +1952,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         'Total Regions',
                         '${statistics['totalRegions'] ?? 0}',
                         Icons.location_city,
-                        Colors.blue,
+                        DashboardThemes.ResearcherTheme.primaryColor,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -1979,7 +2005,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         'Avg Risk Score',
                         '${((statistics['averageRiskScore'] ?? 0.0) * 100).toStringAsFixed(1)}%',
                         Icons.analytics,
-                        Colors.purple,
+                        DashboardThemes.ResearcherTheme.secondaryVariant,
                       ),
                     ),
                   ],
@@ -2219,12 +2245,13 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
+                    color: DashboardThemes.ResearcherTheme.primaryColor
+                        .withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.trending_down,
-                    color: Colors.blue[600],
+                    color: DashboardThemes.ResearcherTheme.primaryColor,
                     size: 20,
                   ),
                 ),
@@ -2235,7 +2262,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.blue[700],
+                      color: DashboardThemes.ResearcherTheme.primaryColor,
                     ),
                   ),
                 ),
@@ -2258,7 +2285,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue[600],
+                        color: DashboardThemes.ResearcherTheme.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -2319,12 +2346,13 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.2),
+                    color: DashboardThemes.ResearcherTheme.secondaryVariant
+                        .withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.height,
-                    color: Colors.purple[600],
+                    color: DashboardThemes.ResearcherTheme.secondaryVariant,
                     size: 20,
                   ),
                 ),
@@ -2335,7 +2363,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.purple[700],
+                      color: DashboardThemes.ResearcherTheme.secondaryVariant,
                     ),
                   ),
                 ),
@@ -3137,12 +3165,13 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.indigo.withOpacity(0.2),
+                    color: DashboardThemes.ResearcherTheme.secondaryVariant
+                        .withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.calendar_month,
-                    color: Colors.indigo[600],
+                    color: DashboardThemes.ResearcherTheme.secondaryVariant,
                     size: 20,
                   ),
                 ),
@@ -3153,7 +3182,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.indigo[700],
+                      color: DashboardThemes.ResearcherTheme.secondaryVariant,
                     ),
                   ),
                 ),
@@ -3165,7 +3194,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.indigo[600],
+                color: DashboardThemes.ResearcherTheme.secondaryVariant,
               ),
             ),
             const SizedBox(height: 8),
@@ -3402,12 +3431,13 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.2),
+                        color: DashboardThemes.ResearcherTheme.secondaryVariant
+                            .withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         Icons.show_chart,
-                        color: Colors.purple[600],
+                        color: DashboardThemes.ResearcherTheme.secondaryVariant,
                         size: 20,
                       ),
                     ),
@@ -3418,7 +3448,8 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.purple[700],
+                          color:
+                              DashboardThemes.ResearcherTheme.secondaryVariant,
                         ),
                       ),
                     ),
@@ -3429,10 +3460,14 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.1),
+                        color: DashboardThemes.ResearcherTheme.secondaryVariant
+                            .withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: Colors.purple.withOpacity(0.3),
+                          color: DashboardThemes
+                              .ResearcherTheme
+                              .secondaryVariant
+                              .withOpacity(0.3),
                         ),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -3454,7 +3489,9 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                             });
                           },
                           style: TextStyle(
-                            color: Colors.purple[700],
+                            color: DashboardThemes
+                                .ResearcherTheme
+                                .secondaryVariant,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -3543,7 +3580,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                   xValueMapper: (ChartDataPoint data, _) => data.x,
                   yValueMapper: (ChartDataPoint data, _) => data.y,
                   name: 'Forecast',
-                  color: Colors.blue,
+                  color: DashboardThemes.ResearcherTheme.primaryColor,
                   width: 2,
                   markerSettings: const charts.MarkerSettings(
                     isVisible: true,

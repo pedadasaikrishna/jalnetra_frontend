@@ -132,12 +132,10 @@ class DashboardTheme {
       useMaterial3: true,
       splashFactory: InkSparkle.splashFactory,
       visualDensity: VisualDensity.standard,
-      pageTransitionsTheme: const PageTransitionsTheme(
+      pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.windows: ZoomPageTransitionsBuilder(),
         },
       ),
@@ -301,28 +299,30 @@ class DashboardTheme {
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(color: outline),
         ),
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: surface,
-          surfaceTintColor: Colors.transparent,
-          showDragHandle: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-        ),
-        tabBarTheme: TabBarThemeData(
-          labelColor: primaryColor,
-          unselectedLabelColor: foreground.withValues(alpha: 0.6),
-          indicatorColor: primaryColor,
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorWeight: 3,
-          dividerColor: outline,
-          labelStyle: const TextStyle(fontWeight: FontWeight.w700),
-        ),
         titleTextStyle: TextStyle(
           color: foreground,
           fontSize: 20,
           fontWeight: FontWeight.w700,
         ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+        showDragHandle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: primaryColor,
+        unselectedLabelColor: foreground.withValues(alpha: 0.6),
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: primaryColor, width: 3),
+        ),
+        indicatorColor: primaryColor,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: outline,
+        labelStyle: const TextStyle(fontWeight: FontWeight.w700),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

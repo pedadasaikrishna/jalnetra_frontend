@@ -359,7 +359,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Connection test completed'),
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
@@ -384,7 +384,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               // TODO: Implement cache clearing
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Cache cleared successfully'),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
@@ -401,7 +401,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void _exportData() {
     // TODO: Implement data export
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Data export started'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
@@ -412,7 +412,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void _syncData() {
     // TODO: Implement data sync
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Data sync started'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
@@ -444,7 +444,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               });
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Settings reset to defaults'),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),

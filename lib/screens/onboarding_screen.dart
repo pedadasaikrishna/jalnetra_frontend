@@ -131,7 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   _pages.length,
-                  (index) => Container(
+                  (index) => AnimatedContainer(
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     width: _currentPage == index ? 24 : 8,
                     height: 8,

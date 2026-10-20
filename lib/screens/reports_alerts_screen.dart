@@ -130,7 +130,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
         // Alerts list
         Expanded(
           child: alerts.isEmpty
-              ? const Center(
+              ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -447,7 +447,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
       leading: Icon(icon),
       title: Text(title),
       subtitle: Text(subtitle),
-      trailing: const Icon(Icons.arrow_forward_ios),
+      trailing: Icon(Icons.arrow_forward_ios),
       onTap: onTap,
     );
   }
@@ -609,7 +609,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   /// Generate monthly report
   void _generateMonthlyReport(List<DWLRStation> stations) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Generating monthly report...'),
         backgroundColor: Colors.blue,
       ),
@@ -619,7 +619,7 @@ class _ReportsAlertsScreenState extends ConsumerState<ReportsAlertsScreen>
   /// Generate health report
   void _generateHealthReport(List<DWLRStation> stations) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Generating health report...'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),

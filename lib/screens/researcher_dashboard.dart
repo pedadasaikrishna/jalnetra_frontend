@@ -768,7 +768,7 @@ class _ResearcherDashboardState extends ConsumerState<ResearcherDashboard> {
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.download,
                     color: theme.primaryColor,
                     size: 28,
